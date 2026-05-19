@@ -1,0 +1,3 @@
+{
+  "excludePaths": ["node_modules/**", "test/fixtures/**", "samples/**"]
+}

@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ApiGate Report — realworld-express</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0a'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Inter%2C-apple-system%2Csans-serif' font-size='19' font-weight='700' fill='%23ff2d78'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700&display=swap" rel="stylesheet">
+<style>/* Unified report theme — SecGate palette + Lux sidebar shell */
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-2: #1a1a1a;
+  --border: #1f1f1f;
+  --border-bright: #2a2a2a;
+  --text: #e5e5e7;
+  --muted: #a3a3a8; /* bumped from #8e8e93 for WCAG */
+  --faint: #6e6e73;
+  --success: #34c759;
+  --warn: #ff9500;
+  --error: #ff3b30;
+  --med-sev: #ffcc00;
+  --accent: #e5e5e7;
+  --pink: #ff2d78;
+  --sidebar-w: 240px;
+  --content-max: 1200px;
+  --font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Aliases for LuxFaber --color-* convention */
+  --color-pink: var(--pink);
+  --color-green: var(--success);
+  --color-amber: var(--warn);
+  --color-red: var(--error);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-bright: var(--border-bright);
+  --color-text: var(--text);
+  --color-text-secondary: var(--muted);
+  --color-muted: var(--muted);
+  --radius: 6px;
+  --max-w: 960px;
+  --header-bg: var(--surface);
+  --score-glow: none;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--text); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, .mono { font-family: var(--mono); font-size: 13px; }
+
+/* Pill row */
+.report-pill { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; background: var(--pink); color: #fff; }
+.pill-row { padding: 16px 24px 14px; border-bottom: 1px solid var(--border); }
+
+/* Layout */
+.shell { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: 100vh; }
+.aside {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  position: sticky; top: 0; height: 100vh;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.aside-head { padding: 0 24px 20px; border-bottom: 1px solid var(--border); }
+.aside-head .product { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+.aside-head .tier-pill { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; margin-left: 6px; vertical-align: 1px; text-transform: uppercase; }
+.aside-head .tier-pill.neutral { background: rgba(255,255,255,0.06); color: var(--muted); }
+.aside-head .tier-pill.premium { background: rgba(255,45,120,0.12); color: var(--pink); }
+.aside-head .tier-pill.pass { background: rgba(52,199,89,0.12); color: var(--success); }
+.aside-head .tier-pill.warn { background: rgba(255,149,0,0.12); color: var(--warn); }
+.aside-head .target { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 4px; word-break: break-all; }
+.aside-head .score-line { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; }
+.aside-head .score-num { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; color: var(--pink); }
+.aside-head .score-denom { font-size: 13px; color: var(--muted); }
+.aside-head .score-badge { padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.aside-head .score-badge.pass { background: rgba(52, 199, 89, 0.12); color: var(--success); }
+.aside-head .score-badge.good { background: rgba(52, 199, 89, 0.12); color: var(--success); }
+.aside-head .score-badge.warn { background: rgba(255, 149, 0, 0.12); color: var(--warn); }
+.aside-head .report-type { margin-top: 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+
+.aside-nav { padding: 20px 12px; }
+.aside-nav h6 { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: var(--faint); text-transform: uppercase; padding: 0 12px 8px; }
+.aside-nav a { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 4px; font-size: 13px; color: var(--muted); border-left: 2px solid transparent; margin: 2px 0; }
+.aside-nav a:hover { color: var(--text); background: var(--surface-2); text-decoration: none; }
+.aside-nav a.active { color: var(--pink); background: var(--surface-2); border-left-color: var(--pink); font-weight: 600; }
+.aside-nav a .count { font-size: 11px; color: var(--faint); background: var(--surface-2); padding: 1px 7px; border-radius: 999px; min-width: 22px; text-align: center; }
+.aside-nav a.active .count { background: var(--bg); color: var(--pink); }
+
+.aside-footer { margin-top: auto; padding: 20px 24px 0; border-top: 1px solid var(--border); font-size: 10px; color: var(--faint); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Main */
+.main { padding: 32px 32px 96px; max-width: var(--content-max); width: 100%; }
+.main h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 8px; }
+.main h2 { font-size: 16px; font-weight: 600; margin: 36px 0 14px; letter-spacing: -0.01em; }
+.main h3 { font-size: 14px; font-weight: 600; margin: 24px 0 10px; }
+.main p { color: var(--muted); margin: 8px 0 16px; max-width: 70ch; }
+.main .lead { color: var(--faint); font-size: 12px; margin-left: 8px; font-weight: 400; }
+
+/* Score hero */
+.score-hero {
+  display: flex; align-items: center; gap: 32px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 28px 32px; margin-bottom: 24px;
+}
+.score-hero .gauge { width: 96px; height: 96px; flex-shrink: 0; }
+.score-hero .gauge-ring { stroke-width: 8; fill: none; }
+.score-hero .gauge-bg { stroke: var(--border-bright); }
+.score-hero .gauge-fill { stroke: var(--success); stroke-linecap: round; transform: rotate(-90deg); transform-origin: center; }
+.score-hero .info .label { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.score-hero .info .num { font-size: 48px; font-weight: 700; letter-spacing: -0.03em; color: var(--text); margin-top: 4px; line-height: 1; }
+.score-hero .info .num small { font-size: 18px; color: var(--muted); font-weight: 400; margin-left: 6px; }
+.score-hero .info .sub { font-size: 12px; color: var(--muted); margin-top: 8px; }
+.score-hero .desc { flex: 1; color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 60ch; padding-left: 16px; border-left: 1px solid var(--border); margin-left: 8px; }
+@media (max-width: 900px) {
+  .score-hero { flex-direction: column; align-items: flex-start; }
+  .score-hero .desc { border-left: none; padding-left: 0; margin-left: 0; }
+}
+
+/* Risk file band tabs + expandable cards */
+.band-tabs { display: flex; gap: 8px; margin: 16px 0 20px; }
+.band-tab { background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; padding: 6px 14px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; transition: all .15s; }
+.band-tab:hover { color: var(--text); border-color: var(--border-bright); }
+.band-tab .count { background: var(--surface-2); color: var(--faint); padding: 1px 8px; border-radius: 999px; font-size: 10px; font-weight: 700; min-width: 18px; text-align: center; }
+.band-tab.active { background: var(--pink); color: #fff; border-color: var(--pink); }
+.band-tab.active .count { background: rgba(255,255,255,0.2); color: #fff; }
+
+.risk-card-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.risk-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.risk-card[open] { border-color: var(--pink); }
+.risk-card summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; cursor: pointer; list-style: none; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+.risk-card summary::-webkit-details-marker { display: none; }
+.risk-card summary::after { content: "▸"; color: var(--muted); transition: transform .15s; margin-left: 8px; flex-shrink: 0; }
+.risk-card[open] summary::after { transform: rotate(90deg); }
+.risk-card-path { color: var(--text); flex: 1; word-break: break-all; }
+.risk-card-meta { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.risk-card-meta strong { color: var(--text); font-weight: 600; }
+.risk-card-body { padding: 16px 18px 18px; border-top: 1px solid var(--border); }
+.risk-drivers { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.risk-drivers-label { font-weight: 600; color: var(--text); }
+.risk-drivers strong { color: var(--text); font-weight: 600; }
+.risk-findings-label { font-size: 10px; letter-spacing: 0.12em; color: var(--faint); font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.risk-findings { display: flex; flex-direction: column; gap: 10px; }
+.risk-finding { border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; font-size: 13px; }
+.risk-finding-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.sev-pill { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 3px; text-transform: uppercase; }
+.sev-pill.high { background: rgba(255, 45, 120, 0.16); color: var(--pink); }
+.sev-pill.med { background: rgba(255, 149, 0, 0.16); color: var(--warn); }
+.sev-pill.low { background: rgba(52, 199, 89, 0.12); color: var(--success); }
+.rule-id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); font-size: 12px; }
+.effort-chip { background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); font-size: 11px; padding: 1px 7px; border-radius: 3px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.risk-finding-loc { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--text); margin-bottom: 6px; word-break: break-all; }
+.finding-fix, .finding-why { border-left: 2px solid var(--success); padding-left: 10px; margin-top: 6px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.finding-why { border-left-color: var(--border-bright); }
+.finding-fix strong, .finding-why strong { color: var(--text); font-weight: 600; }
+
+/* KPI grid */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.kpi .label { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.kpi .value { font-size: 22px; font-weight: 600; color: var(--text); margin-top: 4px; letter-spacing: -0.02em; }
+.kpi.crit .value { color: var(--error); }
+.kpi.high .value { color: var(--warn); }
+.kpi.med .value { color: var(--med-sev); }
+.kpi.low .value { color: var(--success); }
+
+/* Bars */
+.bars { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; }
+.bar-row { display: grid; grid-template-columns: 160px 40px 1fr 40px; align-items: center; gap: 12px; padding: 8px 0; }
+.bar-row + .bar-row { border-top: 1px solid var(--border); }
+.bar-row .name { font-size: 13px; color: var(--text); }
+.bar-row .score { font-size: 13px; color: var(--text); font-weight: 600; font-family: var(--mono); }
+.bar-row .track { height: 6px; background: var(--border-bright); border-radius: 3px; overflow: hidden; }
+.bar-row .fill { height: 100%; background: var(--success); border-radius: 3px; }
+.bar-row .fill.warn { background: var(--warn); }
+.bar-row .fill.med { background: var(--med-sev); }
+.bar-row .weight { font-size: 11px; color: var(--muted); text-align: right; }
+
+/* Findings + scanners */
+.scanner-list { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.scanner-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.scanner-row:last-child { border-bottom: 0; }
+.scanner-row .left { display: flex; align-items: center; gap: 14px; }
+.scanner-row .name { font-size: 13px; color: var(--text); font-weight: 500; }
+.scanner-row .count { font-size: 11px; color: var(--muted); background: var(--surface-2); padding: 2px 8px; border-radius: 999px; }
+.badge { padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.badge.clean { background: rgba(52, 199, 89, 0.12); color: var(--success); }
+.badge.found { background: rgba(255, 149, 0, 0.12); color: var(--warn); }
+.badge.pass { background: rgba(52, 199, 89, 0.12); color: var(--success); }
+
+/* Tables */
+.findings-table { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; border-collapse: separate; border-spacing: 0; overflow: hidden; }
+.findings-table th { text-align: left; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.findings-table td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--border); color: var(--text); }
+.findings-table tr:last-child td { border-bottom: 0; }
+.findings-table .pill { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.findings-table .pill.low { background: rgba(52, 199, 89, 0.12); color: var(--success); }
+.findings-table .pill.med { background: rgba(255, 204, 0, 0.12); color: var(--med-sev); }
+.findings-table .pill.high { background: rgba(255, 149, 0, 0.12); color: var(--warn); }
+.findings-table code { background: var(--surface-2); padding: 1px 6px; border-radius: 3px; color: var(--muted); }
+
+/* Doc grid */
+.doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.doc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; }
+.doc-card .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.doc-card .title { font-size: 13px; font-weight: 600; color: var(--text); }
+.doc-card .status { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.doc-card .status.ok { color: var(--success); }
+.doc-card .status.missing { color: var(--error); }
+.doc-card .type { font-size: 10px; color: var(--faint); font-family: var(--mono); border: 1px solid var(--border); padding: 1px 6px; border-radius: 3px; display: inline-block; margin-bottom: 8px; }
+.doc-card .desc { font-size: 12px; color: var(--muted); line-height: 1.45; }
+
+/* Mobile */
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .aside{position:static;height:auto;max-height:none;border-right:none;border-bottom:1px solid var(--border)}
+}
+
+/* Logo + client label in aside (for white-label reports) */
+.logo-row{padding:14px 24px 0}
+.aside-logo{max-width:80%;max-height:48px;height:auto;width:auto;display:block}
+.client-label{padding:8px 24px 0;font-size:11px;color:var(--muted)}
+.client-label strong{color:var(--text);font-weight:600}
+.target-link{color:inherit;text-decoration:none}
+.target-link:hover{text-decoration:underline}
+
+/* Mockup banner */
+.mockup-banner { background: rgba(255, 149, 0, 0.08); border-bottom: 1px solid rgba(255, 149, 0, 0.2); padding: 8px 24px; font-size: 12px; color: var(--warn); text-align: center; letter-spacing: 0.04em; }
+.mockup-banner strong { color: var(--text); }
+.mockup-banner a { color: var(--warn); text-decoration: underline; }
+</style>
+
+</head>
+<body>
+<div class="shell">
+  <aside class="aside">
+    
+    
+    <div class="pill-row"><span class="report-pill">API REPORT</span></div>
+    <div class="aside-head">
+      <div class="product">ApiGate Report<span class="tier-pill warn">FAIL</span></div>
+      <div class="target">realworld-express</div>
+      <div class="score-line">
+        <span class="score-num">90</span>
+        <span class="score-denom">/ 100</span>
+        <span class="score-badge warn">FAIL</span>
+      </div>
+      <div class="report-type">API · STRONG</div>
+    </div>
+    <nav class="aside-nav">
+      <h6>Report</h6>
+      <a href="#overview" class="active">Overview <span class="count">·</span></a>
+      <a href="#rubrics">Rubrics <span class="count">5</span></a>
+      <a href="#endpoints">Endpoints <span class="count">20</span></a>
+      <a href="#limitations">Limitations <span class="count">·</span></a>
+    </nav>
+    <div class="aside-footer">API Surface Report · v0.1.0 · 2026-05-19T00:00:00.000Z</div>
+  </aside>
+
+  <main class="main">
+
+    <section id="overview">
+      <h1>API surface <span class="lead">20 endpoints · express</span></h1>
+      <div class="score-hero">
+  <svg class="gauge" viewBox="0 0 100 100">
+    <circle class="gauge-ring gauge-bg" cx="50" cy="50" r="42" />
+    <circle class="gauge-ring gauge-fill" cx="50" cy="50" r="42"
+      stroke-dasharray="263.9" stroke-dashoffset="26.39" style="stroke: var(--warn)" />
+  </svg>
+  <div class="info">
+    <div class="label">Headline</div>
+    <div class="num">90<small>/ 100  STRONG</small></div>
+    <div class="sub">17 guarded · 3 open · 0 unknown · status FAIL</div>
+  </div>
+  <div class="desc">ApiGate inventories every HTTP endpoint, classifies auth posture (GUARDED / OPEN / UNKNOWN), and diffs the surface against any declared OpenAPI spec. 100% static — no network, no credentials, deterministic.</div>
+</div>
+      <div class="kpis"><div class="kpi"><div class="label">Endpoints</div><div class="value">20</div></div><div class="kpi low"><div class="label">Guarded</div><div class="value">17</div></div><div class="kpi high"><div class="label">Open</div><div class="value">3</div></div><div class="kpi med"><div class="label">Unknown</div><div class="value">0</div></div><div class="kpi low"><div class="label">Shadow</div><div class="value">0</div></div><div class="kpi low"><div class="label">Stale</div><div class="value">0</div></div></div>
+    </section>
+
+    <section id="rubrics">
+      <h2>Rubrics <span class="lead">five 0–100 scores · headline = arithmetic mean of non-null rubrics</span></h2>
+      <div class="bars"><div class="bar-row"><span class="name">Inventory Resolved</span><span class="score">100</span><div class="track"><div class="fill" style="width: 100%"></div></div><span class="weight"></span></div><div class="bar-row"><span class="name">Auth Coverage</span><span class="score">85</span><div class="track"><div class="fill" style="width: 85%"></div></div><span class="weight"></span></div><div class="bar-row"><span class="name">Open Endpoint Risk</span><span class="score">73</span><div class="track"><div class="fill med" style="width: 73%"></div></div><span class="weight"></span></div><div class="bar-row"><span class="name">Spec Drift</span><span class="score">n/a</span><div class="track"><div class="fill med" style="width: 0%"></div></div><span class="weight">no spec</span></div><div class="bar-row"><span class="name">Determinism</span><span class="score">100</span><div class="track"><div class="fill" style="width: 100%"></div></div><span class="weight"></span></div></div>
+    </section>
+
+    <section id="endpoints">
+      <h2>Endpoint inventory <span class="lead">20 discovered · sorted method/path</span></h2>
+      <table class="findings-table"><thead><tr><th>Method</th><th>Path</th><th>Framework</th><th>Posture</th><th>Location</th></tr></thead><tbody><tr><td><span class="pill high">DELETE</span></td><td><code>/articles/:slug</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:129</code></td></tr><tr><td><span class="pill high">DELETE</span></td><td><code>/articles/:slug/comments/:id</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:190</code></td></tr><tr><td><span class="pill high">DELETE</span></td><td><code>/articles/:slug/favorite</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:230</code></td></tr><tr><td><span class="pill high">DELETE</span></td><td><code>/profiles/:username/follow</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/profile/profile.controller.ts:54</code></td></tr><tr><td><span class="pill low">GET</span></td><td><code>/</code></td><td>express</td><td><span class="pill high">OPEN</span></td><td><code>src/main.ts:21</code></td></tr><tr><td><span class="pill low">GET</span></td><td><code>/articles</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:30</code></td></tr><tr><td><span class="pill low">GET</span></td><td><code>/articles/:slug</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:87</code></td></tr><tr><td><span class="pill low">GET</span></td><td><code>/articles/:slug/comments</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:149</code></td></tr><tr><td><span class="pill low">GET</span></td><td><code>/articles/feed</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:45</code></td></tr><tr><td><span class="pill low">GET</span></td><td><code>/profiles/:username</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/profile/profile.controller.ts:14</code></td></tr><tr><td><span class="pill low">GET</span></td><td><code>/tags</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/tag/tag.controller.ts:13</code></td></tr><tr><td><span class="pill low">GET</span></td><td><code>/user</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/auth/auth.controller.ts:45</code></td></tr><tr><td><span class="pill high">POST</span></td><td><code>/articles</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:71</code></td></tr><tr><td><span class="pill high">POST</span></td><td><code>/articles/:slug/comments</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:170</code></td></tr><tr><td><span class="pill high">POST</span></td><td><code>/articles/:slug/favorite</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:210</code></td></tr><tr><td><span class="pill high">POST</span></td><td><code>/profiles/:username/follow</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/profile/profile.controller.ts:34</code></td></tr><tr><td><span class="pill high">POST</span></td><td><code>/users</code></td><td>express</td><td><span class="pill high">OPEN</span></td><td><code>src/app/routes/auth/auth.controller.ts:14</code></td></tr><tr><td><span class="pill high">POST</span></td><td><code>/users/login</code></td><td>express</td><td><span class="pill high">OPEN</span></td><td><code>src/app/routes/auth/auth.controller.ts:30</code></td></tr><tr><td><span class="pill high">PUT</span></td><td><code>/articles/:slug</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/article/article.controller.ts:110</code></td></tr><tr><td><span class="pill high">PUT</span></td><td><code>/user</code></td><td>express</td><td><span class="pill low">GUARDED</span></td><td><code>src/app/routes/auth/auth.controller.ts:61</code></td></tr></tbody></table>
+    </section>
+
+    
+
+    <section id="limitations" style="padding:18px 20px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-top:12px">
+    <h2 style="margin-top:0">What this does NOT prove</h2>
+    <p style="color:var(--muted);font-size:13px;margin-top:4px">
+      ApiGate is a deterministic, static surface auditor. The points below are not footnotes — they are the contract of what a static report can and cannot tell you. Read them every time.
+    </p>
+    <ol style="color:var(--text);font-size:13px;line-height:1.7;padding-left:20px;margin-top:12px"><li style="margin-bottom:8px">Static analysis cannot verify runtime authorization (BOLA / object-level access). ApiGate only inspects declared auth posture, not the correctness of the auth middleware itself.</li><li style="margin-bottom:8px">An endpoint with a declared auth identifier in its middleware chain is classified GUARDED — the middleware may still be misconfigured, bypassable, or insecure at runtime.</li><li style="margin-bottom:8px">Routes mounted via dynamic strings (computed prefixes, runtime registration, factory functions) are reported as UNRESOLVED rather than guessed.</li><li style="margin-bottom:8px">ApiGate makes ZERO network calls. It does not send code, telemetry, or scan artifacts anywhere. Reports are written to local files only.</li></ol>
+  </section>
+  
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+{
+  "name": "@stelnyx/apigate",
+  "version": "0.1.0",
+  "description": "Tiny static API surface audit — enumerates HTTP endpoints, classifies auth posture, diffs against OpenAPI specs. Zero network, deterministic, one report.",
+  "type": "module",
+  "bin": {
+    "apigate": "apigate.js"
+  },
+  "main": "apigate.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "apigate.js",
+    "lib/",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    ".apigate.config.example.json"
+  ],
+  "keywords": [
+    "api",
+    "audit",
+    "static-analysis",
+    "openapi",
+    "swagger",
+    "express",
+    "fastify",
+    "nestjs",
+    "auth",
+    "ci",
+    "cd",
+    "gate",
+    "devsecops"
+  ],
+  "author": "Stelnyx",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stelnyx/ApiGate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Stelnyx/ApiGate/issues"
+  },
+  "homepage": "https://github.com/Stelnyx/ApiGate#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "test": "node test/parser-express.mjs && node test/parser-fastify.mjs && node test/parser-nest.mjs && node test/parser-openapi.mjs && node test/auth.mjs && node test/drift.mjs && node test/score.mjs && node test/config.mjs && node test/golden-apigate.mjs && node test/determinism.mjs && node test/report-theme-contract.mjs",
+    "test:parsers": "node test/parser-express.mjs && node test/parser-fastify.mjs && node test/parser-nest.mjs && node test/parser-openapi.mjs",
+    "test:auth": "node test/auth.mjs",
+    "test:drift": "node test/drift.mjs",
+    "test:score": "node test/score.mjs",
+    "test:config": "node test/config.mjs",
+    "test:golden": "node test/golden-apigate.mjs",
+    "test:determinism": "node test/determinism.mjs",
+    "test:contract": "node test/report-theme-contract.mjs",
+    "lint": "eslint .",
+    "scan": "node apigate.js ."
+  },
+  "dependencies": {
+    "@stelnyx/report-theme": "^0.1.0",
+    "acorn": "^8.12.0",
+    "acorn-walk": "^8.3.0",
+    "yaml": "^2.5.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "eslint": "^9.27.0",
+    "globals": "^16.1.0"
+  }
+}
