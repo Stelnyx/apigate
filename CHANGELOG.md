@@ -6,6 +6,65 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-05-19
+
+### Added
+- **Intentional-public heuristic** (`lib/heuristics.mjs`). A deterministic
+  exact-match pattern list flags common public-auth endpoints
+  (login / signup / refresh / health / OAuth callbacks) as
+  `intentionalPublic: true`. Default behavior:
+    - Endpoints stay in the inventory and keep their declared posture.
+    - They are excluded from the default exit-1 gate.
+    - They are excluded from the Auth Coverage denominator.
+    - They are tagged `PUBLIC` next to their posture in the HTML report.
+  Configurable via `.apigate.config.json`: `publicAuthPatterns` (override
+  the list, set `[]` to disable) and `failOn.intentionalPublic` (set
+  `true` for strict / compliance mode — every open endpoint counts).
+- A new line in the printed **"What this does NOT prove"** section
+  discloses the heuristic and notes it can be wrong both ways.
+- `test/heuristics.mjs` — pattern matching, override behavior, disable
+  behavior, default list size.
+
+### Changed
+- **Auth Coverage formula.**
+    - Before: `100 × guarded / (guarded + open)` — UNKNOWNs silently
+      excluded from the denominator, which inflated the score.
+    - After:  `100 × guarded / (guarded + open + unknown)` — UNKNOWNs
+      count against coverage. Intentional-public endpoints are excluded
+      from the denominator because they're declared public-by-design.
+    - Rationale: an UNKNOWN endpoint is not a confirmed guard, and
+      hiding it from the score contradicts the "static analysis cannot
+      prove runtime authz" framing of the report.
+    - Golden + score test expectations updated; the RealWorld sample
+      moves to 100 / 100 because every open endpoint is now matched by
+      the public-auth heuristic.
+- **Report artifact renamed**: `apigate-v7-report.json` →
+  `apigate-report.json` everywhere (writer, README, JSON schema docs,
+  CI examples, sample, gitignore). The `v7` suffix had no provenance —
+  killed the phantom.
+- **OPEN-CORE.md** clarified: paid tiers may add convenience, scale,
+  persistence, branding, or workflow on top of findings. They cannot
+  redact or gate a finding (endpoint, posture, drift, disclosure) the
+  OSS report would otherwise show.
+- **RealWorld sample report** regenerated:
+  20 endpoints — 17 guarded · 3 open · 0 unknown · 3 intentional-public.
+  Headline 100 / 100 STRONG. STATUS: PASS (exit 0) by default.
+  Strict mode still flags the 3 auth endpoints.
+- README rubric table updated to match the new Auth Coverage formula
+  exactly. New "Heuristic posture: public-by-design" section explains
+  the contract and the strict opt-in path.
+
+### Fixed
+- `parsers/nest.mjs`: `@Controller({ path: 'x', version: '1' })` and
+  `@Controller([...])` forms now resolve. (Dogfood surface against
+  cirrus/slstudio production NestJS went from 26 / 423 resolved to
+  423 / 423 after this fix; landed as the last commit of 0.1.0 and
+  carried into 0.1.1.)
+
+### Removed
+- Committed `.a5c/cache/compression` agent-tooling artifact and added
+  `.a5c/` to `.gitignore`. No build depends on it.
+
 ## [0.1.0] - 2026-05-19
 
 ### Added

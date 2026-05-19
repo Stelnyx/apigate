@@ -10,6 +10,7 @@ import { classifyAll } from "./lib/auth.mjs";
 import { diff } from "./lib/drift.mjs";
 import { computeScore, SCORE_VERSION, bandFromScore } from "./lib/score.mjs";
 import { renderHtml, LIMITATIONS } from "./lib/report.mjs";
+import { annotateIntentionalPublic, DEFAULT_PUBLIC_AUTH_PATTERNS } from "./lib/heuristics.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
@@ -53,7 +54,7 @@ Exit codes:
   2  Invalid target or CLI error
 
 Output:
-  apigate-v7-report.json    Machine-readable JSON report
+  apigate-report.json    Machine-readable JSON report
   <repo-name>.html          Self-contained HTML report (via @stelnyx/report-theme)
 
 ApiGate makes zero network calls. No code or telemetry leaves the machine.
@@ -107,8 +108,9 @@ console.log("Mode:   STATIC");
 console.log("────────────────────────────────");
 
 const inventory = buildInventory(target, config);
-const codeClassified = classifyAll(inventory.code, config);
-const specClassified = classifyAll(inventory.spec, config);
+const patterns = config.publicAuthPatterns ?? DEFAULT_PUBLIC_AUTH_PATTERNS;
+const codeClassified = annotateIntentionalPublic(classifyAll(inventory.code, config), patterns);
+const specClassified = annotateIntentionalPublic(classifyAll(inventory.spec, config), patterns);
 const driftResult = inventory.spec.length > 0
   ? diff(codeClassified, specClassified)
   : { shadow: [], stale: [], authDrift: [] };
@@ -140,7 +142,7 @@ const report = {
   limitations: [...LIMITATIONS]
 };
 
-const jsonFile = path.join(outputDir, "apigate-v7-report.json");
+const jsonFile = path.join(outputDir, "apigate-report.json");
 const htmlFile = path.join(outputDir, `${repoName}.html`);
 
 if (FORMAT_SET.has("json")) {
@@ -171,7 +173,7 @@ for (const [key, val] of Object.entries(rubrics)) {
 }
 console.log("────────────────────────────────");
 console.log("STATUS:    ", status);
-console.log("ENDPOINTS: ", summary.endpoints, ` (${summary.guarded} guarded, ${summary.open} open, ${summary.unknown} unknown)`);
+console.log("ENDPOINTS: ", summary.endpoints, ` (${summary.guarded} guarded, ${summary.open} open, ${summary.unknown} unknown, ${summary.intentionalPublic} intentional-public)`);
 if (inventory.spec.length > 0) {
   console.log("DRIFT:     ", `${driftResult.shadow.length} shadow, ${driftResult.stale.length} stale, ${driftResult.authDrift.length} auth-drift`);
 }
@@ -199,6 +201,7 @@ function summarize(code, spec, drift) {
     guarded: 0,
     open: 0,
     unknown: 0,
+    intentionalPublic: 0,
     specEndpoints: spec.length,
     shadow: drift.shadow?.length || 0,
     stale: drift.stale?.length || 0,
@@ -206,6 +209,7 @@ function summarize(code, spec, drift) {
   };
   for (const e of code) {
     if (e.resolved === false) counts.unresolved++; else counts.resolved++;
+    if (e.intentionalPublic) counts.intentionalPublic++;
     if (e.posture === "GUARDED") counts.guarded++;
     else if (e.posture === "OPEN") counts.open++;
     else counts.unknown++;
@@ -216,6 +220,7 @@ function summarize(code, spec, drift) {
 function resolveStatus(code, drift, failOn) {
   for (const e of code) {
     if (e.posture !== "OPEN") continue;
+    if (e.intentionalPublic && !failOn.intentionalPublic) continue;
     const m = String(e.method || "").toUpperCase();
     const write = m === "POST" || m === "PUT" || m === "PATCH" || m === "DELETE";
     if (write && failOn.openWriteMethods) return "FAIL";

@@ -4,12 +4,12 @@
   "timestamp": "2026-05-19T00:00:00.000Z",
   "target": "realworld-express",
   "mode": "static",
-  "status": "FAIL",
-  "headlineScore": 90,
+  "status": "PASS",
+  "headlineScore": 100,
   "rubrics": {
     "inventoryResolved": 100,
-    "authCoverage": 85,
-    "openEndpointRisk": 73,
+    "authCoverage": 100,
+    "openEndpointRisk": 100,
     "specDrift": null,
     "determinism": 100
   },
@@ -20,6 +20,7 @@
     "guarded": 17,
     "open": 3,
     "unknown": 0,
+    "intentionalPublic": 3,
     "specEndpoints": 0,
     "shadow": 0,
     "stale": 0,
@@ -43,7 +44,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "DELETE",
@@ -61,7 +63,8 @@
         "required"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "DELETE",
@@ -81,7 +84,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "DELETE",
@@ -101,7 +105,8 @@
         "username"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "GET",
@@ -121,7 +126,8 @@
         "status"
       ],
       "unresolvedReason": null,
-      "posture": "OPEN"
+      "posture": "OPEN",
+      "intentionalPublic": true
     },
     {
       "method": "GET",
@@ -140,7 +146,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "GET",
@@ -160,7 +167,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "GET",
@@ -180,7 +188,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "GET",
@@ -199,7 +208,8 @@
         "result"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "GET",
@@ -219,7 +229,8 @@
         "username"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "GET",
@@ -237,7 +248,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "GET",
@@ -254,7 +266,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "POST",
@@ -273,7 +286,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "POST",
@@ -294,7 +308,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "POST",
@@ -314,7 +329,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "POST",
@@ -334,7 +350,8 @@
         "username"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "POST",
@@ -350,7 +367,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "OPEN"
+      "posture": "OPEN",
+      "intentionalPublic": true
     },
     {
       "method": "POST",
@@ -365,7 +383,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "OPEN"
+      "posture": "OPEN",
+      "intentionalPublic": true
     },
     {
       "method": "PUT",
@@ -386,7 +405,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     },
     {
       "method": "PUT",
@@ -404,7 +424,8 @@
         "user"
       ],
       "unresolvedReason": null,
-      "posture": "GUARDED"
+      "posture": "GUARDED",
+      "intentionalPublic": false
     }
   ],
   "drift": {
@@ -421,6 +442,7 @@
     "Static analysis cannot verify runtime authorization (BOLA / object-level access). ApiGate only inspects declared auth posture, not the correctness of the auth middleware itself.",
     "An endpoint with a declared auth identifier in its middleware chain is classified GUARDED — the middleware may still be misconfigured, bypassable, or insecure at runtime.",
     "Routes mounted via dynamic strings (computed prefixes, runtime registration, factory functions) are reported as UNRESOLVED rather than guessed.",
+    "ApiGate uses a built-in heuristic pattern list to mark common public-auth paths (login / signup / refresh / health / OAuth callbacks) as INTENTIONAL-PUBLIC. The heuristic is deterministic and configurable but can be wrong both ways — review the marked endpoints and override `publicAuthPatterns` in `.apigate.config.json` if your project disagrees.",
     "ApiGate makes ZERO network calls. It does not send code, telemetry, or scan artifacts anywhere. Reports are written to local files only."
   ]
 }
