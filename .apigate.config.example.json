@@ -17,11 +17,15 @@
   "_auth": "Identifier names that mean 'this endpoint is guarded' when present in the middleware/decorator chain. Add your project's custom auth helpers here. ApiGate cannot inspect what these identifiers DO at runtime — only their declared presence.",
 
   "failOn": {
-    "openWriteMethods": true,
-    "openReadMethods":  false,
-    "drift":            false
+    "openWriteMethods":  true,
+    "openReadMethods":   false,
+    "drift":             false,
+    "intentionalPublic": false
   },
-  "_failOn": "Exit-code policy. openWriteMethods=true means any unauthenticated POST/PUT/PATCH/DELETE causes exit 1 (recommended). openReadMethods=true also fails on unauthenticated GET (strict — will trip on public health endpoints). drift=true also fails on any spec-drift item.",
+  "_failOn": "Exit-code policy. openWriteMethods=true means an unauthenticated POST/PUT/PATCH/DELETE causes exit 1 (recommended). openReadMethods=true also fails on unauthenticated GET (strict). drift=true also fails on any spec-drift item. intentionalPublic=true makes the exit-1 gate ignore the public-auth heuristic — i.e. EVERY open endpoint fails (very strict; for compliance audits).",
+
+  "publicAuthPatterns": null,
+  "_publicAuthPatterns": "Override the built-in public-auth heuristic. null (default) uses DEFAULT_PUBLIC_AUTH_PATTERNS from lib/heuristics.mjs — common login/signup/refresh/health paths. Provide an array of { method, path } pairs to replace entirely, or an empty array [] to disable the heuristic. The exact-match list is deterministic: paths are normalized (`/users/:id` ↔ `/users/{id}` ↔ `/users/<id>`) before comparison.",
 
   "excludePaths": [
     "node_modules/**",

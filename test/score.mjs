@@ -16,11 +16,17 @@ t.test("inventoryResolved: 80 when 4/5 resolved", () =>
     { resolved: true }, { resolved: true }, { resolved: true }, { resolved: true }, { resolved: false }
   ]), 80));
 
-t.test("authCoverage: 100 when none counted", () =>
-  assertEq(authCoverage([{ posture: "UNKNOWN" }]), 100));
+t.test("authCoverage: 100 when no endpoints at all", () =>
+  assertEq(authCoverage([]), 100));
 
-t.test("authCoverage: 50 when 1/2 guarded", () =>
+t.test("authCoverage: 0 when only UNKNOWN endpoints (UNKNOWN counts against)", () =>
+  assertEq(authCoverage([{ posture: "UNKNOWN" }]), 0));
+
+t.test("authCoverage: 50 when 1/2 guarded (UNKNOWN absent)", () =>
   assertEq(authCoverage([{ posture: "GUARDED" }, { posture: "OPEN" }]), 50));
+
+t.test("authCoverage: 33 when 1 guarded / 1 open / 1 unknown", () =>
+  assertEq(authCoverage([{ posture: "GUARDED" }, { posture: "OPEN" }, { posture: "UNKNOWN" }]), 33));
 
 t.test("openEndpointRisk: write methods -12 each", () => {
   const eps = [
@@ -66,8 +72,8 @@ t.test("computeScore: spec present → drift included in mean", () => {
     drift: { shadow: [1], stale: [], authDrift: [] },
     specPresent: true
   });
-  // inventoryResolved=100, authCoverage=0, openEndpointRisk=88, specDrift=95, determinism=100
-  // mean = (100 + 0 + 88 + 95 + 100)/5 = 76.6 → 77
+  // inventoryResolved=100, authCoverage=0 (1 OPEN / (0+1+0)), openEndpointRisk=88,
+  // specDrift=95, determinism=100  →  mean = (100+0+88+95+100)/5 = 76.6 → 77
   assertEq(r.headline, 77);
 });
 

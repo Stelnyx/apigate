@@ -75,8 +75,8 @@ t.test("authDrift on POST /billing/charge (code open, spec absent → no entry)"
 t.test("rubric: inventoryResolved = round(6/7 * 100) = 86", () =>
   assertEq(score.rubrics.inventoryResolved, 86));
 
-t.test("rubric: authCoverage = round(4/6 * 100) = 67", () =>
-  assertEq(score.rubrics.authCoverage, 67));
+t.test("rubric: authCoverage = round(4/7 * 100) = 57 (UNKNOWN in denom)", () =>
+  assertEq(score.rubrics.authCoverage, 57));
 
 t.test("rubric: openEndpointRisk = 100 - 12 (POST open) - 3 (GET open) = 85", () =>
   assertEq(score.rubrics.openEndpointRisk, 85));
@@ -89,7 +89,7 @@ t.test("rubric: specDrift accounts for 1 stale + 1 shadow", () => {
 t.test("rubric: determinism = 100", () =>
   assertEq(score.rubrics.determinism, 100));
 
-t.test("headline = round mean(86, 67, 85, 90, 100) = 86", () =>
-  assertEq(score.headline, 86));
+t.test("headline = round mean(86, 57, 85, 90, 100) = 84", () =>
+  assertEq(score.headline, 84));
 
 t.finish();

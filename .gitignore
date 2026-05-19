@@ -1,11 +1,14 @@
 node_modules
 
 # In-place scan artifacts at repo root (samples/** is tracked explicitly)
-/apigate-v7-report.json
+/apigate-report.json
 /*.html
 
+# Agent tooling state — never commit
+/.a5c/
+
 # Test fixture scan artifacts (regenerated on each run)
-test/fixtures/**/apigate-v7-report.json
+test/fixtures/**/apigate-report.json
 test/fixtures/**/*.html
 
 # Local agent state

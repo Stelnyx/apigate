@@ -53,14 +53,14 @@ Headline:  86 / 100   █████████████████░░�
 | Rubric              | What it measures                                                                                       |
 |---------------------|--------------------------------------------------------------------------------------------------------|
 | **Inventory Resolved** | `100 × resolved / total`. Routes mounted via dynamic prefixes drag this down — never silently dropped. |
-| **Auth Coverage**      | `100 × guarded / (guarded + open)`. UNKNOWNs excluded from the denominator.                            |
+| **Auth Coverage**      | `100 × guarded / (guarded + open + unknown)`. UNKNOWN counts against — a route we couldn't classify is not a confirmed guard. Intentional-public endpoints (login/signup/refresh/health/...) are excluded — they're declared public-by-design, not a coverage gap. |
 | **Open Endpoint Risk** | Starts at 100. Open write methods (POST/PUT/PATCH/DELETE) `-12` each; open GETs `-3` each. Floor 0.    |
 | **Spec Drift**         | Starts at 100. Shadow `-5`, stale `-5`, auth-drift `-10` each. `null` (excluded from mean) when no spec found. |
 | **Determinism**        | Locked at 100 in v0.1. The byte-equality test is what actually enforces it.                            |
 
 Bands: `STRONG ≥ 85`, `GOOD ≥ 70`, `MIXED ≥ 50`, `WEAK < 50`. Same bands as SecGate / LuxFaber / LuxScope.
 
-The binary gate (exit 1 on open write methods, configurable) is independent of the score. `headlineScore` + `rubrics` are written to `apigate-v7-report.json` for CI dashboards and trend tracking.
+The binary gate (exit 1 on open write methods, configurable) is independent of the score. `headlineScore` + `rubrics` are written to `apigate-report.json` for CI dashboards and trend tracking.
 
 ---
 
@@ -114,9 +114,36 @@ The honesty wedge of ApiGate. The report renders this section in every run, neve
 1. **Static analysis cannot verify runtime authorization (BOLA / object-level access).** ApiGate only inspects declared auth posture, not the correctness of the auth middleware itself.
 2. An endpoint with a declared auth identifier in its middleware chain is classified `GUARDED` — the middleware may still be misconfigured, bypassable, or insecure at runtime.
 3. Routes mounted via dynamic strings (computed prefixes, runtime registration, factory functions) are reported as `UNRESOLVED` rather than guessed.
-4. ApiGate makes zero network calls. It does not send code, telemetry, or scan artifacts anywhere.
+4. ApiGate uses a built-in heuristic pattern list to mark common public-auth paths (login / signup / refresh / health / OAuth callbacks) as **intentional-public**. The heuristic is deterministic and configurable but can be wrong both ways — review the marked endpoints and override `publicAuthPatterns` in `.apigate.config.json` if your project disagrees.
+5. ApiGate makes zero network calls. It does not send code, telemetry, or scan artifacts anywhere.
 
 If you need runtime authorization testing (BOLA, IDOR, broken object-level auth), use a dynamic scanner. ApiGate complements DAST tooling; it does not replace it.
+
+### Heuristic posture: public-by-design
+
+Most APIs intentionally expose a handful of unauthenticated endpoints — sign-up, login, refresh, password reset, OAuth callbacks, health probes. Without help, ApiGate's `openWriteMethods: true` default would flag every one of these as FAIL on first run.
+
+ApiGate ships a deterministic, exact-match list of these patterns (see `lib/heuristics.mjs` → `DEFAULT_PUBLIC_AUTH_PATTERNS`). Endpoints matched by the list:
+
+- **Stay in the inventory** — they're never hidden.
+- **Keep their declared posture** (OPEN / UNKNOWN) — the heuristic does not lie about what the code says.
+- **Are excluded from the default exit-1 gate.**
+- **Are excluded from the Auth Coverage denominator.**
+- Are tagged `PUBLIC` (in addition to their posture) in the HTML report.
+
+Override the pattern list:
+
+```json
+{
+  "publicAuthPatterns": [
+    { "method": "POST", "path": "/api/v2/auth/login" },
+    { "method": "GET",  "path": "/api/v2/auth/google/callback" }
+  ]
+}
+```
+
+`[]` disables the heuristic entirely (every open endpoint counts).
+`failOn.intentionalPublic: true` keeps the heuristic for the report but makes those endpoints fail the gate (strict / compliance mode).
 
 ---
 
@@ -198,9 +225,10 @@ Create `.apigate.config.json` in your scan target directory. All fields optional
     "nest":     ["UseGuards", "AuthGuard", "JwtAuthGuard"]
   },
   "failOn": {
-    "openWriteMethods": true,
-    "openReadMethods":  false,
-    "drift":            false
+    "openWriteMethods":  true,
+    "openReadMethods":   false,
+    "drift":             false,
+    "intentionalPublic": false
   },
   "excludePaths": ["node_modules/**", "dist/**", "**/*.test.*"]
 }
@@ -242,18 +270,20 @@ ApiGate does **not** inspect what these identifiers do at runtime. Their declare
 A live sample lives at [`samples/realworld-express/`](samples/realworld-express/) — ApiGate's report for the canonical [RealWorld backend](https://github.com/gothinkster/node-express-realworld-example-app) (vendored at a pinned commit under `test/fixtures/realworld-express/`).
 
 ```
-Headline: 90 / 100  STRONG       rubric v1
+Headline: 100 / 100  STRONG       rubric v1
   Inventory       100 / 100
-  Auth Coverage    85 / 100
-  Open Risk        73 / 100
+  Auth Coverage   100 / 100
+  Open Risk       100 / 100
   Spec Drift      n/a / 100
   Determinism     100 / 100
 
-20 endpoints discovered (17 guarded · 3 open · 0 unknown)
+20 endpoints discovered (17 guarded · 3 open · 0 unknown · 3 intentional-public)
+STATUS: PASS
 ```
 
-The 3 open endpoints are sign-up / login / refresh — intentionally public.
-ApiGate fails the gate on them under the default `openWriteMethods: true` policy; the project would either accept the FAIL as design intent or relax the policy.
+The 3 open endpoints are sign-up / login / status — all matched by the built-in **intentional-public heuristic** (see [Heuristic posture](#heuristic-posture-public-by-design)), so they're listed in the report but don't trip the default exit-1 gate.
+
+**Strict mode** (`failOn.intentionalPublic: true` in `.apigate.config.json`) treats the heuristic as advisory and fails on those endpoints too — the same run produces STATUS: FAIL and surfaces sign-up / login as findings. Useful for compliance audits where every open route must be justified.
 
 ---
 
@@ -278,7 +308,7 @@ ApiGate fails the gate on them under the default `openWriteMethods: true` policy
   with:
     name: apigate-report
     path: |
-      apigate-v7-report.json
+      apigate-report.json
       *.html
 ```
 
@@ -288,14 +318,14 @@ ApiGate fails the gate on them under the default `openWriteMethods: true` policy
 
 Each run writes:
 
-- **`apigate-v7-report.json`** — machine-readable, schema below
+- **`apigate-report.json`** — machine-readable, schema below
 - **`<repo-name>.html`** — self-contained HTML report (rendered through `@stelnyx/report-theme`)
 
 ### JSON schema
 
 ```json
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "rubricVersion": "v1",
   "timestamp": "ISO 8601",
   "target": "/absolute/path or repo basename",
@@ -323,6 +353,7 @@ Each run writes:
       "framework": "express | fastify | nest | openapi",
       "resolved": true,
       "posture":  "GUARDED | OPEN | UNKNOWN",
+      "intentionalPublic": false,
       "authMarkers": ["requireAuth"],
       "unresolvedReason": null
     }
