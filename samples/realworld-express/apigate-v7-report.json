@@ -1,0 +1,426 @@
+{
+  "version": "0.1.0",
+  "rubricVersion": "v1",
+  "timestamp": "2026-05-19T00:00:00.000Z",
+  "target": "realworld-express",
+  "mode": "static",
+  "status": "FAIL",
+  "headlineScore": 90,
+  "rubrics": {
+    "inventoryResolved": 100,
+    "authCoverage": 85,
+    "openEndpointRisk": 73,
+    "specDrift": null,
+    "determinism": 100
+  },
+  "summary": {
+    "endpoints": 20,
+    "resolved": 20,
+    "unresolved": 0,
+    "guarded": 17,
+    "open": 3,
+    "unknown": 0,
+    "specEndpoints": 0,
+    "shadow": 0,
+    "stale": 0,
+    "authDrift": 0
+  },
+  "endpoints": [
+    {
+      "method": "DELETE",
+      "path": "/articles/:slug",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 129,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "auth",
+        "deleteArticle",
+        "id",
+        "params",
+        "required",
+        "slug",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "DELETE",
+      "path": "/articles/:slug/comments/:id",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 190,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "Number",
+        "auth",
+        "deleteComment",
+        "id",
+        "params",
+        "required"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "DELETE",
+      "path": "/articles/:slug/favorite",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 230,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "article",
+        "auth",
+        "id",
+        "params",
+        "required",
+        "slug",
+        "unfavoriteArticle",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "DELETE",
+      "path": "/profiles/:username/follow",
+      "file": "src/app/routes/profile/profile.controller.ts",
+      "line": 54,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "auth",
+        "id",
+        "params",
+        "profile",
+        "required",
+        "unfollowUser",
+        "user",
+        "username"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "file": "src/main.ts",
+      "line": 21,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "API",
+        "api",
+        "express",
+        "is",
+        "json",
+        "on",
+        "running",
+        "status"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN"
+    },
+    {
+      "method": "GET",
+      "path": "/articles",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 30,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "auth",
+        "getArticles",
+        "id",
+        "optional",
+        "query",
+        "result",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "GET",
+      "path": "/articles/:slug",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 87,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "article",
+        "auth",
+        "getArticle",
+        "id",
+        "optional",
+        "params",
+        "slug",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "GET",
+      "path": "/articles/:slug/comments",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 149,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "auth",
+        "comments",
+        "getCommentsByArticle",
+        "id",
+        "optional",
+        "params",
+        "slug",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "GET",
+      "path": "/articles/feed",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 45,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "Number",
+        "auth",
+        "getFeed",
+        "offset",
+        "query",
+        "required",
+        "result"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "GET",
+      "path": "/profiles/:username",
+      "file": "src/app/routes/profile/profile.controller.ts",
+      "line": 14,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "auth",
+        "getProfile",
+        "id",
+        "optional",
+        "params",
+        "profile",
+        "user",
+        "username"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "GET",
+      "path": "/tags",
+      "file": "src/app/routes/tag/tag.controller.ts",
+      "line": 13,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "auth",
+        "getTags",
+        "id",
+        "optional",
+        "tags",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "GET",
+      "path": "/user",
+      "file": "src/app/routes/auth/auth.controller.ts",
+      "line": 45,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "auth",
+        "getCurrentUser",
+        "id",
+        "required",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "POST",
+      "path": "/articles",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 71,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "article",
+        "auth",
+        "body",
+        "createArticle",
+        "id",
+        "required",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "POST",
+      "path": "/articles/:slug/comments",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 170,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "addComment",
+        "auth",
+        "body",
+        "comment",
+        "id",
+        "params",
+        "required",
+        "slug",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "POST",
+      "path": "/articles/:slug/favorite",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 210,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "article",
+        "auth",
+        "favoriteArticle",
+        "id",
+        "params",
+        "required",
+        "slug",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "POST",
+      "path": "/profiles/:username/follow",
+      "file": "src/app/routes/profile/profile.controller.ts",
+      "line": 34,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "auth",
+        "followUser",
+        "id",
+        "params",
+        "profile",
+        "required",
+        "user",
+        "username"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "POST",
+      "path": "/users",
+      "file": "src/app/routes/auth/auth.controller.ts",
+      "line": 14,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "body",
+        "createUser",
+        "demo",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN"
+    },
+    {
+      "method": "POST",
+      "path": "/users/login",
+      "file": "src/app/routes/auth/auth.controller.ts",
+      "line": 30,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "body",
+        "login",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN"
+    },
+    {
+      "method": "PUT",
+      "path": "/articles/:slug",
+      "file": "src/app/routes/article/article.controller.ts",
+      "line": 110,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "article",
+        "auth",
+        "body",
+        "id",
+        "params",
+        "required",
+        "slug",
+        "updateArticle",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    },
+    {
+      "method": "PUT",
+      "path": "/user",
+      "file": "src/app/routes/auth/auth.controller.ts",
+      "line": 61,
+      "framework": "express",
+      "resolved": true,
+      "authMarkers": [
+        "auth",
+        "body",
+        "id",
+        "required",
+        "updateUser",
+        "user"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED"
+    }
+  ],
+  "drift": {
+    "shadow": [],
+    "stale": [],
+    "authDrift": []
+  },
+  "frameworksDetected": [
+    "express"
+  ],
+  "specsDetected": [],
+  "warnings": [],
+  "limitations": [
+    "Static analysis cannot verify runtime authorization (BOLA / object-level access). ApiGate only inspects declared auth posture, not the correctness of the auth middleware itself.",
+    "An endpoint with a declared auth identifier in its middleware chain is classified GUARDED — the middleware may still be misconfigured, bypassable, or insecure at runtime.",
+    "Routes mounted via dynamic strings (computed prefixes, runtime registration, factory functions) are reported as UNRESOLVED rather than guessed.",
+    "ApiGate makes ZERO network calls. It does not send code, telemetry, or scan artifacts anywhere. Reports are written to local files only."
+  ]
+}

@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: Sample API
+  version: "1.0.0"
+security:
+  - bearerAuth: []
+paths:
+  /health:
+    get:
+      security: []
+      responses:
+        "200":
+          description: ok
+  /users/{id}:
+    get:
+      responses:
+        "200":
+          description: ok
+    delete:
+      responses:
+        "204":
+          description: ok
+  /users:
+    post:
+      responses:
+        "201":
+          description: created
+  /billing/invoice/{id}:
+    get:
+      responses:
+        "200":
+          description: ok
+  /legacy/widgets:
+    get:
+      responses:
+        "200":
+          description: ok — declared in spec, no matching code route (stale)
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

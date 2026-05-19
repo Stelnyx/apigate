@@ -1,0 +1,41 @@
+{
+  "_comment": "ApiGate config — drop into the root of any repo as .apigate.config.json. All fields optional; defaults shown below.",
+
+  "frameworks": {
+    "express":  true,
+    "fastify":  true,
+    "nest":     true,
+    "openapi":  true
+  },
+  "_frameworks": "Toggle individual parsers. Useful for muting Fastify on Express-only repos to keep noise out of the report.",
+
+  "auth": {
+    "express":  ["requireAuth", "authenticate", "passport.authenticate", "ensureAuthenticated", "isAuthenticated", "verifyToken", "requireRole", "requireScope", "jwt", "checkJwt"],
+    "fastify":  ["onRequest", "preHandler", "fastify.authenticate", "verifyJWT", "requireAuth"],
+    "nest":     ["UseGuards", "Auth", "Roles", "ApiBearerAuth", "JwtAuthGuard", "AuthGuard"]
+  },
+  "_auth": "Identifier names that mean 'this endpoint is guarded' when present in the middleware/decorator chain. Add your project's custom auth helpers here. ApiGate cannot inspect what these identifiers DO at runtime — only their declared presence.",
+
+  "failOn": {
+    "openWriteMethods": true,
+    "openReadMethods":  false,
+    "drift":            false
+  },
+  "_failOn": "Exit-code policy. openWriteMethods=true means any unauthenticated POST/PUT/PATCH/DELETE causes exit 1 (recommended). openReadMethods=true also fails on unauthenticated GET (strict — will trip on public health endpoints). drift=true also fails on any spec-drift item.",
+
+  "excludePaths": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".next/**",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "test/**",
+    "tests/**",
+    "__tests__/**"
+  ],
+  "_excludePaths": "Glob list of files whose endpoints are excluded from the report. Applied AFTER parsing — does not speed up scanning.",
+
+  "severityOverrides": [],
+  "_severityOverrides": "Reserved for future use — currently ApiGate only emits a single posture classification per endpoint."
+}

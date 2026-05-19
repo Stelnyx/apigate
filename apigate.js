@@ -1,0 +1,234 @@
+#!/usr/bin/env node
+
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+import { loadConfig } from "./lib/config.mjs";
+import { buildInventory } from "./lib/inventory.mjs";
+import { classifyAll } from "./lib/auth.mjs";
+import { diff } from "./lib/drift.mjs";
+import { computeScore, SCORE_VERSION, bandFromScore } from "./lib/score.mjs";
+import { renderHtml, LIMITATIONS } from "./lib/report.mjs";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
+
+const argv = process.argv.slice(2);
+
+if (argv.includes("--version") || argv.includes("-v")) {
+  console.log(pkg.version);
+  process.exit(0);
+}
+
+if (argv.includes("--help") || argv.includes("-h")) {
+  console.log(`
+░▒▓█ APIGATE █▓▒░  v${pkg.version}
+Static API surface audit — Express · Fastify · NestJS · OpenAPI 2/3
+
+Usage:
+  apigate [target] [options]
+
+Arguments:
+  target              Directory to scan (default: current directory)
+
+Options:
+  --output-dir <dir>  Directory to write report files (default: target)
+  --format <fmt>      Output formats: 'json,html' (default), 'json', 'html'
+  --strip-paths       Relativize target to repo basename. Auto-on when CI=true.
+  --debug             Print parser warnings to stderr
+  --version, -v       Print version and exit
+  --help, -h          Show this help
+
+Config file (.apigate.config.json in target):
+  frameworks         Toggle parsers: { express, fastify, nest, openapi }
+  auth               Per-framework auth identifier names
+  failOn             Exit-code policy: { openWriteMethods, openReadMethods, drift }
+  excludePaths       Glob list of files to skip
+  See .apigate.config.example.json for a fully-commented template.
+
+Exit codes:
+  0  PASS — no findings above the configured threshold
+  1  FAIL — open endpoint (per failOn) or drift item present
+  2  Invalid target or CLI error
+
+Output:
+  apigate-v7-report.json    Machine-readable JSON report
+  <repo-name>.html          Self-contained HTML report (via @stelnyx/report-theme)
+
+ApiGate makes zero network calls. No code or telemetry leaves the machine.
+`);
+  process.exit(0);
+}
+
+function argValue(flag) {
+  const i = argv.indexOf(flag);
+  if (i === -1) return null;
+  const v = argv[i + 1];
+  if (!v || v.startsWith("--")) return null;
+  return v;
+}
+
+const rawTarget = argv[0] && !argv[0].startsWith("--") ? argv[0] : ".";
+const DEBUG = argv.includes("--debug");
+const STRIP_PATHS = argv.includes("--strip-paths") || process.env.CI === "true";
+const OUTPUT_DIR_FLAG = argValue("--output-dir");
+const FORMAT_RAW = argValue("--format");
+const FORMAT_SET = new Set((FORMAT_RAW || "json,html").split(",").map(s => s.trim().toLowerCase()));
+
+const target = path.resolve(rawTarget);
+if (!fs.existsSync(target)) {
+  console.error(`Target not found: ${rawTarget}`);
+  process.exit(2);
+}
+if (!fs.statSync(target).isDirectory()) {
+  console.error(`Target is not a directory: ${rawTarget}`);
+  process.exit(2);
+}
+
+const outputDir = OUTPUT_DIR_FLAG ? path.resolve(OUTPUT_DIR_FLAG) : target;
+if (OUTPUT_DIR_FLAG && !fs.existsSync(outputDir)) {
+  try { fs.mkdirSync(outputDir, { recursive: true }); }
+  catch (e) {
+    console.error(`Cannot create --output-dir ${outputDir}: ${e.message}`);
+    process.exit(2);
+  }
+}
+
+const repoName = path.basename(path.resolve(target));
+const reportTarget = STRIP_PATHS ? repoName : target;
+
+const config = loadConfig(target);
+
+console.log(`
+░▒▓█ APIGATE v${pkg.version} █▓▒░`);
+console.log("Target:", reportTarget);
+console.log("Mode:   STATIC");
+console.log("────────────────────────────────");
+
+const inventory = buildInventory(target, config);
+const codeClassified = classifyAll(inventory.code, config);
+const specClassified = classifyAll(inventory.spec, config);
+const driftResult = inventory.spec.length > 0
+  ? diff(codeClassified, specClassified)
+  : { shadow: [], stale: [], authDrift: [] };
+
+const allEndpoints = [...codeClassified, ...specClassified];
+const summary = summarize(codeClassified, specClassified, driftResult);
+const { headline, rubrics } = computeScore({
+  endpoints: codeClassified,
+  drift: driftResult,
+  specPresent: inventory.spec.length > 0
+});
+const status = resolveStatus(codeClassified, driftResult, config.failOn);
+
+const report = {
+  version: pkg.version,
+  rubricVersion: SCORE_VERSION,
+  timestamp: process.env.APIGATE_TIMESTAMP || new Date().toISOString(),
+  target: reportTarget,
+  mode: "static",
+  status,
+  headlineScore: headline,
+  rubrics,
+  summary,
+  endpoints: allEndpoints.map(stripInternal),
+  drift: driftResult,
+  frameworksDetected: inventory.frameworksDetected,
+  specsDetected: inventory.specsDetected,
+  warnings: inventory.warnings,
+  limitations: [...LIMITATIONS]
+};
+
+const jsonFile = path.join(outputDir, "apigate-v7-report.json");
+const htmlFile = path.join(outputDir, `${repoName}.html`);
+
+if (FORMAT_SET.has("json")) {
+  fs.writeFileSync(jsonFile, JSON.stringify(report, null, 2) + "\n");
+}
+if (FORMAT_SET.has("html")) {
+  fs.writeFileSync(htmlFile, renderHtml(report, repoName));
+}
+
+const bar = (() => {
+  const filled = Math.round(headline / 5);
+  return "█".repeat(filled) + "░".repeat(20 - filled);
+})();
+
+console.log(`Headline:  ${headline} / 100   ${bar}   ${bandFromScore(headline)}  rubric ${SCORE_VERSION}`);
+console.log("");
+for (const [key, val] of Object.entries(rubrics)) {
+  const label = ({
+    inventoryResolved: "Inventory",
+    authCoverage: "Auth Coverage",
+    openEndpointRisk: "Open Risk",
+    specDrift: "Spec Drift",
+    determinism: "Determinism"
+  })[key] || key;
+  const v = val === null ? "  n/a" : String(val).padStart(5);
+  const sub = val === null ? "                    " : "█".repeat(Math.round(val / 5)).padEnd(20, "░");
+  console.log(`  ${label.padEnd(14)} ${v} / 100   ${sub}`);
+}
+console.log("────────────────────────────────");
+console.log("STATUS:    ", status);
+console.log("ENDPOINTS: ", summary.endpoints, ` (${summary.guarded} guarded, ${summary.open} open, ${summary.unknown} unknown)`);
+if (inventory.spec.length > 0) {
+  console.log("DRIFT:     ", `${driftResult.shadow.length} shadow, ${driftResult.stale.length} stale, ${driftResult.authDrift.length} auth-drift`);
+}
+console.log("");
+
+if (DEBUG && inventory.warnings.length) {
+  console.error("Parser warnings:");
+  for (const w of inventory.warnings) console.error(`  ${w.file}: ${w.reason}`);
+}
+
+if (FORMAT_SET.has("json")) console.log("JSON report:", jsonFile);
+if (FORMAT_SET.has("html")) console.log("HTML report:", htmlFile);
+
+console.log("");
+console.log("Note: static analysis cannot verify runtime authorization (BOLA / object-level access).");
+console.log("      See the 'Limitations' section of the report.");
+
+process.exit(status === "PASS" ? 0 : 1);
+
+function summarize(code, spec, drift) {
+  const counts = {
+    endpoints: code.length,
+    resolved: 0,
+    unresolved: 0,
+    guarded: 0,
+    open: 0,
+    unknown: 0,
+    specEndpoints: spec.length,
+    shadow: drift.shadow?.length || 0,
+    stale: drift.stale?.length || 0,
+    authDrift: drift.authDrift?.length || 0
+  };
+  for (const e of code) {
+    if (e.resolved === false) counts.unresolved++; else counts.resolved++;
+    if (e.posture === "GUARDED") counts.guarded++;
+    else if (e.posture === "OPEN") counts.open++;
+    else counts.unknown++;
+  }
+  return counts;
+}
+
+function resolveStatus(code, drift, failOn) {
+  for (const e of code) {
+    if (e.posture !== "OPEN") continue;
+    const m = String(e.method || "").toUpperCase();
+    const write = m === "POST" || m === "PUT" || m === "PATCH" || m === "DELETE";
+    if (write && failOn.openWriteMethods) return "FAIL";
+    if (!write && failOn.openReadMethods) return "FAIL";
+  }
+  if (failOn.drift && (drift.shadow?.length || drift.stale?.length || drift.authDrift?.length)) {
+    return "FAIL";
+  }
+  return "PASS";
+}
+
+function stripInternal(e) {
+  const out = { ...e };
+  delete out.declaredPosture;
+  return out;
+}

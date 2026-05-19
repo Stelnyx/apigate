@@ -1,0 +1,11 @@
+{
+  "_comment": "Project-local auth identifiers for the RealWorld backend. The repo wraps express-jwt as `auth.required` / `auth.optional`; declare both so ApiGate recognizes them as guards. This is exactly what end users do for their own repos — the defaults are framework idioms, projects extend them.",
+  "auth": {
+    "express": [
+      "requireAuth", "authenticate", "passport.authenticate",
+      "ensureAuthenticated", "isAuthenticated", "verifyToken",
+      "requireRole", "requireScope", "jwt", "checkJwt",
+      "required", "optional"
+    ]
+  }
+}
