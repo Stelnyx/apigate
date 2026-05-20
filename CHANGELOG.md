@@ -6,6 +6,67 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-05-20
+
+### Fixed
+- **Bidirectional decorator scan in `lib/parsers/nest.mjs`.** Method-level
+  decorators placed *below* the `@Get`/`@Post`/etc. anchor and *above*
+  the method body were silently dropped:
+  ```ts
+  @Get('/users')
+  @UseGuards(JwtAuthGuard)      // ← previously MISSED
+  @ApiBearerAuth()              // ← previously MISSED
+  async findUsers() {}
+  ```
+  v0.3 adds a downward pass that mirrors the existing upward scan
+  (same skip rules, same break-on-non-`@` rule). Merged into the
+  endpoint's `authMarkers` via the existing `dedupSorted` helper.
+- New fixture `test/fixtures/nest-decorators-below/` and four
+  `test/parser-nest.mjs` assertions covering above-only, below-only,
+  mixed both-sides, and sorted-deduped output. Existing `nest-app`
+  fixture + golden snapshot unchanged (no regression).
+
+### Changed
+- **`auth.nest` defaults expanded.** Real production NestJS projects use
+  more decorator names than the doc-canonical `@UseGuards`. Added:
+  `Authenticated`, `RequireAuth`, `ApiCookieAuth`, `ApiSecurity`. The
+  Immich dogfood went from 0 GUARDED / 37 score (v0.2.1) to 183
+  GUARDED / 64 score (v0.3.0) on the same SHA. `auth.express` defaults
+  unchanged — Express middleware names are too project-specific to ship
+  more in defaults; users continue to extend `auth.express` in
+  `.apigate.config.json` (see Ghost sample for the pattern).
+- **`parserCapabilities.nest` documents three new realities:**
+  `methodDecoratorsBelowAnchor: true` (now captured),
+  `multilineControllerArg: "PARTIAL"` (Bug B, deferred to v0.4),
+  `globalGuardDetection: "NOT DETECTED"` (formal acknowledgement of the
+  NestJS `useGlobalGuards` / `APP_GUARD` blind spot — endpoints whose
+  only protection is the global guard will be reported OPEN).
+- **7th LIMITATIONS entry** added to every report: the global-guard
+  blind spot is now a printed first-class disclosure, not buried in
+  the capabilities matrix.
+
+### Added
+- **Dogfood lineup expanded.** Two public targets join the suite:
+  - `samples/immich-nest/` — Immich at SHA
+    `815ff677fc4837e46d58c47312bd98e04163a69a` (NestJS, 255 endpoints,
+    headline 64). Demonstrates the v0.3 parser fix + defaults
+    expansion.
+  - `samples/ghost-express/` — Ghost at SHA
+    `870ffaef8ec13f4680d5ed9c7a9ed1ad936c083a` (Express, 303 endpoints,
+    headline 66). Shows how to extend `auth.express` for project-
+    specific middleware namespaces.
+  Both are *not* vendored — the existing `test/fixtures/realworld-express`
+  remains the deterministic test fixture. README updated with a Dogfood
+  section that reframes `nest-realworld` as the locked determinism
+  baseline (100/100) and surfaces real public scores for the rest.
+
+### Notes
+- Determinism contract preserved: pure forward string iteration in the
+  new helper, no clocks, no RNG, `dedupSorted` keeps marker arrays
+  byte-stable. Existing `test/determinism.mjs` passes unchanged. Two-run
+  byte-equality independently verified for Immich and Ghost sample
+  reports.
+
 ## [0.2.1] - 2026-05-20
 
 ### Fixed

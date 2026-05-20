@@ -12,7 +12,7 @@
   "auth": {
     "express":  ["requireAuth", "authenticate", "passport.authenticate", "ensureAuthenticated", "isAuthenticated", "verifyToken", "requireRole", "requireScope", "jwt", "checkJwt"],
     "fastify":  ["onRequest", "preHandler", "fastify.authenticate", "verifyJWT", "requireAuth"],
-    "nest":     ["UseGuards", "Auth", "Roles", "ApiBearerAuth", "JwtAuthGuard", "AuthGuard"]
+    "nest":     ["UseGuards", "Auth", "Authenticated", "RequireAuth", "Roles", "ApiBearerAuth", "ApiCookieAuth", "ApiSecurity", "JwtAuthGuard", "AuthGuard"]
   },
   "_auth": "Identifier names that mean 'this endpoint is guarded' when present in the middleware/decorator chain. Add your project's custom auth helpers here. ApiGate cannot inspect what these identifiers DO at runtime — only their declared presence.",
 

@@ -1,0 +1,4993 @@
+{
+  "version": "0.2.1",
+  "rubricVersion": "v1",
+  "riskVersion": "v1",
+  "timestamp": "2026-05-20T00:00:00.000Z",
+  "target": "server",
+  "mode": "static",
+  "status": "FAIL",
+  "gate": {
+    "status": "FAIL",
+    "reasons": [
+      "open-write"
+    ]
+  },
+  "headlineScore": 64,
+  "rubrics": {
+    "inventoryResolved": 85,
+    "authCoverage": 72,
+    "openEndpointRisk": 0,
+    "specDrift": null,
+    "determinism": 100
+  },
+  "summary": {
+    "endpoints": 255,
+    "resolved": 218,
+    "unresolved": 37,
+    "guarded": 183,
+    "open": 35,
+    "unknown": 37,
+    "intentionalPublic": 3,
+    "risk": {
+      "HIGH": 14,
+      "MED": 50,
+      "LOW": 191
+    },
+    "specEndpoints": 0,
+    "shadow": 0,
+    "stale": 0,
+    "authDrift": 0,
+    "unknownReasons": {
+      "controller-path-not-static-string": 37
+    }
+  },
+  "endpoints": [
+    {
+      "method": "DELETE",
+      "path": "/activities/:id",
+      "file": "src/controllers/activity.controller.ts",
+      "line": 65,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/albums/:id",
+      "file": "src/controllers/album.controller.ts",
+      "line": 88,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/albums/:id/assets",
+      "file": "src/controllers/album.controller.ts",
+      "line": 138,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/albums/:id/user/:userId",
+      "file": "src/controllers/album.controller.ts",
+      "line": 185,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api-keys/:id",
+      "file": "src/controllers/api-key.controller.ts",
+      "line": 75,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 68,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "DELETE",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 117,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "DELETE",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 195,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "DELETE",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 233,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/database-backups",
+      "file": "src/controllers/database-backup.controller.ts",
+      "line": 57,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/users/:id",
+      "file": "src/controllers/user-admin.controller.ts",
+      "line": 73,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "DELETE",
+      "path": "/queues/:name/jobs",
+      "file": "src/controllers/queue.controller.ts",
+      "line": 74,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/server/license",
+      "file": "src/controllers/server.controller.ts",
+      "line": 160,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/sessions",
+      "file": "src/controllers/session.controller.ts",
+      "line": 38,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/sessions/:id",
+      "file": "src/controllers/session.controller.ts",
+      "line": 65,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/shared-links/:id",
+      "file": "src/controllers/shared-link.controller.ts",
+      "line": 139,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/shared-links/:id/assets",
+      "file": "src/controllers/shared-link.controller.ts",
+      "line": 167,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/stacks",
+      "file": "src/controllers/stack.controller.ts",
+      "line": 40,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/stacks/:id",
+      "file": "src/controllers/stack.controller.ts",
+      "line": 78,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/stacks/:id/assets/:assetId",
+      "file": "src/controllers/stack.controller.ts",
+      "line": 90,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/sync/ack",
+      "file": "src/controllers/sync.controller.ts",
+      "line": 63,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/tags/:id",
+      "file": "src/controllers/tag.controller.ts",
+      "line": 90,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/tags/:id/assets",
+      "file": "src/controllers/tag.controller.ts",
+      "line": 117,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 121,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "DELETE",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 155,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "DELETE",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 195,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "DELETE",
+      "path": "/admin/database-backups",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 90,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "MaintenanceRoute"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "DELETE",
+      "path": "/auth/pin-code",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 145,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: auth"
+    },
+    {
+      "method": "DELETE",
+      "path": "/duplicates",
+      "file": "src/controllers/duplicate.controller.ts",
+      "line": 28,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/duplicates/:id",
+      "file": "src/controllers/duplicate.controller.ts",
+      "line": 40,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/faces/:id",
+      "file": "src/controllers/face.controller.ts",
+      "line": 60,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/libraries/:id",
+      "file": "src/controllers/library.controller.ts",
+      "line": 66,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/memories/:id",
+      "file": "src/controllers/memory.controller.ts",
+      "line": 84,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/memories/:id/assets",
+      "file": "src/controllers/memory.controller.ts",
+      "line": 111,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/notifications",
+      "file": "src/controllers/notification.controller.ts",
+      "line": 45,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/notifications/:id",
+      "file": "src/controllers/notification.controller.ts",
+      "line": 83,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/partners/:id",
+      "file": "src/controllers/partner.controller.ts",
+      "line": 64,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/people",
+      "file": "src/controllers/person.controller.ts",
+      "line": 81,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/people/:id",
+      "file": "src/controllers/person.controller.ts",
+      "line": 119,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "DELETE",
+      "path": "/workflows/:id",
+      "file": "src/controllers/workflow.controller.ts",
+      "line": 94,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/.well-known/immich",
+      "file": "src/controllers/app.controller.ts",
+      "line": 10,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiExcludeEndpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": "/activities",
+      "file": "src/controllers/activity.controller.ts",
+      "line": 23,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/activities/statistics",
+      "file": "src/controllers/activity.controller.ts",
+      "line": 54,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/database-backups",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 68,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "MaintenanceRoute"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "open read on sensitive path: admin"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/database-backups/:filename",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 77,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "MaintenanceRoute"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "open read on sensitive path: admin"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/maintenance/detect-install",
+      "file": "src/controllers/maintenance.controller.ts",
+      "line": 34,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "open read on sensitive path: admin"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/maintenance/detect-install",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 114,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "open read on sensitive path: admin"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/maintenance/status",
+      "file": "src/controllers/maintenance.controller.ts",
+      "line": 24,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "open read on sensitive path: admin"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/users",
+      "file": "src/controllers/user-admin.controller.ts",
+      "line": 25,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/users/:id",
+      "file": "src/controllers/user-admin.controller.ts",
+      "line": 47,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/users/:id/preferences",
+      "file": "src/controllers/user-admin.controller.ts",
+      "line": 114,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/users/:id/sessions",
+      "file": "src/controllers/user-admin.controller.ts",
+      "line": 88,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/users/:id/statistics",
+      "file": "src/controllers/user-admin.controller.ts",
+      "line": 99,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/albums",
+      "file": "src/controllers/album.controller.ts",
+      "line": 28,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/albums/:id",
+      "file": "src/controllers/album.controller.ts",
+      "line": 62,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/albums/:id/map-markers",
+      "file": "src/controllers/album.controller.ts",
+      "line": 102,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/albums/statistics",
+      "file": "src/controllers/album.controller.ts",
+      "line": 50,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/api-keys",
+      "file": "src/controllers/api-key.controller.ts",
+      "line": 27,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/api-keys/:id",
+      "file": "src/controllers/api-key.controller.ts",
+      "line": 49,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/api-keys/me",
+      "file": "src/controllers/api-key.controller.ts",
+      "line": 38,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/custom.css",
+      "file": "src/controllers/app.controller.ts",
+      "line": 20,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiExcludeEndpoint",
+        "Header"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/asset-media.controller.ts",
+      "line": 92,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "FileResponse"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/asset-media.controller.ts",
+      "line": 110,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "FileResponse"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/asset-media.controller.ts",
+      "line": 163,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "FileResponse"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 33,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 80,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 144,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 155,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 181,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 207,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/database-backups",
+      "file": "src/controllers/database-backup.controller.ts",
+      "line": 30,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "open read on sensitive path: admin"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/database-backups/:filename",
+      "file": "src/controllers/database-backup.controller.ts",
+      "line": 41,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint",
+        "FileResponse"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "open read on sensitive path: admin"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/status",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 109,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/duplicates",
+      "file": "src/controllers/duplicate.controller.ts",
+      "line": 17,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/faces",
+      "file": "src/controllers/face.controller.ts",
+      "line": 34,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/jobs",
+      "file": "src/controllers/job.controller.ts",
+      "line": 21,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/libraries",
+      "file": "src/controllers/library.controller.ts",
+      "line": 22,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/libraries/:id",
+      "file": "src/controllers/library.controller.ts",
+      "line": 44,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/libraries/:id/statistics",
+      "file": "src/controllers/library.controller.ts",
+      "line": 91,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/map/markers",
+      "file": "src/controllers/map.controller.ts",
+      "line": 20,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/map/reverse-geocode",
+      "file": "src/controllers/map.controller.ts",
+      "line": 31,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/memories",
+      "file": "src/controllers/memory.controller.ts",
+      "line": 23,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/memories/:id",
+      "file": "src/controllers/memory.controller.ts",
+      "line": 58,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/memories/statistics",
+      "file": "src/controllers/memory.controller.ts",
+      "line": 47,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/notifications",
+      "file": "src/controllers/notification.controller.ts",
+      "line": 22,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/notifications/:id",
+      "file": "src/controllers/notification.controller.ts",
+      "line": 57,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/oauth/mobile-redirect",
+      "file": "src/controllers/oauth.controller.ts",
+      "line": 24,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint",
+        "Redirect"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "open read on sensitive path: auth"
+    },
+    {
+      "method": "GET",
+      "path": "/partners",
+      "file": "src/controllers/partner.controller.ts",
+      "line": 16,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/people",
+      "file": "src/controllers/person.controller.ts",
+      "line": 48,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/people/:id",
+      "file": "src/controllers/person.controller.ts",
+      "line": 93,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/people/:id/statistics",
+      "file": "src/controllers/person.controller.ts",
+      "line": 131,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/people/:id/thumbnail",
+      "file": "src/controllers/person.controller.ts",
+      "line": 142,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "FileResponse"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/server/config",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 50,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": "/system-metadata/admin-onboarding",
+      "file": "src/controllers/system-metadata.controller.ts",
+      "line": 18,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/system-metadata/reverse-geocoding-state",
+      "file": "src/controllers/system-metadata.controller.ts",
+      "line": 41,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/system-metadata/version-check-state",
+      "file": "src/controllers/system-metadata.controller.ts",
+      "line": 52,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/tags",
+      "file": "src/controllers/tag.controller.ts",
+      "line": 35,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/tags/:id",
+      "file": "src/controllers/tag.controller.ts",
+      "line": 68,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/timeline/bucket",
+      "file": "src/controllers/timeline.controller.ts",
+      "line": 26,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiOkResponse",
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "Header"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/timeline/buckets",
+      "file": "src/controllers/timeline.controller.ts",
+      "line": 15,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 41,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 52,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 74,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 99,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 133,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 167,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 207,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "FileResponse"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "unknown posture on read method"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/maintenance/status",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 109,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "open read on sensitive path: admin"
+    },
+    {
+      "method": "GET",
+      "path": "/plugins",
+      "file": "src/controllers/plugin.controller.ts",
+      "line": 20,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/plugins/:id",
+      "file": "src/controllers/plugin.controller.ts",
+      "line": 42,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/plugins/methods",
+      "file": "src/controllers/plugin.controller.ts",
+      "line": 31,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/queues",
+      "file": "src/controllers/queue.controller.ts",
+      "line": 22,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/queues/:name",
+      "file": "src/controllers/queue.controller.ts",
+      "line": 33,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/queues/:name/jobs",
+      "file": "src/controllers/queue.controller.ts",
+      "line": 59,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/search/cities",
+      "file": "src/controllers/search.controller.ts",
+      "line": 123,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/search/explore",
+      "file": "src/controllers/search.controller.ts",
+      "line": 90,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/search/person",
+      "file": "src/controllers/search.controller.ts",
+      "line": 101,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/search/places",
+      "file": "src/controllers/search.controller.ts",
+      "line": 112,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/search/suggestions",
+      "file": "src/controllers/search.controller.ts",
+      "line": 135,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/server/about",
+      "file": "src/controllers/server.controller.ts",
+      "line": 33,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/server/apk-links",
+      "file": "src/controllers/server.controller.ts",
+      "line": 44,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/server/config",
+      "file": "src/controllers/server.controller.ts",
+      "line": 106,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": "/server/features",
+      "file": "src/controllers/server.controller.ts",
+      "line": 96,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": "/server/license",
+      "file": "src/controllers/server.controller.ts",
+      "line": 137,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiNotFoundResponse",
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/server/media-types",
+      "file": "src/controllers/server.controller.ts",
+      "line": 127,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": "/server/ping",
+      "file": "src/controllers/server.controller.ts",
+      "line": 66,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": "/server/ping",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 55,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": "/server/statistics",
+      "file": "src/controllers/server.controller.ts",
+      "line": 116,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/server/storage",
+      "file": "src/controllers/server.controller.ts",
+      "line": 55,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/server/version",
+      "file": "src/controllers/server.controller.ts",
+      "line": 76,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": "/server/version",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 60,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": "/server/version-check",
+      "file": "src/controllers/server.controller.ts",
+      "line": 172,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/server/version-history",
+      "file": "src/controllers/server.controller.ts",
+      "line": 86,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "open read on non-sensitive path"
+    },
+    {
+      "method": "GET",
+      "path": "/sessions",
+      "file": "src/controllers/session.controller.ts",
+      "line": 27,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/shared-links",
+      "file": "src/controllers/shared-link.controller.ts",
+      "line": 58,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/shared-links/:id",
+      "file": "src/controllers/shared-link.controller.ts",
+      "line": 102,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/shared-links/me",
+      "file": "src/controllers/shared-link.controller.ts",
+      "line": 91,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/stacks",
+      "file": "src/controllers/stack.controller.ts",
+      "line": 17,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/stacks/:id",
+      "file": "src/controllers/stack.controller.ts",
+      "line": 52,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/sync/ack",
+      "file": "src/controllers/sync.controller.ts",
+      "line": 39,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/system-config",
+      "file": "src/controllers/system-config.controller.ts",
+      "line": 18,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/system-config/defaults",
+      "file": "src/controllers/system-config.controller.ts",
+      "line": 29,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/system-config/storage-template-options",
+      "file": "src/controllers/system-config.controller.ts",
+      "line": 51,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/view/folder",
+      "file": "src/controllers/view.controller.ts",
+      "line": 26,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/view/folder/unique-paths",
+      "file": "src/controllers/view.controller.ts",
+      "line": 15,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/workflows",
+      "file": "src/controllers/workflow.controller.ts",
+      "line": 34,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/workflows/:id",
+      "file": "src/controllers/workflow.controller.ts",
+      "line": 56,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/workflows/:id/share",
+      "file": "src/controllers/workflow.controller.ts",
+      "line": 67,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "GET",
+      "path": "/workflows/triggers",
+      "file": "src/controllers/workflow.controller.ts",
+      "line": 45,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PATCH",
+      "path": "/albums/:id",
+      "file": "src/controllers/album.controller.ts",
+      "line": 72,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PATCH",
+      "path": "/shared-links/:id",
+      "file": "src/controllers/shared-link.controller.ts",
+      "line": 124,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/activities",
+      "file": "src/controllers/activity.controller.ts",
+      "line": 35,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/database-backups/upload",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 99,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "MaintenanceRoute",
+        "UseInterceptors"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/maintenance",
+      "file": "src/controllers/maintenance.controller.ts",
+      "line": 55,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/maintenance",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 134,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "MaintenanceRoute"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/maintenance/login",
+      "file": "src/controllers/maintenance.controller.ts",
+      "line": 45,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/maintenance/login",
+      "file": "src/maintenance/maintenance-worker.controller.ts",
+      "line": 119,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/notifications",
+      "file": "src/controllers/notification-admin.controller.ts",
+      "line": 23,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/notifications/templates/:name",
+      "file": "src/controllers/notification-admin.controller.ts",
+      "line": 46,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/notifications/test-email",
+      "file": "src/controllers/notification-admin.controller.ts",
+      "line": 34,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/users",
+      "file": "src/controllers/user-admin.controller.ts",
+      "line": 36,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/users/:id/restore",
+      "file": "src/controllers/user-admin.controller.ts",
+      "line": 140,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "POST",
+      "path": "/albums",
+      "file": "src/controllers/album.controller.ts",
+      "line": 39,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/api-keys",
+      "file": "src/controllers/api-key.controller.ts",
+      "line": 16,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": null,
+      "file": "src/controllers/asset-media.controller.ts",
+      "line": 51,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiConsumes",
+        "ApiHeader",
+        "ApiTags",
+        "Authenticated",
+        "UseInterceptors"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "POST",
+      "path": null,
+      "file": "src/controllers/asset-media.controller.ts",
+      "line": 180,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "POST",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 44,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/auth/unlink-all",
+      "file": "src/controllers/auth-admin.controller.ts",
+      "line": 13,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/database-backups/start-restore",
+      "file": "src/controllers/database-backup.controller.ts",
+      "line": 68,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/database-backups/upload",
+      "file": "src/controllers/database-backup.controller.ts",
+      "line": 85,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiBody",
+        "ApiConsumes",
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/admin-sign-up",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 52,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/change-password",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 74,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: auth"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 30,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": true,
+      "risk": "LOW",
+      "riskReason": "intentional-public heuristic"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 86,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": true,
+      "risk": "LOW",
+      "riskReason": "intentional-public heuristic"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/pin-code",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 121,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: auth"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/session/lock",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 169,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: auth"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/session/unlock",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 157,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: auth"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/validateToken",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 62,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/download/archive",
+      "file": "src/controllers/download.controller.ts",
+      "line": 28,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "FileResponse",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/download/info",
+      "file": "src/controllers/download.controller.ts",
+      "line": 16,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/duplicates/resolve",
+      "file": "src/controllers/duplicate.controller.ts",
+      "line": 52,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/faces",
+      "file": "src/controllers/face.controller.ts",
+      "line": 22,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/jobs",
+      "file": "src/controllers/job.controller.ts",
+      "line": 32,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/libraries",
+      "file": "src/controllers/library.controller.ts",
+      "line": 33,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/libraries/:id/scan",
+      "file": "src/controllers/library.controller.ts",
+      "line": 103,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/libraries/:id/validate",
+      "file": "src/controllers/library.controller.ts",
+      "line": 78,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/memories",
+      "file": "src/controllers/memory.controller.ts",
+      "line": 35,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/oauth/authorize",
+      "file": "src/controllers/oauth.controller.ts",
+      "line": 39,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/oauth/backchannel-logout",
+      "file": "src/controllers/oauth.controller.ts",
+      "line": 117,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiConsumes",
+        "ApiTags",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/oauth/callback",
+      "file": "src/controllers/oauth.controller.ts",
+      "line": 64,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/oauth/link",
+      "file": "src/controllers/oauth.controller.ts",
+      "line": 89,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: auth"
+    },
+    {
+      "method": "POST",
+      "path": "/oauth/unlink",
+      "file": "src/controllers/oauth.controller.ts",
+      "line": 105,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: auth"
+    },
+    {
+      "method": "POST",
+      "path": "/partners",
+      "file": "src/controllers/partner.controller.ts",
+      "line": 27,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/partners/:id",
+      "file": "src/controllers/partner.controller.ts",
+      "line": 38,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "OPEN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "HIGH",
+      "riskReason": "open write method"
+    },
+    {
+      "method": "POST",
+      "path": "/people",
+      "file": "src/controllers/person.controller.ts",
+      "line": 59,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/people/:id/merge",
+      "file": "src/controllers/person.controller.ts",
+      "line": 174,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/search/large-assets",
+      "file": "src/controllers/search.controller.ts",
+      "line": 66,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/search/metadata",
+      "file": "src/controllers/search.controller.ts",
+      "line": 30,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/search/random",
+      "file": "src/controllers/search.controller.ts",
+      "line": 54,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/search/smart",
+      "file": "src/controllers/search.controller.ts",
+      "line": 78,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/search/statistics",
+      "file": "src/controllers/search.controller.ts",
+      "line": 42,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/sessions",
+      "file": "src/controllers/session.controller.ts",
+      "line": 16,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": true,
+      "risk": "LOW",
+      "riskReason": "intentional-public heuristic"
+    },
+    {
+      "method": "POST",
+      "path": "/sessions/:id/lock",
+      "file": "src/controllers/session.controller.ts",
+      "line": 77,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/shared-links",
+      "file": "src/controllers/shared-link.controller.ts",
+      "line": 113,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/shared-links/login",
+      "file": "src/controllers/shared-link.controller.ts",
+      "line": 69,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/stacks",
+      "file": "src/controllers/stack.controller.ts",
+      "line": 28,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/sync/ack",
+      "file": "src/controllers/sync.controller.ts",
+      "line": 50,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/sync/stream",
+      "file": "src/controllers/sync.controller.ts",
+      "line": 20,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "Header",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/system-metadata/admin-onboarding",
+      "file": "src/controllers/system-metadata.controller.ts",
+      "line": 29,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "POST",
+      "path": "/tags",
+      "file": "src/controllers/tag.controller.ts",
+      "line": 24,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/trash/empty",
+      "file": "src/controllers/trash.controller.ts",
+      "line": 16,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/trash/restore",
+      "file": "src/controllers/trash.controller.ts",
+      "line": 28,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": "/trash/restore/assets",
+      "file": "src/controllers/trash.controller.ts",
+      "line": 40,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "POST",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 178,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiBody",
+        "ApiConsumes",
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "UseInterceptors"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "POST",
+      "path": "/workflows",
+      "file": "src/controllers/workflow.controller.ts",
+      "line": 23,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/albums/:id/assets",
+      "file": "src/controllers/album.controller.ts",
+      "line": 112,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/albums/:id/user/:userId",
+      "file": "src/controllers/album.controller.ts",
+      "line": 168,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/albums/:id/users",
+      "file": "src/controllers/album.controller.ts",
+      "line": 153,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: users"
+    },
+    {
+      "method": "PUT",
+      "path": "/albums/assets",
+      "file": "src/controllers/album.controller.ts",
+      "line": 127,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/api-keys/:id",
+      "file": "src/controllers/api-key.controller.ts",
+      "line": 60,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 56,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "PUT",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 91,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "PUT",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 103,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "PUT",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 129,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "PUT",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 166,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "PUT",
+      "path": null,
+      "file": "src/controllers/asset.controller.ts",
+      "line": 218,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/users/:id",
+      "file": "src/controllers/user-admin.controller.ts",
+      "line": 58,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/users/:id/preferences",
+      "file": "src/controllers/user-admin.controller.ts",
+      "line": 125,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: admin"
+    },
+    {
+      "method": "PUT",
+      "path": "/auth/pin-code",
+      "file": "src/controllers/auth.controller.ts",
+      "line": 133,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "guarded write on sensitive path: auth"
+    },
+    {
+      "method": "PUT",
+      "path": "/faces/:id",
+      "file": "src/controllers/face.controller.ts",
+      "line": 45,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/jobs/:name",
+      "file": "src/controllers/job.controller.ts",
+      "line": 45,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/libraries/:id",
+      "file": "src/controllers/library.controller.ts",
+      "line": 55,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/memories/:id",
+      "file": "src/controllers/memory.controller.ts",
+      "line": 69,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/memories/:id/assets",
+      "file": "src/controllers/memory.controller.ts",
+      "line": 96,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/notifications",
+      "file": "src/controllers/notification.controller.ts",
+      "line": 33,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint",
+        "HttpCode"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/notifications/:id",
+      "file": "src/controllers/notification.controller.ts",
+      "line": 68,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/partners/:id",
+      "file": "src/controllers/partner.controller.ts",
+      "line": 49,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/people",
+      "file": "src/controllers/person.controller.ts",
+      "line": 70,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/people/:id",
+      "file": "src/controllers/person.controller.ts",
+      "line": 104,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/people/:id/reassign",
+      "file": "src/controllers/person.controller.ts",
+      "line": 159,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/queues/:name",
+      "file": "src/controllers/queue.controller.ts",
+      "line": 44,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/server/license",
+      "file": "src/controllers/server.controller.ts",
+      "line": 149,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/sessions/:id",
+      "file": "src/controllers/session.controller.ts",
+      "line": 50,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/shared-links/:id/assets",
+      "file": "src/controllers/shared-link.controller.ts",
+      "line": 151,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/stacks/:id",
+      "file": "src/controllers/stack.controller.ts",
+      "line": 63,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/system-config",
+      "file": "src/controllers/system-config.controller.ts",
+      "line": 40,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/tags",
+      "file": "src/controllers/tag.controller.ts",
+      "line": 46,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/tags/:id",
+      "file": "src/controllers/tag.controller.ts",
+      "line": 79,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/tags/:id/assets",
+      "file": "src/controllers/tag.controller.ts",
+      "line": 102,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": "/tags/assets",
+      "file": "src/controllers/tag.controller.ts",
+      "line": 57,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    },
+    {
+      "method": "PUT",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 63,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "PUT",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 85,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "PUT",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 110,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "PUT",
+      "path": null,
+      "file": "src/controllers/user.controller.ts",
+      "line": 144,
+      "framework": "nest",
+      "resolved": false,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": "controller-path-not-static-string",
+      "posture": "UNKNOWN",
+      "matchedAuthMarker": null,
+      "intentionalPublic": false,
+      "risk": "MED",
+      "riskReason": "unknown posture on write method"
+    },
+    {
+      "method": "PUT",
+      "path": "/workflows/:id",
+      "file": "src/controllers/workflow.controller.ts",
+      "line": 78,
+      "framework": "nest",
+      "resolved": true,
+      "authMarkers": [
+        "ApiTags",
+        "Authenticated",
+        "Endpoint"
+      ],
+      "unresolvedReason": null,
+      "posture": "GUARDED",
+      "matchedAuthMarker": "Authenticated",
+      "intentionalPublic": false,
+      "risk": "LOW",
+      "riskReason": "declared guard present"
+    }
+  ],
+  "drift": {
+    "shadow": [],
+    "stale": [],
+    "authDrift": []
+  },
+  "frameworksDetected": [
+    "nest"
+  ],
+  "specsDetected": [],
+  "parserCapabilities": {
+    "express": {
+      "language": "js, mjs, cjs (AST) · ts, tsx (regex fallback)",
+      "httpMethods": "get/post/put/delete/patch/head/options/all",
+      "sameFileMountPrefix": true,
+      "crossFileMountPrefix": false,
+      "dynamicMountPrefix": "UNRESOLVED",
+      "middlewareIdentifierExtraction": true,
+      "typeScriptAst": false
+    },
+    "fastify": {
+      "language": "js, mjs, cjs (AST only)",
+      "httpMethods": "get/post/put/delete/patch/head/options + fastify.route()",
+      "registerPrefixPropagation": false,
+      "routeOptionsParsed": true,
+      "preHandlerIdentifierExtraction": true,
+      "typeScriptAst": false
+    },
+    "nest": {
+      "language": "ts, tsx, js, mjs (regex extractor — no full TS AST)",
+      "httpMethods": "@Get/@Post/@Put/@Patch/@Delete/@Options/@Head/@All",
+      "controllerStringArg": true,
+      "controllerObjectArg": "path field only (version segment ignored)",
+      "controllerArrayArg": "first path only",
+      "classLevelGuards": true,
+      "methodLevelGuards": true,
+      "methodDecoratorsBelowAnchor": true,
+      "multilineControllerArg": "PARTIAL — single-line and { path: '...' } object form resolve; complex multi-line @Controller args may block the upward scan above @Controller (deferred to v0.4)",
+      "globalGuardDetection": "NOT DETECTED — useGlobalGuards(...) / { provide: APP_GUARD } providers in main.ts / app.module.ts are invisible to per-controller parsing. Endpoints protected ONLY by a global guard will be reported OPEN. Workaround: extend auth.nest with your custom marker, or use config.severityOverrides to pin specific endpoints.",
+      "dynamicDecoratorArg": "UNRESOLVED"
+    },
+    "openapi": {
+      "language": "yaml, yml, json",
+      "specVersions": "OpenAPI 2.0 (swagger:) and 3.x (openapi:)",
+      "rootSecurity": true,
+      "operationSecurity": true,
+      "operationSecurityEmptyArray": "OPEN",
+      "missingSecurity": "UNKNOWN (conservative)",
+      "basePathOas2": true
+    }
+  },
+  "riskTier": {
+    "version": "v1",
+    "sensitivePathTokens": 9,
+    "buckets": [
+      "HIGH",
+      "MED",
+      "LOW"
+    ],
+    "overrideHook": "config.severityOverrides"
+  },
+  "warnings": [],
+  "limitations": [
+    "Static analysis cannot verify runtime authorization (BOLA / object-level access). ApiGate only inspects declared auth posture, not the correctness of the auth middleware itself.",
+    "An endpoint with a declared auth identifier in its middleware chain is classified GUARDED — the middleware may still be misconfigured, bypassable, or insecure at runtime.",
+    "Routes mounted via dynamic strings (computed prefixes, runtime registration, factory functions) are reported as UNRESOLVED rather than guessed.",
+    "ApiGate uses a built-in heuristic pattern list to mark common public-auth paths (login / signup / refresh / health / OAuth callbacks) as INTENTIONAL-PUBLIC. The heuristic is deterministic and configurable but can be wrong both ways — review the marked endpoints and override `publicAuthPatterns` in `.apigate.config.json` if your project disagrees.",
+    "The per-endpoint `risk` tier (HIGH / MED / LOW) is a heuristic — pattern-based, frozen at `riskTier.version`. Use `severityOverrides` to pin specific endpoints. Risk is a triage aid, not a runtime exploitability claim.",
+    "NestJS global guards registered via `app.useGlobalGuards()` or `{ provide: APP_GUARD }` providers are INVISIBLE to ApiGate's per-controller parser. An endpoint protected ONLY by a global guard will be reported OPEN. If your project uses this pattern, extend `auth.nest` with your custom marker, or pin specific endpoints in `severityOverrides`. See `parserCapabilities.nest.globalGuardDetection`.",
+    "ApiGate makes ZERO network calls. It does not send code, telemetry, or scan artifacts anywhere. Reports are written to local files only."
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "name": "@stelnyx/apigate",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Tiny static API surface audit — enumerates HTTP endpoints, classifies auth posture, diffs against OpenAPI specs. Zero network, deterministic, one report.",
   "type": "module",
   "bin": {

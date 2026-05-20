@@ -26,7 +26,7 @@ One command. One report. One exit code.
 
 **Honest positioning.** ApiGate is a **surface auditor**, not a runtime scanner and not a DAST tool. The report explicitly states what a static analysis CAN and CANNOT prove — it's a printed trust feature, not a footnote. ApiGate cannot verify runtime authorization (BOLA / object-level access). It can prove that an endpoint declares a guard. It cannot prove the guard is correct. See [What this does NOT prove](#what-this-does-not-prove).
 
-**Status.** Early release (`v0.2.0`). Published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements). Report vulnerabilities via [SECURITY.md](SECURITY.md).
+**Status.** Early release (`v0.3.0`). Published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements). Report vulnerabilities via [SECURITY.md](SECURITY.md).
 
 **Accuracy contract.** ApiGate's parsing + scoring pipeline is deterministic — same inputs produce JSON- and HTML-byte-identical reports across every run. Three test suites lock the contract:
 
@@ -316,37 +316,48 @@ ApiGate does **not** inspect what these identifiers do at runtime. Their declare
 
 ---
 
-## Sample report
+## Dogfood
 
-A live sample lives at [`samples/realworld-express/`](samples/realworld-express/) — ApiGate's report for the canonical [RealWorld backend](https://github.com/gothinkster/node-express-realworld-example-app) (vendored at a pinned commit under `test/fixtures/realworld-express/`).
+ApiGate is scanned against four targets each release. The first is the **deterministic test fixture** (locked at 100/100 — that's how byte-equality is proven). The rest are real public / production codebases — their numbers move with each scan because the codebases move.
 
+| Target | Framework | Endpoints | Headline | Role |
+|---|---|---:|---:|---|
+| [`samples/realworld-express`](samples/realworld-express/) (vendored, SHA-pinned) | Express | 20 | **100** | Determinism baseline — locked at 100/100, used by `test/determinism.mjs` for byte-equality assertions. **Not a marketing showcase.** |
+| [`samples/immich-nest`](samples/immich-nest/) (cloned, SHA in SOURCE) | NestJS | 255 | **64** | Real public NestJS reference — [Immich](https://github.com/immich-app/immich), ~50K★. 183 guarded · 35 open · 14 HIGH risk. |
+| [`samples/ghost-express`](samples/ghost-express/) (cloned, SHA in SOURCE) | Express | 303 | **66** | Real public Express reference — [Ghost](https://github.com/TryGhost/Ghost), ~50K★. Demonstrates `auth.express` customization. |
+| slstudio (private) | NestJS | 423 | **70** | Private production reference. 330 guarded · 96 open · 52 HIGH risk. |
+
+**What the numbers say.**
+
+- `nest-realworld` 100/100 doesn't mean ApiGate "passed Nest" — it means we lock byte-equality against that fixture.
+- `immich` 64/100 and `ghost` 66/100 are honest scans of real codebases against ApiGate's default policy + lightweight per-repo config. Both have real OPEN findings worth triage; both also exhibit the known parser limits documented in `parserCapabilities` (global-guard pattern, project-specific middleware names).
+- `slstudio` 70/100 internal — surfaced ~39 false-GUARDED endpoints whose only declared marker was `@ApiBearerAuth` (Swagger doc decorator) on first run. Reviewable in 30 seconds via `matchedAuthMarker`.
+
+**Reproducing the public scans:**
+
+```bash
+# Immich
+git clone --depth 1 https://github.com/immich-app/immich /tmp/immich
+APIGATE_TIMESTAMP="2026-05-20T00:00:00.000Z" \
+  apigate /tmp/immich/server --strip-paths
+
+# Ghost (needs a small auth.express extension — see samples/ghost-express/SOURCE.md)
+git clone --depth 1 https://github.com/TryGhost/Ghost /tmp/ghost
+APIGATE_TIMESTAMP="2026-05-20T00:00:00.000Z" \
+  apigate /tmp/ghost/ghost/core --strip-paths
 ```
-Headline: 100 / 100  STRONG       rubric v1
-  Inventory       100 / 100
-  Auth Coverage   100 / 100
-  Open Risk       100 / 100
-  Spec Drift      n/a / 100
-  Determinism     100 / 100
-
-20 endpoints discovered (17 guarded · 3 open · 0 unknown · 3 intentional-public)
-STATUS: PASS
-```
-
-The 3 open endpoints are sign-up / login / status — all matched by the built-in **intentional-public heuristic** (see [Heuristic posture](#heuristic-posture-public-by-design)), so they're listed in the report but don't trip the default exit-1 gate.
-
-**Strict mode** (`failOn.intentionalPublic: true` in `.apigate.config.json`) treats the heuristic as advisory and fails on those endpoints too — the same run produces STATUS: FAIL and surfaces sign-up / login as findings. Useful for compliance audits where every open route must be justified.
 
 For tighter CI gates:
 
 ```json
 {
-  "failOn": { "unknown": true, "intentionalPublic": true },
+  "failOn": { "unknown": true, "intentionalPublic": true, "newOpenWrite": true },
   "requireSpec": true,
   "strictPublic": true
 }
 ```
 
-`failOn.unknown` means "cannot prove guarded" fails the run. `requireSpec` prevents a green drift score when no OpenAPI file is present. `strictPublic` disables the built-in public-auth list unless your repo provides `publicAuthPatterns`.
+`failOn.unknown` means "cannot prove guarded" fails the run. `requireSpec` prevents a green drift score when no OpenAPI file is present. `strictPublic` disables the built-in public-auth list unless your repo provides `publicAuthPatterns`. `newOpenWrite` (default ON with `--diff`) fails when a PR adds an unauthenticated write endpoint.
 
 ---
 
