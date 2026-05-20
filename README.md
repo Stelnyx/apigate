@@ -437,6 +437,23 @@ Each run writes:
 | **OPEN**    | Endpoint resolved, no auth identifier present                                            |
 | **UNKNOWN** | Endpoint itself is unresolved, OR (specs) no security block present                      |
 
+### `matchedAuthMarker` in practice — what reviewability looks like
+
+`matchedAuthMarker` (added in v0.1.2) is the lever for catching a false GUARDED without changing the trust model. The classifier still flags an endpoint GUARDED when any declared identifier appears in its decorator chain — but the report now shows you exactly *which* identifier triggered the match, so an unusual one stands out.
+
+Real example from dogfooding v0.1.2 against a 423-endpoint production NestJS app:
+
+```
+matchedAuthMarker distribution (GUARDED endpoints):
+  313  ApiBearerAuth   ← Swagger documentation decorator
+   12  UseGuards       ← actual runtime guard
+    2  Roles
+```
+
+`@ApiBearerAuth()` is a Swagger documentation decorator, **not** a runtime guard. 313 of the 327 GUARDED endpoints matched on it. Most are still protected by a global `APP_GUARD` registered in `app.module.ts` (invisible to static analysis — see `parserCapabilities.nest`), but 39 had no other guard identifier in their decorator chain at all. Without `matchedAuthMarker` those would have been silent in the report. With it, the reviewer has a 30-second triage path.
+
+If your codebase wants to drop the false signal entirely, remove `ApiBearerAuth` from `auth.nest` in `.apigate.config.json`. ApiGate's defaults are intentionally permissive (the cost of missing a real guard outweighs the cost of a false GUARDED that `matchedAuthMarker` makes visible).
+
 ---
 
 ## Design parity
