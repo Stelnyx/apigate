@@ -82,12 +82,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
   constant template-literal attributes.
 
 ### Notes
-- `v0.2.0` was tagged in git but never published to npm because of the
-  overflow bug above. The registry goes `0.1.2 → 0.2.1`. All `v0.2.0`
-  feature work (`--diff`, risk tier, `--filter`, `--explain`, layout
-  reorder, vanilla JS) is included in `v0.2.1`.
+- `v0.2.0` was published to npm but contained the overflow bug above
+  (long file paths bled off the right edge of the endpoint table on the
+  slstudio scan). `v0.2.1` is the hotfix. Anyone who installed `0.2.0`
+  should upgrade. All `v0.2.0` feature work (`--diff`, risk tier,
+  `--filter`, `--explain`, layout reorder, vanilla JS) is included in
+  `v0.2.1`.
 
-## [0.2.0] - 2026-05-20 *(unreleased — never published to npm)*
+## [0.2.0] - 2026-05-20 *(deprecated — install 0.2.1 or later)*
 
 ### Added
 - **`--diff <ref>` flag — PR-aware scanning.** Spins a detached git worktree
