@@ -167,14 +167,21 @@ code, .mono { font-family: var(--mono); font-size: 13px; }
 .finding-fix strong, .finding-why strong { color: var(--text); font-weight: 600; }
 
 /* KPI grid */
-.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
-.kpi .label { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; min-width: 0; }
+.kpi .label { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .kpi .value { font-size: 22px; font-weight: 600; color: var(--text); margin-top: 4px; letter-spacing: -0.02em; }
 .kpi.crit .value { color: var(--error); }
 .kpi.high .value { color: var(--warn); }
 .kpi.med .value { color: var(--med-sev); }
 .kpi.low .value { color: var(--success); }
+/* Narrow screens: drop labels so all kpis stay on one row */
+@media (max-width: 900px) {
+  .kpis { grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 8px; }
+  .kpi { padding: 10px 12px; text-align: center; }
+  .kpi .label { display: none; }
+  .kpi .value { font-size: 20px; margin-top: 0; }
+}
 
 /* Bars */
 .bars { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; }
