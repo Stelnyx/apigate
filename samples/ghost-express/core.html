@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ApiGate Report — core</title>
+<title>ApiGate Report — ghost-express</title>
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0a'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Inter%2C-apple-system%2Csans-serif' font-size='19' font-weight='700' fill='%23ff2d78'%3ES%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -167,14 +167,21 @@ code, .mono { font-family: var(--mono); font-size: 13px; }
 .finding-fix strong, .finding-why strong { color: var(--text); font-weight: 600; }
 
 /* KPI grid */
-.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
-.kpi .label { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; min-width: 0; }
+.kpi .label { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .kpi .value { font-size: 22px; font-weight: 600; color: var(--text); margin-top: 4px; letter-spacing: -0.02em; }
 .kpi.crit .value { color: var(--error); }
 .kpi.high .value { color: var(--warn); }
 .kpi.med .value { color: var(--med-sev); }
 .kpi.low .value { color: var(--success); }
+/* Narrow screens: drop labels so all kpis stay on one row */
+@media (max-width: 900px) {
+  .kpis { grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 8px; }
+  .kpi { padding: 10px 12px; text-align: center; }
+  .kpi .label { display: none; }
+  .kpi .value { font-size: 20px; margin-top: 0; }
+}
 
 /* Bars */
 .bars { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; }
@@ -251,7 +258,7 @@ code, .mono { font-family: var(--mono); font-size: 13px; }
     <div class="pill-row"><span class="report-pill">API REPORT</span></div>
     <div class="aside-head">
       <div class="product">ApiGate Report<span class="tier-pill warn">FAIL</span></div>
-      <div class="target">core</div>
+      <div class="target">ghost-express</div>
       <div class="score-line">
         <span class="score-num">66</span>
         <span class="score-denom">/ 100</span>
