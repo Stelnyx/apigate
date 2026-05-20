@@ -53,4 +53,55 @@ t.test("OpenAPI passes through declaredPosture", () => {
   assertEq(e.posture, "OPEN");
 });
 
+t.test("matchedAuthMarker echoes first matching identifier (Express)", () => {
+  const e = classifyEndpoint(
+    { framework: "express", method: "GET", path: "/x", resolved: true, authMarkers: ["requireAuth"] },
+    cfg
+  );
+  assertEq(e.matchedAuthMarker, "requireAuth");
+});
+
+t.test("matchedAuthMarker is the dotted identifier when no exact match exists", () => {
+  const customCfg = { auth: { express: ["passport.authenticate"] } };
+  const e = classifyEndpoint(
+    { framework: "express", method: "GET", path: "/x", resolved: true, authMarkers: ["authenticate"] },
+    customCfg
+  );
+  assertEq(e.matchedAuthMarker, "passport.authenticate");
+});
+
+t.test("matchedAuthMarker prefers exact match over dotted tail", () => {
+  // Default config has both "authenticate" and "passport.authenticate".
+  // Exact-match wins so the reviewer sees the canonical identifier.
+  const e = classifyEndpoint(
+    { framework: "express", method: "GET", path: "/x", resolved: true, authMarkers: ["authenticate"] },
+    cfg
+  );
+  assertEq(e.matchedAuthMarker, "authenticate");
+});
+
+t.test("matchedAuthMarker is null for OPEN endpoints", () => {
+  const e = classifyEndpoint(
+    { framework: "express", method: "POST", path: "/x", resolved: true, authMarkers: [] },
+    cfg
+  );
+  assertEq(e.matchedAuthMarker, null);
+});
+
+t.test("matchedAuthMarker is null for UNKNOWN endpoints", () => {
+  const e = classifyEndpoint(
+    { framework: "express", method: "GET", path: null, resolved: false, authMarkers: [] },
+    cfg
+  );
+  assertEq(e.matchedAuthMarker, null);
+});
+
+t.test("matchedAuthMarker is null for OpenAPI endpoints (no markers concept)", () => {
+  const e = classifyEndpoint(
+    { framework: "openapi", method: "GET", path: "/x", resolved: true, declaredPosture: "GUARDED", authMarkers: [] },
+    cfg
+  );
+  assertEq(e.matchedAuthMarker, null);
+});
+
 t.finish();

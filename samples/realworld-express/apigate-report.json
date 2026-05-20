@@ -1,10 +1,16 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.2",
   "rubricVersion": "v1",
   "timestamp": "2026-05-19T00:00:00.000Z",
   "target": "realworld-express",
   "mode": "static",
-  "status": "PASS",
+  "status": "FAIL",
+  "gate": {
+    "status": "FAIL",
+    "reasons": [
+      "intentional-public"
+    ]
+  },
   "headlineScore": 100,
   "rubrics": {
     "inventoryResolved": 100,
@@ -24,7 +30,8 @@
     "specEndpoints": 0,
     "shadow": 0,
     "stale": 0,
-    "authDrift": 0
+    "authDrift": 0,
+    "unknownReasons": {}
   },
   "endpoints": [
     {
@@ -45,6 +52,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -64,6 +72,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -85,6 +94,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -106,6 +116,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -127,6 +138,7 @@
       ],
       "unresolvedReason": null,
       "posture": "OPEN",
+      "matchedAuthMarker": null,
       "intentionalPublic": true
     },
     {
@@ -147,6 +159,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "optional",
       "intentionalPublic": false
     },
     {
@@ -168,6 +181,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "optional",
       "intentionalPublic": false
     },
     {
@@ -189,6 +203,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "optional",
       "intentionalPublic": false
     },
     {
@@ -209,6 +224,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -230,6 +246,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "optional",
       "intentionalPublic": false
     },
     {
@@ -249,6 +266,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "optional",
       "intentionalPublic": false
     },
     {
@@ -267,6 +285,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -287,6 +306,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -309,6 +329,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -330,6 +351,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -351,6 +373,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -368,6 +391,7 @@
       ],
       "unresolvedReason": null,
       "posture": "OPEN",
+      "matchedAuthMarker": null,
       "intentionalPublic": true
     },
     {
@@ -384,6 +408,7 @@
       ],
       "unresolvedReason": null,
       "posture": "OPEN",
+      "matchedAuthMarker": null,
       "intentionalPublic": true
     },
     {
@@ -406,6 +431,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     },
     {
@@ -425,6 +451,7 @@
       ],
       "unresolvedReason": null,
       "posture": "GUARDED",
+      "matchedAuthMarker": "required",
       "intentionalPublic": false
     }
   ],
@@ -437,6 +464,44 @@
     "express"
   ],
   "specsDetected": [],
+  "parserCapabilities": {
+    "express": {
+      "language": "js, mjs, cjs (AST) · ts, tsx (regex fallback)",
+      "httpMethods": "get/post/put/delete/patch/head/options/all",
+      "sameFileMountPrefix": true,
+      "crossFileMountPrefix": false,
+      "dynamicMountPrefix": "UNRESOLVED",
+      "middlewareIdentifierExtraction": true,
+      "typeScriptAst": false
+    },
+    "fastify": {
+      "language": "js, mjs, cjs (AST only)",
+      "httpMethods": "get/post/put/delete/patch/head/options + fastify.route()",
+      "registerPrefixPropagation": false,
+      "routeOptionsParsed": true,
+      "preHandlerIdentifierExtraction": true,
+      "typeScriptAst": false
+    },
+    "nest": {
+      "language": "ts, tsx, js, mjs (regex extractor — no full TS AST)",
+      "httpMethods": "@Get/@Post/@Put/@Patch/@Delete/@Options/@Head/@All",
+      "controllerStringArg": true,
+      "controllerObjectArg": "path field only (version segment ignored)",
+      "controllerArrayArg": "first path only",
+      "classLevelGuards": true,
+      "methodLevelGuards": true,
+      "dynamicDecoratorArg": "UNRESOLVED"
+    },
+    "openapi": {
+      "language": "yaml, yml, json",
+      "specVersions": "OpenAPI 2.0 (swagger:) and 3.x (openapi:)",
+      "rootSecurity": true,
+      "operationSecurity": true,
+      "operationSecurityEmptyArray": "OPEN",
+      "missingSecurity": "UNKNOWN (conservative)",
+      "basePathOas2": true
+    }
+  },
   "warnings": [],
   "limitations": [
     "Static analysis cannot verify runtime authorization (BOLA / object-level access). ApiGate only inspects declared auth posture, not the correctness of the auth middleware itself.",

@@ -26,7 +26,7 @@ One command. One report. One exit code.
 
 **Honest positioning.** ApiGate is a **surface auditor**, not a runtime scanner and not a DAST tool. The report explicitly states what a static analysis CAN and CANNOT prove — it's a printed trust feature, not a footnote. ApiGate cannot verify runtime authorization (BOLA / object-level access). It can prove that an endpoint declares a guard. It cannot prove the guard is correct. See [What this does NOT prove](#what-this-does-not-prove).
 
-**Status.** Early release (`v0.1.0`). Published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements). Report vulnerabilities via [SECURITY.md](SECURITY.md).
+**Status.** Early release (`v0.1.2`). Published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements). Report vulnerabilities via [SECURITY.md](SECURITY.md).
 
 **Accuracy contract.** ApiGate's parsing + scoring pipeline is deterministic — same inputs produce JSON- and HTML-byte-identical reports across every run. Three test suites lock the contract:
 
@@ -195,18 +195,39 @@ apigate . --format html
 # Show parser warnings
 apigate . --debug
 
+# Tighten the gate at CI time without editing .apigate.config.json
+apigate . --fail-on open-write,unknown,drift,missing-spec
+
 # Version / help
 apigate --version
 apigate --help
 ```
 
+**`--fail-on` tokens** (comma-separated):
+
+| Token                | Maps to                                  |
+|----------------------|------------------------------------------|
+| `open-write`         | `failOn.openWriteMethods = true`         |
+| `open-read`          | `failOn.openReadMethods  = true`         |
+| `unknown`            | `failOn.unknown          = true`         |
+| `drift`              | `failOn.drift            = true`         |
+| `intentional-public` | `failOn.intentionalPublic = true`        |
+| `missing-spec`       | `requireSpec             = true`         |
+
+Unknown tokens throw — CI typos can never silently relax policy.
+
 **Exit codes**
 
 | Code | Meaning                                                          |
 |:----:|------------------------------------------------------------------|
-| `0`  | PASS — no findings above configured failOn threshold             |
-| `1`  | FAIL — open write endpoint (default), or drift (when enabled)    |
+| `0`  | PASS — `gate.reasons` is empty                                   |
+| `1`  | FAIL — `gate.reasons[]` lists the exact gate(s) that fired       |
 | `2`  | Invalid target or CLI error                                      |
+
+The `gate.reasons[]` array in the JSON report holds the locked enum set
+(`drift`, `intentional-public`, `missing-spec`, `open-read`, `open-write`,
+`unknown-endpoint`) sorted lexicographically and deduplicated, so CI can
+grep failure causes without scraping stdout.
 
 ---
 
@@ -227,9 +248,12 @@ Create `.apigate.config.json` in your scan target directory. All fields optional
   "failOn": {
     "openWriteMethods":  true,
     "openReadMethods":   false,
+    "unknown":           false,
     "drift":             false,
     "intentionalPublic": false
   },
+  "requireSpec": false,
+  "strictPublic": false,
   "excludePaths": ["node_modules/**", "dist/**", "**/*.test.*"]
 }
 ```
@@ -242,8 +266,10 @@ A fully-commented example config lives at [`.apigate.config.example.json`](.apig
 |---------------|---------|----------------------------------------|-----------------------------------------------------------------------------|
 | `frameworks`  | object  | all `true`                             | Toggle individual parsers                                                  |
 | `auth`        | object  | per-framework defaults                 | Identifier names that classify an endpoint as `GUARDED` when present       |
-| `failOn`      | object  | `{ openWriteMethods: true, drift: false }` | Exit-code policy                                                       |
-| `excludePaths`| array   | `node_modules/`, `dist/`, test dirs    | Globs of files to skip                                                     |
+| `failOn`      | object  | `{ openWriteMethods: true, unknown: false, drift: false }` | Exit-code policy                                  |
+| `requireSpec` | boolean | `false`                                | Fail when no OpenAPI 2/3 spec is detected                                |
+| `strictPublic`| boolean | `false`                                | Disable built-in public-auth patterns unless `publicAuthPatterns` is set  |
+| `excludePaths`| array   | `node_modules/`, `dist/`, test dirs    | Globs of files to skip                                                    |
 
 ### Precedence
 
@@ -285,6 +311,18 @@ The 3 open endpoints are sign-up / login / status — all matched by the built-i
 
 **Strict mode** (`failOn.intentionalPublic: true` in `.apigate.config.json`) treats the heuristic as advisory and fails on those endpoints too — the same run produces STATUS: FAIL and surfaces sign-up / login as findings. Useful for compliance audits where every open route must be justified.
 
+For tighter CI gates:
+
+```json
+{
+  "failOn": { "unknown": true, "intentionalPublic": true },
+  "requireSpec": true,
+  "strictPublic": true
+}
+```
+
+`failOn.unknown` means "cannot prove guarded" fails the run. `requireSpec` prevents a green drift score when no OpenAPI file is present. `strictPublic` disables the built-in public-auth list unless your repo provides `publicAuthPatterns`.
+
 ---
 
 ## CI / CD
@@ -325,12 +363,16 @@ Each run writes:
 
 ```json
 {
-  "version": "0.1.1",
+  "version": "0.1.2",
   "rubricVersion": "v1",
   "timestamp": "ISO 8601",
   "target": "/absolute/path or repo basename",
   "mode": "static",
   "status": "PASS | FAIL",
+  "gate": {
+    "status": "PASS | FAIL",
+    "reasons": ["drift", "intentional-public", "missing-spec", "open-read", "open-write", "unknown-endpoint"]
+  },
   "headlineScore": 86,
   "rubrics": {
     "inventoryResolved": 86,
@@ -341,8 +383,9 @@ Each run writes:
   },
   "summary": {
     "endpoints": 7, "resolved": 6, "unresolved": 1,
-    "guarded": 4, "open": 2, "unknown": 1,
-    "specEndpoints": 6, "shadow": 1, "stale": 1, "authDrift": 0
+    "guarded": 4, "open": 2, "unknown": 1, "intentionalPublic": 0,
+    "specEndpoints": 6, "shadow": 1, "stale": 1, "authDrift": 0,
+    "unknownReasons": { "mount-prefix-not-static": 1 }
   },
   "endpoints": [
     {
@@ -355,6 +398,7 @@ Each run writes:
       "posture":  "GUARDED | OPEN | UNKNOWN",
       "intentionalPublic": false,
       "authMarkers": ["requireAuth"],
+      "matchedAuthMarker": "requireAuth",
       "unresolvedReason": null
     }
   ],
@@ -365,10 +409,25 @@ Each run writes:
   },
   "frameworksDetected": ["express", "openapi"],
   "specsDetected": ["openapi.yaml"],
+  "parserCapabilities": {
+    "express":  { "sameFileMountPrefix": true, "crossFileMountPrefix": false, "dynamicMountPrefix": "UNRESOLVED" },
+    "fastify":  { "registerPrefixPropagation": false, "routeOptionsParsed": true },
+    "nest":     { "controllerObjectArg": "path field only (version segment ignored)", "classLevelGuards": true },
+    "openapi":  { "missingSecurity": "UNKNOWN (conservative)", "operationSecurityEmptyArray": "OPEN" }
+  },
   "warnings": [],
   "limitations": ["..."]
 }
 ```
+
+### New keys in v0.1.2
+
+| Key                          | Why                                                                                          |
+|------------------------------|----------------------------------------------------------------------------------------------|
+| `gate.reasons[]`             | Enum-locked list of gates that fired. CI can grep this directly instead of parsing stdout.   |
+| `endpoints[].matchedAuthMarker` | First declared identifier that triggered a GUARDED classification. Reviewable trust signal. |
+| `summary.unknownReasons{}`   | Per-`unresolvedReason` counts. Turns "low inventory" into actionable triage.                  |
+| `parserCapabilities{}`       | Frozen matrix of what each parser sees vs. intentionally leaves unresolved. The honesty contract, machine-readable. |
 
 ### Posture tiers
 

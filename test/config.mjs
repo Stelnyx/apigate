@@ -14,19 +14,27 @@ t.test("loads defaults when no file present", () => {
   assertEq(cfg.frameworks.express, true);
   assertEq(cfg.failOn.openWriteMethods, true);
   assertEq(cfg.failOn.openReadMethods, false);
+  assertEq(cfg.failOn.unknown, false);
+  assertEq(cfg.requireSpec, false);
+  assertEq(cfg.strictPublic, false);
 });
 
 t.test("merges file overrides over defaults", () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "apigate-cfg-"));
   fs.writeFileSync(path.join(dir, ".apigate.config.json"), JSON.stringify({
     frameworks: { fastify: false },
-    failOn: { openReadMethods: true }
+    failOn: { openReadMethods: true, unknown: true },
+    requireSpec: true,
+    strictPublic: true
   }));
   const cfg = loadConfig(dir);
   assertEq(cfg.frameworks.fastify, false);
   assertEq(cfg.frameworks.express, true);
   assertEq(cfg.failOn.openReadMethods, true);
   assertEq(cfg.failOn.openWriteMethods, true);
+  assertEq(cfg.failOn.unknown, true);
+  assertEq(cfg.requireSpec, true);
+  assertEq(cfg.strictPublic, true);
 });
 
 t.test("falls back to defaults on invalid JSON", () => {

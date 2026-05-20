@@ -6,6 +6,51 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-05-19
+
+### Added
+- **`gate` object in the JSON report.** Every report now carries
+  `gate: { status, reasons[] }` where `reasons` is a sorted, deduped array
+  drawn from a locked enum (`drift`, `intentional-public`, `missing-spec`,
+  `open-read`, `open-write`, `unknown-endpoint`). CI can grep the failure
+  cause without scraping stdout. The terminal output also prints a
+  `REASONS:` line on FAIL.
+- **`matchedAuthMarker` per endpoint.** When an endpoint is GUARDED, the
+  classifier records the first declared identifier that triggered the
+  match (e.g. `passport.authenticate`). A reviewer can now distinguish a
+  legitimate guard from a coincidental name without re-reading the source.
+  Rendered in a new "Marker / Reason" column in the HTML endpoint table.
+- **`parserCapabilities` matrix in the report.** A frozen, deterministic
+  matrix per parser (Express / Fastify / NestJS / OpenAPI) describing
+  exactly what each parser sees and what it intentionally leaves
+  unresolved (e.g. Express cross-file mounts, Fastify register prefixes).
+  Embedded in JSON and rendered as a dedicated HTML section. The honesty
+  contract, machine-readable.
+- **`summary.unknownReasons` bucket counts.** Standardized
+  `unresolvedReason` strings from all parsers are summed into a
+  deterministic `{reason: count}` object so "low inventory" becomes
+  actionable triage instead of a vague penalty.
+- **`--fail-on <list>` CLI flag.** Comma-separated tokens
+  (`open-write,open-read,unknown,drift,intentional-public,missing-spec`)
+  tighten exit-1 policy on top of `.apigate.config.json` without writing
+  a file. Unknown tokens throw — CI typos can never silently relax
+  policy.
+- `test/gate.mjs` (gate resolution + flag parsing) and
+  `test/capabilities.mjs` (matrix freeze + known-reasons sort) lock the
+  new contracts.
+- Theme contract test now also asserts that gate reasons,
+  `parserCapabilities`, `matchedAuthMarker`, and `unknownReasons` all
+  surface in the rendered HTML.
+
+### Changed
+- `apigate.js` `resolveStatus()` is replaced by the new `resolveGate()`
+  in `lib/gate.mjs`. Status semantics are unchanged; the diff is that
+  the reasons that drove the status are now first-class output.
+- HTML report sidebar gains "Gate", "Unknown reasons", and "Parser
+  capabilities" entries (the first two only when populated). Endpoint
+  table gains a "Marker / Reason" column.
+- `--help` documents the new flag and JSON keys.
+
 ## [0.1.1] - 2026-05-19
 
 ### Added

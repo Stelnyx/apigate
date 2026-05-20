@@ -19,13 +19,20 @@
   "failOn": {
     "openWriteMethods":  true,
     "openReadMethods":   false,
+    "unknown":           false,
     "drift":             false,
     "intentionalPublic": false
   },
-  "_failOn": "Exit-code policy. openWriteMethods=true means an unauthenticated POST/PUT/PATCH/DELETE causes exit 1 (recommended). openReadMethods=true also fails on unauthenticated GET (strict). drift=true also fails on any spec-drift item. intentionalPublic=true makes the exit-1 gate ignore the public-auth heuristic — i.e. EVERY open endpoint fails (very strict; for compliance audits).",
+  "_failOn": "Exit-code policy. openWriteMethods=true means an unauthenticated POST/PUT/PATCH/DELETE causes exit 1 (recommended). openReadMethods=true also fails on unauthenticated GET (strict). unknown=true fails when ApiGate cannot prove a discovered endpoint's posture. drift=true also fails on any spec-drift item. intentionalPublic=true makes the exit-1 gate ignore the public-auth heuristic — i.e. EVERY open endpoint fails (very strict; for compliance audits).",
 
   "publicAuthPatterns": null,
   "_publicAuthPatterns": "Override the built-in public-auth heuristic. null (default) uses DEFAULT_PUBLIC_AUTH_PATTERNS from lib/heuristics.mjs — common login/signup/refresh/health paths. Provide an array of { method, path } pairs to replace entirely, or an empty array [] to disable the heuristic. The exact-match list is deterministic: paths are normalized (`/users/:id` ↔ `/users/{id}` ↔ `/users/<id>`) before comparison.",
+
+  "requireSpec": false,
+  "_requireSpec": "When true, exit 1 if no OpenAPI 2/3 spec is detected. Useful when spec drift is part of the contract and a green no-spec run would be misleading.",
+
+  "strictPublic": false,
+  "_strictPublic": "When true, disable the built-in public-auth heuristic unless publicAuthPatterns is explicitly provided. Useful for repos that want every public endpoint declared locally.",
 
   "excludePaths": [
     "node_modules/**",
