@@ -42,7 +42,7 @@
   "bugs": {
     "url": "https://github.com/Stelnyx/ApiGate/issues"
   },
-  "homepage": "https://github.com/Stelnyx/ApiGate#readme",
+  "homepage": "https://stelnyx.github.io/ApiGate/",
   "publishConfig": {
     "access": "public",
     "provenance": true
