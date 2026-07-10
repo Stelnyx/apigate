@@ -6,6 +6,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-07-10
+
+### Changed
+- Releases now publish from GitHub Actions with npm trusted publishing (OIDC)
+  and provenance, without long-lived npm tokens.
+- Release documentation now describes the tag-to-GitHub-Release flow and
+  required npm Trusted Publisher settings.
+
 ## [0.3.1] - 2026-07-10
 
 ### Fixed
