@@ -6,6 +6,27 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-07-10
+
+### Fixed
+- Large multi-project targets no longer hang silently during file walking.
+  ApiGate now detects workspace-like targets with multiple nested projects and
+  exits with a clear message unless `--allow-workspace` is passed.
+- The directory walk now skips common vendor and build directories by default
+  (`node_modules`, `.git`, `dist`, `build`, `coverage`, `vendor`, and common
+  framework caches), skips symlinks, tracks real paths, and enforces bounded
+  file/depth/time limits.
+- Matching files larger than the configured parse cap are skipped with parser
+  warnings instead of being read wholesale.
+- Report writes now fail with concise CLI messages when the output directory
+  is not writable.
+
+### Added
+- Scan safeguard flags: `--max-files`, `--max-depth`,
+  `--max-file-bytes`, `--scan-timeout-ms`, and `--allow-workspace`.
+- Regression coverage for workspace detection, nested vendor exclusion,
+  symlink-cycle tolerance, and max-file-limit failure.
+
 ## [0.3.0] - 2026-05-20
 
 ### Fixed

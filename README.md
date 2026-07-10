@@ -26,7 +26,7 @@ One command. One report. One exit code.
 
 **Honest positioning.** ApiGate is a **surface auditor**, not a runtime scanner and not a DAST tool. The report explicitly states what a static analysis CAN and CANNOT prove — it's a printed trust feature, not a footnote. ApiGate cannot verify runtime authorization (BOLA / object-level access). It can prove that an endpoint declares a guard. It cannot prove the guard is correct. See [What this does NOT prove](#what-this-does-not-prove).
 
-**Status.** Early release (`v0.3.0`). Published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements). Report vulnerabilities via [SECURITY.md](SECURITY.md).
+**Status.** Early release (`v0.3.1`). Published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements). Report vulnerabilities via [SECURITY.md](SECURITY.md).
 
 **Accuracy contract.** ApiGate's parsing + scoring pipeline is deterministic — same inputs produce JSON- and HTML-byte-identical reports across every run. Three test suites lock the contract:
 
@@ -192,6 +192,12 @@ apigate /path/to/project --strip-paths
 apigate . --format json
 apigate . --format html
 
+# Raise or lower scan safeguards for unusual trees
+apigate . --max-files 50000 --max-depth 40 --max-file-bytes 2097152
+
+# Scan a multi-project workspace intentionally
+apigate /path/to/workspace --allow-workspace --max-files 50000
+
 # Show parser warnings
 apigate . --debug
 
@@ -279,7 +285,13 @@ Create `.apigate.config.json` in your scan target directory. All fields optional
   },
   "requireSpec": false,
   "strictPublic": false,
-  "excludePaths": ["node_modules/**", "dist/**", "**/*.test.*"]
+  "excludePaths": ["node_modules/**", "**/node_modules/**", "dist/**", "**/dist/**", "**/*.test.*"],
+  "scan": {
+    "maxFiles": 20000,
+    "maxDepth": 30,
+    "maxFileBytes": 1048576,
+    "timeoutMs": 30000
+  }
 }
 ```
 
@@ -294,7 +306,8 @@ A fully-commented example config lives at [`.apigate.config.example.json`](.apig
 | `failOn`      | object  | `{ openWriteMethods: true, unknown: false, drift: false }` | Exit-code policy                                  |
 | `requireSpec` | boolean | `false`                                | Fail when no OpenAPI 2/3 spec is detected                                |
 | `strictPublic`| boolean | `false`                                | Disable built-in public-auth patterns unless `publicAuthPatterns` is set  |
-| `excludePaths`| array   | `node_modules/`, `dist/`, test dirs    | Globs of files to skip                                                    |
+| `excludePaths`| array   | vendor/build/test dirs                 | Globs of files to skip during the walk                                    |
+| `scan`        | object  | bounded file/depth/size/time limits    | Safety limits for pathological trees                                      |
 
 ### Precedence
 
@@ -399,7 +412,7 @@ Each run writes:
 
 ```json
 {
-  "version": "0.3.0",
+  "version": "0.3.1",
   "rubricVersion": "v1",
   "riskVersion": "v1",
   "timestamp": "ISO 8601",

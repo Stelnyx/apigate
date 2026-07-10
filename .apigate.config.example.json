@@ -37,16 +37,34 @@
 
   "excludePaths": [
     "node_modules/**",
+    "**/node_modules/**",
+    ".git/**",
+    "**/.git/**",
+    "vendor/**",
+    "**/vendor/**",
     "dist/**",
+    "**/dist/**",
     "build/**",
+    "**/build/**",
     ".next/**",
+    "**/.next/**",
+    "coverage/**",
+    "**/coverage/**",
     "**/*.test.*",
     "**/*.spec.*",
     "test/**",
     "tests/**",
     "__tests__/**"
   ],
-  "_excludePaths": "Glob list of files whose endpoints are excluded from the report. Applied AFTER parsing — does not speed up scanning.",
+  "_excludePaths": "Glob list of files and directories skipped during the deterministic walk. Built-in directory-name skips also exclude node_modules, .git, dist, build, coverage, vendor, and common framework output directories.",
+
+  "scan": {
+    "maxFiles": 20000,
+    "maxDepth": 30,
+    "maxFileBytes": 1048576,
+    "timeoutMs": 30000
+  },
+  "_scan": "Safety bounds for large or pathological trees. Matching source/spec files larger than maxFileBytes are skipped with a parser warning. CLI flags --max-files, --max-depth, --max-file-bytes, and --scan-timeout-ms override these values.",
 
   "severityOverrides": [],
   "_severityOverrides": "Pin specific (method, path) pairs to a risk tier. Applied AFTER the default risk ladder. Example: [{ \"method\": \"POST\", \"path\": \"/admin/wipe\", \"risk\": \"LOW\", \"reason\": \"scheduled maintenance only\" }]. Match is exact on (method, path) — the path is matched against the resolved/normalized form ApiGate prints in the report."

@@ -17,6 +17,7 @@ import { annotateRisk } from "./lib/risk.mjs";
 import { buildRefDiff } from "./lib/diff.mjs";
 import { parseFilter, applyFilter, describeFilter } from "./lib/filter.mjs";
 import { explain } from "./lib/explain.mjs";
+import { DEFAULT_EXCLUDE_DIRS, DEFAULT_SCAN_OPTIONS, ScanLimitError } from "./lib/utils.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
@@ -39,6 +40,13 @@ Usage:
 Output:
   --output-dir <dir>     Directory to write report files (default: target)
   --format <fmt>         Output formats: 'json,html' (default), 'json', 'html'
+  --max-files <n>        Stop scan after n visited files (default: ${DEFAULT_SCAN_OPTIONS.maxFiles})
+  --max-depth <n>        Stop descending after n directory levels (default: ${DEFAULT_SCAN_OPTIONS.maxDepth})
+  --max-file-bytes <n>   Skip parsing matching files larger than n bytes
+                         (default: ${DEFAULT_SCAN_OPTIONS.maxFileBytes})
+  --scan-timeout-ms <n>  Stop scan after n milliseconds (default: ${DEFAULT_SCAN_OPTIONS.timeoutMs})
+  --allow-workspace      Scan even when target looks like a multi-project
+                         workspace. Prefer targeting a single project.
 
 Investigation:
   --diff <ref>           Compare current scan to git <ref>. Emits refDiff
@@ -132,6 +140,7 @@ const FAIL_ON_FLAG = argValue("--fail-on");
 const DIFF_REF = argValue("--diff");
 const FILTER_RAW = argValue("--filter");
 const EXPLAIN = explainArgs();
+const ALLOW_WORKSPACE = argv.includes("--allow-workspace");
 
 const target = path.resolve(rawTarget);
 if (!fs.existsSync(target)) {
@@ -156,6 +165,25 @@ const repoName = path.basename(path.resolve(target));
 const reportTarget = STRIP_PATHS ? repoName : target;
 
 const config = loadConfig(target);
+for (const [flag, key] of [
+  ["--max-files", "maxFiles"],
+  ["--max-depth", "maxDepth"],
+  ["--max-file-bytes", "maxFileBytes"],
+  ["--scan-timeout-ms", "timeoutMs"]
+]) {
+  const parsed = parsePositiveIntFlag(flag);
+  if (parsed !== null) config.scan[key] = parsed;
+}
+config.scan.onProgress = EXPLAIN ? null : (stats) => {
+  console.error(`[apigate] scanning... ${stats.visitedFiles} files visited, ${stats.matchedFiles} candidate files`);
+};
+
+for (const fmt of FORMAT_SET) {
+  if (fmt !== "json" && fmt !== "html") {
+    console.error(`[apigate] Invalid --format value: ${fmt}`);
+    process.exit(2);
+  }
+}
 
 if (FAIL_ON_FLAG !== null) {
   try {
@@ -177,6 +205,16 @@ if (FILTER_RAW !== null) {
   }
 }
 
+if (!ALLOW_WORKSPACE) {
+  const workspace = detectWorkspace(target);
+  if (workspace.isWorkspace) {
+    console.error(`[apigate] This looks like a workspace with ${workspace.projects.length} sub-projects — point ApiGate at a single project, or pass --allow-workspace with scan bounds.`);
+    for (const p of workspace.projects.slice(0, 8)) console.error(`  - ${p}`);
+    if (workspace.projects.length > 8) console.error(`  ... ${workspace.projects.length - 8} more`);
+    process.exit(2);
+  }
+}
+
 // EXPLAIN mode silences the banner so stdout is a clean evidence chain
 // when piped to a tool.
 if (!EXPLAIN) {
@@ -187,7 +225,20 @@ if (!EXPLAIN) {
   console.log("────────────────────────────────");
 }
 
-const inventory = buildInventory(target, config);
+let inventory;
+try {
+  inventory = buildInventory(target, config);
+} catch (e) {
+  if (e instanceof ScanLimitError) {
+    console.error(`[apigate] ${e.message}`);
+    if (e.stats) {
+      console.error(`[apigate] visited ${e.stats.visitedFiles} files / ${e.stats.visitedDirs} dirs; matched ${e.stats.matchedFiles} candidate files; skipped ${e.stats.skippedSymlinks} symlinks`);
+    }
+    process.exit(2);
+  }
+  console.error(`[apigate] scan failed: ${e.message}`);
+  process.exit(2);
+}
 const patterns = config.publicAuthPatterns ?? (config.strictPublic ? [] : DEFAULT_PUBLIC_AUTH_PATTERNS);
 const codeClassified = annotateIntentionalPublic(classifyAll(inventory.code, config), patterns);
 const specClassified = annotateIntentionalPublic(classifyAll(inventory.spec, config), patterns);
@@ -271,10 +322,20 @@ const jsonFile = path.join(outputDir, "apigate-report.json");
 const htmlFile = path.join(outputDir, `${repoName}.html`);
 
 if (FORMAT_SET.has("json")) {
-  fs.writeFileSync(jsonFile, JSON.stringify(report, null, 2) + "\n");
+  try {
+    fs.writeFileSync(jsonFile, JSON.stringify(report, null, 2) + "\n");
+  } catch (e) {
+    console.error(`[apigate] Cannot write JSON report to ${jsonFile}: ${e.message}`);
+    process.exit(2);
+  }
 }
 if (FORMAT_SET.has("html")) {
-  fs.writeFileSync(htmlFile, renderHtml(renderedReport, repoName));
+  try {
+    fs.writeFileSync(htmlFile, renderHtml(renderedReport, repoName));
+  } catch (e) {
+    console.error(`[apigate] Cannot write HTML report to ${htmlFile}: ${e.message}`);
+    process.exit(2);
+  }
 }
 
 const bar = (() => {
@@ -302,6 +363,9 @@ if (gate.reasons.length) {
   console.log("REASONS:   ", gate.reasons.join(", "));
 }
 console.log("ENDPOINTS: ", summary.endpoints, ` (${summary.guarded} guarded, ${summary.open} open, ${summary.unknown} unknown, ${summary.intentionalPublic} intentional-public)`);
+if (summary.endpoints === 0 && summary.specEndpoints === 0) {
+  console.log("NOTICE:    ", "No API routes or OpenAPI specs were detected in this target.");
+}
 console.log("RISK:      ", `${summary.risk.HIGH} high · ${summary.risk.MED} med · ${summary.risk.LOW} low`);
 if (inventory.spec.length > 0) {
   console.log("DRIFT:     ", `${driftResult.shadow.length} shadow, ${driftResult.stale.length} stale, ${driftResult.authDrift.length} auth-drift`);
@@ -371,4 +435,42 @@ function stripInternal(e) {
   const out = { ...e };
   delete out.declaredPosture;
   return out;
+}
+
+function parsePositiveIntFlag(flag) {
+  const raw = argValue(flag);
+  if (raw === null) return null;
+  if (!/^[1-9]\d*$/.test(raw)) {
+    console.error(`[apigate] ${flag} requires a positive integer`);
+    process.exit(2);
+  }
+  return Number(raw);
+}
+
+function detectWorkspace(root) {
+  const projects = [];
+  const queue = [{ dir: root, depth: 0 }];
+  while (queue.length) {
+    const { dir, depth } = queue.shift();
+    let entries;
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    const hasPkg = depth > 0 && entries.some(e => e.isFile() && e.name === "package.json");
+    const hasNestedState = entries.some(e => e.isDirectory() && (e.name === "node_modules" || e.name === ".git"));
+    if (hasPkg && hasNestedState) {
+      projects.push(path.relative(root, dir).split(path.sep).join("/"));
+      continue;
+    }
+    if (depth >= 2) continue;
+    for (const ent of entries) {
+      if (!ent.isDirectory() || ent.isSymbolicLink()) continue;
+      if (DEFAULT_EXCLUDE_DIRS.includes(ent.name)) continue;
+      queue.push({ dir: path.join(dir, ent.name), depth: depth + 1 });
+    }
+  }
+  projects.sort();
+  return { isWorkspace: projects.length >= 3, projects };
 }
