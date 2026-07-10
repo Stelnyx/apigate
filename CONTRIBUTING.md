@@ -34,6 +34,34 @@ npm run lint
 - [ ] If the report HTML changed, `test/report-theme-contract.mjs` still passes and no `<!doctype>` literal was introduced outside `lib/report.mjs`
 - [ ] README updated if CLI flags, config fields, or output shape changed
 
+## Releases
+
+ApiGate publishes through npm trusted publishing from GitHub Actions. Do not
+store `NPM_TOKEN` / `NODE_AUTH_TOKEN` secrets for release publishing, and do not
+publish from a local machine with a `--provenance=false` workaround.
+
+Trusted Publisher settings on npmjs.com for `@stelnyx/apigate`:
+
+- Publisher: GitHub Actions
+- Organization/user: `Stelnyx`
+- Repository: `apigate`
+- Workflow filename: `publish.yml`
+- Environment: leave blank
+- Allowed action: `npm publish`
+
+The repository must remain public for npm to show provenance. The package's
+`repository` field must keep matching the GitHub repository exactly.
+
+Release flow:
+
+1. Bump `package.json` and `package-lock.json` to the next semver version.
+2. Run `npm test`, `npm run lint`, and `npm pack --dry-run`.
+3. Commit the version bump and push `main`.
+4. Create and push a matching tag, for example `git tag v0.3.3 && git push origin v0.3.3`.
+5. Create a GitHub Release from that tag.
+6. Confirm the `Publish` workflow runs green.
+7. Confirm the new npm version shows provenance, then run `npm audit signatures`.
+
 ## Commit message format
 
 ```

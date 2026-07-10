@@ -26,7 +26,7 @@ One command. One report. One exit code.
 
 **Honest positioning.** ApiGate is a **surface auditor**, not a runtime scanner and not a DAST tool. The report explicitly states what a static analysis CAN and CANNOT prove — it's a printed trust feature, not a footnote. ApiGate cannot verify runtime authorization (BOLA / object-level access). It can prove that an endpoint declares a guard. It cannot prove the guard is correct. See [What this does NOT prove](#what-this-does-not-prove).
 
-**Status.** Early release (`v0.3.1`). Published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements). Report vulnerabilities via [SECURITY.md](SECURITY.md).
+**Status.** Early release (`v0.3.2`). Releases publish from GitHub Actions with npm trusted publishing and provenance. Report vulnerabilities via [SECURITY.md](SECURITY.md).
 
 **Accuracy contract.** ApiGate's parsing + scoring pipeline is deterministic — same inputs produce JSON- and HTML-byte-identical reports across every run. Three test suites lock the contract:
 
@@ -398,6 +398,17 @@ For tighter CI gates:
       apigate-report.json
       *.html
 ```
+
+### Releasing ApiGate
+
+Package releases are published by the `Publish` GitHub Actions workflow when a
+GitHub Release is published. The workflow uses npm trusted publishing through
+OIDC, so there is no npm token in GitHub secrets and no local publish step.
+
+Release summary: bump the npm version, commit and push `main`, push a matching
+`vX.Y.Z` tag, create a GitHub Release from that tag, then confirm the workflow
+and npm provenance badge. See [CONTRIBUTING.md](CONTRIBUTING.md#releases) for
+the exact checklist and npm Trusted Publisher settings.
 
 ---
 
