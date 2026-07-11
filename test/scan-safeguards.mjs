@@ -3,7 +3,13 @@ import fs from "fs";
 import os from "os";
 import { spawnSync } from "child_process";
 import { fileURLToPath } from "url";
-import { runner, assertEq, assertIncludes, assertNotIncludes } from "./_runner.mjs";
+import { runner, assertEq, assertDeepEq, assertIncludes, assertNotIncludes } from "./_runner.mjs";
+import { buildInventory } from "../lib/inventory.mjs";
+import { loadConfig } from "../lib/config.mjs";
+import { parseExpress } from "../lib/parsers/express.mjs";
+import { parseFastify } from "../lib/parsers/fastify.mjs";
+import { parseNest } from "../lib/parsers/nest.mjs";
+import { parseOpenApi } from "../lib/parsers/openapi.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -78,6 +84,45 @@ t.test("max-files limit exits clearly instead of hanging", () => {
   assertEq(run.status, 2);
   assertIncludes(run.stderr, "scan exceeded max files (3)");
   assertNotIncludes(run.stderr, "Error:");
+});
+
+t.test("inventory performs one candidate walk for all enabled parsers", () => {
+  const dir = makeDir();
+  fs.writeFileSync(path.join(dir, "package.json"), JSON.stringify({ name: "single-walk" }));
+  fs.writeFileSync(path.join(dir, "app.js"), "import express from 'express'; const app = express(); app.get('/ok', handler);\n");
+  fs.writeFileSync(path.join(dir, "controller.ts"), "@Controller('users') class Users { @Get(':id') one() {} }\n");
+  fs.writeFileSync(path.join(dir, "openapi.yaml"), "openapi: 3.0.0\npaths: {}\n");
+
+  const config = loadConfig(dir);
+  let progressCalls = 0;
+  config.scan = { ...config.scan, progressEvery: 1, onProgress: () => { progressCalls++; } };
+  const inventory = buildInventory(dir, config);
+
+  assertEq(progressCalls, 4, "one progress event per visited file, not per parser");
+  assertDeepEq(inventory.code.map(e => `${e.framework}:${e.method}:${e.path}`).sort(), [
+    "express:GET:/ok",
+    "nest:GET:/users/:id"
+  ]);
+});
+
+t.test("shared index preserves endpoint keys on framework fixtures", () => {
+  const cases = [
+    ["express", path.join(root, "test/fixtures/realworld-express"), parseExpress, "code"],
+    ["fastify", path.join(root, "test/fixtures/fastify-app"), parseFastify, "code"],
+    ["nest", path.join(root, "test/fixtures/nest-app"), parseNest, "code"],
+    ["openapi", path.join(root, "test/fixtures/sample-app"), parseOpenApi, "spec"]
+  ];
+  const keys = endpoints => endpoints.map(e =>
+    `${e.framework}|${e.method}|${e.path ?? "<unresolved>"}|${e.file ?? ""}|${e.line ?? ""}`
+  ).sort();
+
+  for (const [framework, fixture, parser, bucket] of cases) {
+    const config = loadConfig(fixture);
+    config.frameworks = { express: false, fastify: false, nest: false, openapi: false, [framework]: true };
+    const legacyKeys = keys(parser(fixture, config.excludePaths, config.scan).endpoints);
+    const sharedKeys = keys(buildInventory(fixture, config)[bucket]);
+    assertDeepEq(sharedKeys, legacyKeys, `${framework} endpoint keys`);
+  }
 });
 
 t.finish();

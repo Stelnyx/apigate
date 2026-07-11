@@ -22,13 +22,13 @@ One command. One report. One exit code.
 
 ---
 
-**ApiGate** is the fourth surface in the Stelnyx line ([LuxScope](https://github.com/Stelnyx/LuxScope), [LuxFaber](https://github.com/Stelnyx/LuxFaber), [SecGate](https://github.com/Stelnyx/SecGate), **ApiGate**). It reads source code and OpenAPI specs on disk and produces one report: every endpoint, its declared auth posture, the drift between code and spec, scored against five 0–100 rubrics. **100% static** — no HTTP requests, no credentials, no running server. Zero network calls. Same input → byte-identical output.
+**ApiGate** is part of the Stelnyx developer-tool family alongside [LuxScope](https://github.com/Stelnyx/LuxScope), [LuxFaber](https://github.com/Stelnyx/LuxFaber), and [SecGate](https://github.com/Stelnyx/SecGate). It reads source code and OpenAPI specs on disk and produces one report: every endpoint it can detect, its declared auth posture, code/spec drift, and five transparent 0–100 rubrics. **100% static** — no HTTP requests, credentials, or running server. Zero network calls. With a fixed report timestamp, the same input and configuration produce byte-identical output.
 
 **Honest positioning.** ApiGate is a **surface auditor**, not a runtime scanner and not a DAST tool. The report explicitly states what a static analysis CAN and CANNOT prove — it's a printed trust feature, not a footnote. ApiGate cannot verify runtime authorization (BOLA / object-level access). It can prove that an endpoint declares a guard. It cannot prove the guard is correct. See [What this does NOT prove](#what-this-does-not-prove).
 
 **Status.** Early release (`v0.3.3`). Releases publish from GitHub Actions with npm trusted publishing and provenance. Report vulnerabilities via [SECURITY.md](SECURITY.md).
 
-**Accuracy contract.** ApiGate's parsing + scoring pipeline is deterministic — same inputs produce JSON- and HTML-byte-identical reports across every run. Three test suites lock the contract:
+**Accuracy contract.** ApiGate's parsing + scoring pipeline is deterministic. With the same files, configuration, tool version, and report timestamp, it produces JSON- and HTML-byte-identical reports. Three test suites lock the contract:
 
 - `test/determinism.mjs` — byte-equality of JSON and HTML across reruns of every parser, classifier, diff, score, and renderer call.
 - `test/golden-apigate.mjs` — hand-crafted multi-framework fixture; expected endpoint count, posture distribution, drift buckets, and headline score are inline so any change surfaces in code review.
@@ -83,6 +83,8 @@ ApiGate walks source files in a directory and produces:
 - **One exit code** — `1` on open-write endpoints (configurable); blocks CI
 
 ApiGate does not run code. It does not send HTTP requests. It does not require credentials or a running server. Everything happens at parse-time against source files.
+
+The bounded scan builds one sorted candidate-file index and shares it across all enabled parsers. File limits, default vendor/build exclusions, symlink skipping, depth limits, and progress reporting therefore apply once per scan rather than once per framework.
 
 ---
 
@@ -540,7 +542,7 @@ If your codebase wants to drop the false signal entirely, remove `ApiBearerAuth`
 
 ## Design parity
 
-ApiGate is visually + structurally indistinguishable from SecGate, LuxScope, and LuxFaber. The HTML report is rendered through `@stelnyx/report-theme@^0.1.0` — the same version, same imports, same shell envelope, no fork, no local restyle. See [DESIGN_PARITY.md](DESIGN_PARITY.md) for the contract.
+ApiGate shares the same report shell, navigation, typography, and design tokens as SecGate, LuxScope, and LuxFaber. The HTML report is rendered through `@stelnyx/report-theme@^0.1.4` with no fork or parallel document shell. See [DESIGN_PARITY.md](DESIGN_PARITY.md) for the contract.
 
 If a missing theme component blocks ApiGate, the resolution is an upstream PR to `report-theme`, not a local patch. That's how the four-tool shelf stays one product.
 
