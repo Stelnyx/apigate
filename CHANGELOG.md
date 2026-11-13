@@ -6,6 +6,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+### Fixed
+- Express (AST files): routers assigned from `express()`, `express.Router()`
+  or `Router()` are recognized whatever their variable name; previously only
+  names like `app`, `router` or `*Router` were parsed.
+- Express (AST files): `X.route(path).get(...).post(...)` chains are now
+  parsed, including per-method middleware.
+- Express (AST files): path-less `X.use(mw)` adds its identifiers as auth
+  markers to routes registered on `X` after it, in source order, so a router
+  guarded by `router.use(requireAuth)` is no longer reported OPEN.
+- `parserCapabilities.express` documents the three behaviors and their limits.
+
 ## [0.3.3] - 2026-07-10
 
 ### Changed
