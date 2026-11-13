@@ -92,7 +92,7 @@ The bounded scan builds one sorted candidate-file index and shares it across all
 
 | Framework  | Detection                                                                                                                |
 |------------|--------------------------------------------------------------------------------------------------------------------------|
-| **Express**  | acorn AST for `.js/.mjs/.cjs`; regex fallback for `.ts/.tsx`. Resolves `app.use('/prefix', router)` mounts in same file. |
+| **Express**  | acorn AST for `.js/.mjs/.cjs`; regex fallback for `.ts/.tsx`. Resolves `app.use('/prefix', router)` mounts in same file. AST files also track any variable assigned from `express()` / `express.Router()` / `Router()` whatever its name, and parse `app.route('/x').get(...).post(...)` chains. Path-less `router.use(requireAuth)` guards routes registered on that router after it only when `router` is a `const/let/var` declared once from a router factory, never reassigned, and the `use()` is a plain statement in the same block as the declaration. These `use()` calls are ignored (routes stay OPEN): `this.router.use(...)`, a router received as a parameter, a `use()` inside `if` or a helper function, `X.use(someCall(), auth)`, and wrappers like `jwt(...).unless(...)`. Not resolved: routers imported from another file, path-less `app.use(auth)` flowing into routers mounted on `app`, `route('/x').all(auth)` guarding the other verbs of the chain, and all of the above in `.ts/.tsx` files. Routers created in factory functions or received as parameters are parsed (routes and mounts), with the `use()` limits above. |
 | **Fastify**  | acorn AST. Handles `fastify.<method>(...)` and `fastify.route({ method, url, preHandler })`.                             |
 | **NestJS**   | Decorator extraction over `.ts/.js`. Pairs `@Controller(...)` with method decorators `@Get / @Post / @Put / @Patch / @Delete / @Options / @Head / @All`. Captures class- and method-level guards (`@UseGuards`, `@Auth`, `@Roles`, `@ApiBearerAuth`). |
 | **OpenAPI**  | Parses `*.yaml`/`*.yml`/`*.json` with `swagger:` (2.0) or `openapi:` (3.x) root. Honors operation-level `security` and root inheritance. |
@@ -484,7 +484,7 @@ Each run writes:
   "frameworksDetected": ["express", "openapi"],
   "specsDetected": ["openapi.yaml"],
   "parserCapabilities": {
-    "express":  { "sameFileMountPrefix": true, "crossFileMountPrefix": false, "dynamicMountPrefix": "UNRESOLVED" },
+    "express":  { "sameFileMountPrefix": true, "crossFileMountPrefix": false, "dynamicMountPrefix": "UNRESOLVED", "routeChains": "AST files: ...", "routerLevelMiddleware": "AST files: ..." },
     "fastify":  { "registerPrefixPropagation": false, "routeOptionsParsed": true },
     "nest":     { "controllerObjectArg": "path field only", "classLevelGuards": true },
     "openapi":  { "missingSecurity": "UNKNOWN (conservative)", "operationSecurityEmptyArray": "OPEN" }
@@ -512,6 +512,7 @@ Each run writes:
 | 0.3.0 | `parserCapabilities.nest.methodDecoratorsBelowAnchor` | Now `true` — bidirectional decorator scan captures markers above AND below `@Get`/`@Post`. |
 | 0.3.0 | `parserCapabilities.nest.globalGuardDetection` | Documented as `NOT DETECTED` — NestJS `APP_GUARD` / `useGlobalGuards` providers are invisible. Use `auth.nest` overrides or `severityOverrides`. |
 | 0.3.0 | LIMITATIONS entry #7 | Global-guard blind spot disclosed in every printed report. |
+| Unreleased | `parserCapabilities.express.routerVariableTracking` / `routeChains` / `routerLevelMiddleware` | Any-name routers, `route()` chains and path-less `X.use(mw)` markers (AST files only). |
 
 ### Posture tiers
 
