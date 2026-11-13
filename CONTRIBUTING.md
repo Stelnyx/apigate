@@ -38,7 +38,7 @@ npm run lint
 
 ApiGate publishes through npm trusted publishing from GitHub Actions. Do not
 store `NPM_TOKEN` / `NODE_AUTH_TOKEN` secrets for release publishing, and do not
-publish from a local machine with a `--provenance=false` workaround.
+publish from a local machine.
 
 Trusted Publisher settings on npmjs.com for `@stelnyx/apigate`:
 
@@ -52,15 +52,15 @@ Trusted Publisher settings on npmjs.com for `@stelnyx/apigate`:
 The repository must remain public for npm to show provenance. The package's
 `repository` field must keep matching the GitHub repository exactly.
 
-Release flow:
+Release flow (one tag, one workflow):
+1. Bump `package.json` and `package-lock.json` to the next semver version and add a `CHANGELOG.md` entry.
+2. Run `npm ci`, `npm run lint`, `npm test`, and `npm pack --dry-run`.
+3. Merge the version bump to `main`.
+4. Tag `origin/main` and push the tag: `git fetch origin && git tag vX.Y.Z origin/main && git push origin vX.Y.Z`.
+5. Watch the `Publish` run: `gh run list --workflow publish.yml --limit 1`. It publishes with `npm publish --provenance`. There is no GitHub Release step.
+6. Confirm provenance: `npm view @stelnyx/apigate@X.Y.Z dist.attestations.provenance.predicateType` prints `https://slsa.dev/provenance/v1`. Then run `npm audit signatures`.
 
-1. Bump `package.json` and `package-lock.json` to the next semver version.
-2. Run `npm test`, `npm run lint`, and `npm pack --dry-run`.
-3. Commit the version bump and push `main`.
-4. Create and push a matching tag, for example `git tag v0.3.3 && git push origin v0.3.3`.
-5. Create a GitHub Release from that tag.
-6. Confirm the `Publish` workflow runs green.
-7. Confirm the new npm version shows provenance, then run `npm audit signatures`.
+The workflow refuses a tag that is not `vX.Y.Z`, does not match the `package.json` version, or is not on `main`. If a run fails, re-run the failed jobs on the same run instead of re-tagging. A version already on npm cannot be republished: bump it.
 
 ## Commit message format
 
