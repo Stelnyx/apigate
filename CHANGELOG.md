@@ -7,6 +7,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 ## [Unreleased]
 
 ### Fixed
+- Fastify: `.ts`, `.mts` and `.cts` files are now parsed (regex extractor, no
+  new dependency), including `fastify.delete<{ Params: ... }>(...)` generics
+  and `fastify.route({...})`. Previously only `.js/.mjs/.cjs` were read, so a
+  TypeScript Fastify app reported 0 endpoints.
+- A scan with no code endpoints (with or without an OpenAPI spec) no longer scores
+  `100 / 100 STRONG`. `headlineScore` and all `rubrics` are now `null` (JSON),
+  `n/a` (console, HTML), with no band. **Breaking for consumers that parse
+  `headlineScore` as a number.** Scans that find endpoints score as before
+  (`rubric v1`).
 - Express (AST files): routers assigned from `express()`, `express.Router()`
   or `Router()` are recognized whatever their variable name; previously only
   names like `app`, `router` or `*Router` were parsed.
@@ -22,6 +31,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
   `jwt(...).unless(...)` are ignored, so those routes stay OPEN.
 - `parserCapabilities.express` documents the three behaviors and their limits.
 
+### Added
+- Warning `framework-detected-no-endpoints` (`{ file: "package.json", reason,
+  framework }`) and a console `WARNING:` line when `package.json` declares
+  `express`, `fastify` or `@nestjs/*` and 0 endpoints were found.
+- Opt-in `--fail-on empty` / `failOn.emptyInventory`: exit 1 with gate reason
+  `no-endpoints` when no endpoints are found. Default stays exit 0.
 ## [0.3.3] - 2026-07-10
 
 ### Changed

@@ -146,4 +146,24 @@ t.test("local-only lib/report.mjs does NOT include verbatim <!doctype in source"
   }
 });
 
+t.test("Empty scan: HTML shows n/a, no band, no 100 / 100", () => {
+  const empty = {
+    ...sampleReport,
+    status: "PASS",
+    gate: { status: "PASS", reasons: [] },
+    headlineScore: null,
+    rubrics: { inventoryResolved: null, authCoverage: null, openEndpointRisk: null, specDrift: null, determinism: null },
+    summary: { ...sampleReport.summary, endpoints: 0, specEndpoints: 0, risk: { HIGH: 0, MED: 0, LOW: 0 }, unknownReasons: {} },
+    endpoints: [],
+    drift: { shadow: [], stale: [], authDrift: [] },
+    specsDetected: [],
+    frameworksDetected: []
+  };
+  const out = renderHtml(empty, "empty");
+  assertIncludes(out, "n/a");
+  for (const word of ["STRONG", "GOOD", "MIXED", "WEAK"]) {
+    if (out.includes(word)) throw new Error(`empty report must not show band ${word}`);
+  }
+  if (/100\s*\/\s*100/.test(out)) throw new Error("empty report must not show 100 / 100");
+});
 t.finish();

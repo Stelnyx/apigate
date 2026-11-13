@@ -86,4 +86,18 @@ t.test("band: STRONG ≥ 85, GOOD ≥ 70, MIXED ≥ 50, WEAK < 50", () => {
   assertEq(bandFromScore(49), "WEAK");
 });
 
+t.test("computeScore: no code endpoints -> null headline and rubrics", () => {
+  const r = computeScore({ endpoints: [], drift: {}, specPresent: false });
+  assertEq(r.headline, null);
+  for (const v of Object.values(r.rubrics)) assertEq(v, null);
+});
+t.test("computeScore: no code endpoints with a spec -> still null", () => {
+  const r = computeScore({ endpoints: [], drift: { stale: [1] }, specPresent: true });
+  assertEq(r.headline, null);
+  for (const v of Object.values(r.rubrics)) assertEq(v, null);
+});
+t.test("bandFromScore: null has no band", () => {
+  assertEq(bandFromScore(null), null);
+  assertEq(bandFromScore(undefined), null);
+});
 t.finish();

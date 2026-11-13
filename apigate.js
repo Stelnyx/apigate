@@ -68,7 +68,8 @@ Investigation:
 Policy:
   --fail-on <list>       Comma list, tightens exit-1 policy on top of config.
                          Tokens: open-write, open-read, unknown, drift,
-                         intentional-public, new-open-write, missing-spec
+                         intentional-public, new-open-write, missing-spec,
+                         empty (no endpoints found)
 
 Debug:
   --strip-paths          Relativize target to repo basename (auto-on if CI=true)
@@ -85,7 +86,7 @@ Config file (.apigate.config.json in target):
   auth               Per-framework auth identifier names
   failOn             Exit-code policy: { openWriteMethods, openReadMethods,
                                          unknown, drift, intentionalPublic,
-                                         newOpenWrite }
+                                         newOpenWrite, emptyInventory }
   requireSpec        Exit 1 when no OpenAPI spec is found
   strictPublic       Disable built-in public-auth patterns unless explicitly
                      configured
@@ -338,12 +339,13 @@ if (FORMAT_SET.has("html")) {
   }
 }
 
-const bar = (() => {
+if (headline === null) {
+  console.log(`Headline:  n/a   (no endpoints found, nothing was scored)  rubric ${SCORE_VERSION}`);
+} else {
   const filled = Math.round(headline / 5);
-  return "█".repeat(filled) + "░".repeat(20 - filled);
-})();
-
-console.log(`Headline:  ${headline} / 100   ${bar}   ${bandFromScore(headline)}  rubric ${SCORE_VERSION}`);
+  const bar = "█".repeat(filled) + "░".repeat(20 - filled);
+  console.log(`Headline:  ${headline} / 100   ${bar}   ${bandFromScore(headline)}  rubric ${SCORE_VERSION}`);
+}
 console.log("");
 for (const [key, val] of Object.entries(rubrics)) {
   const label = ({
@@ -355,7 +357,7 @@ for (const [key, val] of Object.entries(rubrics)) {
   })[key] || key;
   const v = val === null ? "  n/a" : String(val).padStart(5);
   const sub = val === null ? "                    " : "█".repeat(Math.round(val / 5)).padEnd(20, "░");
-  console.log(`  ${label.padEnd(14)} ${v} / 100   ${sub}`);
+  console.log(val === null ? `  ${label.padEnd(14)} ${v}` : `  ${label.padEnd(14)} ${v} / 100   ${sub}`);
 }
 console.log("────────────────────────────────");
 console.log("STATUS:    ", status);
@@ -365,6 +367,11 @@ if (gate.reasons.length) {
 console.log("ENDPOINTS: ", summary.endpoints, ` (${summary.guarded} guarded, ${summary.open} open, ${summary.unknown} unknown, ${summary.intentionalPublic} intentional-public)`);
 if (summary.endpoints === 0 && summary.specEndpoints === 0) {
   console.log("NOTICE:    ", "No API routes or OpenAPI specs were detected in this target.");
+}
+for (const w of inventory.warnings) {
+  if (w.reason === "framework-detected-no-endpoints") {
+    console.log("WARNING:   ", `${w.framework} detected in package.json but 0 endpoints were found. Check that routes are in scanned files (not excluded) and use a supported pattern.`);
+  }
 }
 console.log("RISK:      ", `${summary.risk.HIGH} high · ${summary.risk.MED} med · ${summary.risk.LOW} low`);
 if (inventory.spec.length > 0) {
