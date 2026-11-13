@@ -92,4 +92,45 @@ t.test("use order: routes before X.use(auth) stay OPEN, after are GUARDED; route
   ]);
 });
 
+// Path-less X.use(mw) must never turn an open route GUARDED. False OPEN is
+// the accepted direction (e.g. `this.router.use(auth)` is ignored).
+const negativesFixture = path.join(__dirname, "fixtures", "express-router-negatives");
+const negatives = classifyAll(parseExpress(negativesFixture, []).endpoints, CONFIG_DEFAULTS);
+const summarizeNeg = (file) => negatives
+  .filter(e => e.file === file)
+  .map(e => `${e.method} ${e.path} ${e.posture}`)
+  .sort();
+
+t.test("use(): same name in two functions is two routers", () => {
+  assertDeepEq(summarizeNeg("shadowed-factories.js"), ["GET /a GUARDED", "POST /signup OPEN"]);
+});
+
+t.test("use(): this.router in two classes does not leak", () => {
+  assertDeepEq(summarizeNeg("this-router.js"), ["GET /a OPEN", "POST /signup OPEN"]);
+});
+
+t.test("use(): (app) params in two functions do not leak", () => {
+  assertDeepEq(summarizeNeg("param-app.js"), ["GET /a OPEN", "POST /signup OPEN"]);
+});
+
+t.test("use(): reassigned router variable is ignored", () => {
+  assertDeepEq(summarizeNeg("reassigned.js"), ["GET /a OPEN", "POST /b OPEN"]);
+});
+
+t.test("use(): conditional use and use inside a helper function are ignored", () => {
+  assertDeepEq(summarizeNeg("conditional-use.js"), ["DELETE /wipe OPEN", "POST /open OPEN"]);
+});
+
+t.test("use(): call expression as first of 2+ args is not path-less", () => {
+  assertDeepEq(summarizeNeg("call-prefix.js"), ["POST /public OPEN"]);
+});
+
+t.test("use(): jwt().unless(...) is not router-wide auth", () => {
+  assertDeepEq(summarizeNeg("unless.js"), ["POST /guarded GUARDED", "POST /webhook OPEN"]);
+});
+
+t.test("use(): express.json(), imported router and error handler are not auth", () => {
+  assertDeepEq(summarizeNeg("harmless-use.js"), ["POST /items OPEN"]);
+});
+
 t.finish();

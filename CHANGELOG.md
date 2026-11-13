@@ -14,7 +14,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
   parsed, including per-method middleware.
 - Express (AST files): path-less `X.use(mw)` adds its identifiers as auth
   markers to routes registered on `X` after it, in source order, so a router
-  guarded by `router.use(requireAuth)` is no longer reported OPEN.
+  guarded by `router.use(requireAuth)` is no longer reported OPEN. To never
+  hide an open route, it only applies when `X` is declared once in that scope
+  from a router factory and never reassigned, and the `use()` is a plain
+  statement in the same block. `this.router`, router parameters, `use()`
+  inside `if` or a helper function, `X.use(someCall(), auth)` and
+  `jwt(...).unless(...)` are ignored, so those routes stay OPEN.
 - `parserCapabilities.express` documents the three behaviors and their limits.
 
 ## [0.3.3] - 2026-07-10
