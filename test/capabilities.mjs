@@ -32,6 +32,8 @@ t.test("Fastify: register prefix propagation is honestly false", () => {
   const f = PARSER_CAPABILITIES.fastify;
   assertEq(f.registerPrefixPropagation, false);
   assertEq(f.routeOptionsParsed, true);
+  assertEq(f.typeScriptAst, false);
+  if (!/ts/.test(f.language) || !f.typeScriptGenericArguments) throw new Error("fastify TS support not documented");
 });
 
 t.test("NestJS: controller object/array arg handling is documented", () => {

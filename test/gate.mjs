@@ -168,4 +168,15 @@ t.test("parseFailOnFlag: unknown token throws (no silent ignore)", () => {
   throw new Error("expected parseFailOnFlag to throw on unknown token");
 });
 
+t.test("no-endpoints fires only with failOn.emptyInventory, empty code and no spec", () => {
+  const base = { code: [], drift: {} };
+  assertEq(resolveGate({ ...base, config: cfg(), specPresent: false }).status, "PASS");
+  const on = resolveGate({ ...base, config: cfg({ failOn: { emptyInventory: true } }), specPresent: false });
+  assertEq(JSON.stringify(on.reasons), JSON.stringify(["no-endpoints"]));
+  const withSpec = resolveGate({ ...base, config: cfg({ failOn: { emptyInventory: true } }), specPresent: true });
+  assertEq(withSpec.status, "PASS");
+});
+t.test("parseFailOnFlag: empty token maps to emptyInventory", () => {
+  assertEq(JSON.stringify(parseFailOnFlag("empty").failOn), JSON.stringify({ emptyInventory: true }));
+});
 t.finish();
