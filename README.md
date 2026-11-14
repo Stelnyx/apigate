@@ -21,7 +21,7 @@ One command. One report. One exit code.
 
 ---
 
-**ApiGate** is part of the Stelnyx developer-tool family alongside [LuxScope](https://github.com/Stelnyx/LuxScope), [LuxFaber](https://github.com/Stelnyx/LuxFaber), and [SecGate](https://github.com/Stelnyx/SecGate). It reads source code and OpenAPI specs on disk and produces one report: every endpoint it can detect, its declared auth posture, code/spec drift, and five transparent 0–100 rubrics. **100% static** — no HTTP requests, credentials, or running server. Zero network calls. With a fixed report timestamp, the same input and configuration produce byte-identical output.
+**ApiGate** is part of the Stelnyx developer-tool family alongside [LuxScope](https://stelnyx.com/), [LuxFaber](https://stelnyx.com/), and [SecGate](https://github.com/Stelnyx/SecGate). It reads source code and OpenAPI specs on disk and produces one report: every endpoint it can detect, its declared auth posture, code/spec drift, and five transparent 0–100 rubrics. **100% static** — no HTTP requests, credentials, or running server. Zero network calls. With a fixed report timestamp, the same input and configuration produce byte-identical output.
 
 **Honest positioning.** ApiGate is a **surface auditor**, not a runtime scanner and not a DAST tool. The report explicitly states what a static analysis CAN and CANNOT prove — it's a printed trust feature, not a footnote. ApiGate cannot verify runtime authorization (BOLA / object-level access). It can prove that an endpoint declares a guard. It cannot prove the guard is correct. See [What this does NOT prove](#what-this-does-not-prove).
 

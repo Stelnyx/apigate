@@ -2,10 +2,10 @@
 
 **Sisters:**
 - [`SecGate`](https://github.com/Stelnyx/SecGate) (~/code/StelNyx/SecGate)
-- [`luxfaber`](https://github.com/Stelnyx/LuxFaber) (~/code/StelNyx/luxfaber)
-- [`luxscope`](https://github.com/Stelnyx/LuxScope) (~/code/StelNyx/luxscope)
+- [`luxfaber`](https://stelnyx.com/) (~/code/StelNyx/luxfaber)
+- [`luxscope`](https://stelnyx.com/) (~/code/StelNyx/luxscope)
 
-ApiGate, SecGate, LuxScope, and LuxFaber share visual identity through a single npm package: **[`@stelnyx/report-theme`](https://github.com/Stelnyx/report-theme)**. **Drift is forbidden.** A change to the shared shell, theme tokens, brand block, or component primitives MUST happen in `report-theme` and be picked up here by version bump — never patched around locally.
+ApiGate, SecGate, LuxScope, and LuxFaber share visual identity through a single npm package: **[`@stelnyx/report-theme`](https://www.npmjs.com/package/@stelnyx/report-theme)**. **Drift is forbidden.** A change to the shared shell, theme tokens, brand block, or component primitives MUST happen in `report-theme` and be picked up here by version bump — never patched around locally.
 
 ## The report-theme consumption contract
 

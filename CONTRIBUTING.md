@@ -7,7 +7,7 @@ Thanks for your interest. ApiGate is a static API surface auditor — contributi
 - Be respectful — see [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 - Report security issues privately — see [SECURITY.md](SECURITY.md). Never open a public issue for a vulnerability.
 - Open an issue before large changes so we can align on scope.
-- ApiGate consumes [`@stelnyx/report-theme`](https://github.com/Stelnyx/report-theme) as the single source of truth for HTML report rendering. Do not fork or restyle locally — see [DESIGN_PARITY.md](DESIGN_PARITY.md).
+- ApiGate consumes [`@stelnyx/report-theme`](https://www.npmjs.com/package/@stelnyx/report-theme) as the single source of truth for HTML report rendering. Do not fork or restyle locally — see [DESIGN_PARITY.md](DESIGN_PARITY.md).
 
 ## Development setup
 
