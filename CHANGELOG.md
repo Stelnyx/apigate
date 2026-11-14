@@ -6,7 +6,24 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+## [0.3.4] - 2026-11-13
+
+### Performance
+- Shared candidate file index across parsers, so each file is no longer
+  rescanned per parser.
+
+### Changed
+- The `Publish` workflow now runs on a `vX.Y.Z` tag push (or a manual run
+  from that tag), checks the tag against `package.json` and `main`, and
+  publishes with `npm publish --provenance`. It no longer depends on a
+  GitHub Release event.
+- `CHANGELOG.md` is now included in the npm package.
+- Removed the npm provenance badge and claims from the README, SECURITY.md
+  and the docs page. Provenance is documented from this version on.
+
 ### Fixed
+- Correction: the 0.3.3 note below says releases publish with provenance.
+  That was not true: 0.3.0 to 0.3.3 were published without npm provenance.
 - Fastify: `.ts`, `.mts` and `.cts` files are now parsed (regex extractor, no
   new dependency), including `fastify.delete<{ Params: ... }>(...)` generics
   and `fastify.route({...})`. Previously only `.js/.mjs/.cjs` were read, so a

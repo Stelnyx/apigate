@@ -24,7 +24,7 @@ If you find a security issue in ApiGate, please **do not open a public GitHub is
 
 ## Supply-chain trust
 
-- ApiGate is published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements) signed via GitHub Actions OIDC.
+- Versions up to 0.3.3 were published without [npm provenance](https://docs.npmjs.com/generating-provenance-statements). The publish workflow generates provenance from 0.3.4 on. Check any version with `npm view @stelnyx/apigate@<version> dist.attestations.provenance.predicateType`; a provenance statement is present when it prints `https://slsa.dev/provenance/v1`.
 - The dependency surface is intentionally small: `@stelnyx/report-theme`, `acorn`, `acorn-walk`, `yaml`. Any addition requires explicit justification in the PR.
 - Lockfile (`package-lock.json`) is committed and CI-verified.
 

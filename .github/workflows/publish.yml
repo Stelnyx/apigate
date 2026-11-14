@@ -1,39 +1,90 @@
 name: Publish
-
+# Runs only for a vX.Y.Z tag: either a tag push, or a manual run started from
+# that tag ("Use workflow from" must be the tag, not a branch).
 on:
-  release:
-    types: [published]
-
-permissions:
-  contents: read
-  id-token: write
-
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+permissions: {}
+env:
+  RELEASE_TAG: ${{ github.ref_name }}
 jobs:
   publish:
     name: npm publish
+    if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
+      - name: Validate release tag
+        run: |
+          set -euo pipefail
+          if ! [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Tag '$RELEASE_TAG' is not of the form vX.Y.Z"
+            exit 1
+          fi
+      # Check out the exact commit this run was triggered for (GITHUB_SHA), not
+      # the tag name, so a tag moved after the trigger cannot change what is
+      # built. Full history is needed for the ancestor check below.
       - name: Checkout
         uses: actions/checkout@v4
-
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify the tag points at the triggering commit
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "+refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
+          TAG_COMMIT="$(git rev-parse --verify "refs/tags/${RELEASE_TAG}^{commit}")"
+          HEAD_COMMIT="$(git rev-parse HEAD)"
+          if [ "$TAG_COMMIT" != "$GITHUB_SHA" ] || [ "$HEAD_COMMIT" != "$GITHUB_SHA" ]; then
+            echo "Tag $RELEASE_TAG points at $TAG_COMMIT, run commit is $GITHUB_SHA, checkout is $HEAD_COMMIT"
+            exit 1
+          fi
+      - name: Verify the tagged commit is on main
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "+refs/heads/main:refs/remotes/origin/main"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "Tagged commit $GITHUB_SHA is not an ancestor of origin/main; release only merged commits"
+            exit 1
+          fi
+      - name: Verify tag matches package.json version
+        run: |
+          set -euo pipefail
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          TAG_VERSION="${RELEASE_TAG#v}"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "Tag $TAG_VERSION does not match package.json version $PKG_VERSION"
+            exit 1
+          fi
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
           package-manager-cache: false
-
+      # Trusted publishing and provenance need npm >= 11.5.1; Node 22 ships npm 10.
       - name: Update npm
-        run: npm install -g npm@latest
-
+        run: npm install -g npm@11.21.2 --ignore-scripts
       - name: Install dependencies
         run: npm ci
-
-      - name: Test
-        run: npm test
-
       - name: Lint
         run: npm run lint
-
+      - name: Test
+        run: npm test
+      - name: Refuse to republish an existing version
+        run: |
+          set -euo pipefail
+          VERSION="${RELEASE_TAG#v}"
+          VERSIONS="$(npm view @stelnyx/apigate versions --json)"
+          PUBLISHED="$(VERSIONS="$VERSIONS" VERSION="$VERSION" node -e 'const v=[].concat(JSON.parse(process.env.VERSIONS)); console.log(v.includes(process.env.VERSION) ? "true" : "false")')"
+          if [ "$PUBLISHED" = "true" ]; then
+            echo "@stelnyx/apigate@$VERSION is already on npm; bump the version"
+            exit 1
+          fi
       - name: Publish to npm
-        run: npm publish --access public
+        run: npm publish --provenance --access public

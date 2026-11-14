@@ -201,10 +201,9 @@ footer .meta{color:var(--faint)}
       <a href="https://www.npmjs.com/package/@stelnyx/apigate"><img alt="npm version" src="https://img.shields.io/npm/v/@stelnyx/apigate.svg?style=flat-square&labelColor=0a0a0a&color=00cc66"></a>
       <a href="https://github.com/Stelnyx/ApiGate/blob/main/LICENSE"><img alt="license MIT" src="https://img.shields.io/badge/license-MIT-00cc66.svg?style=flat-square&labelColor=0a0a0a"></a>
       <img alt="node >=18" src="https://img.shields.io/badge/node-%E2%89%A518-00cc66.svg?style=flat-square&labelColor=0a0a0a">
-      <img alt="npm provenance signed" src="https://img.shields.io/badge/npm%20provenance-signed-00cc66.svg?style=flat-square&labelColor=0a0a0a">
     </div>
 
-    <p class="proof">Dogfooded against real public codebases each release — <strong>Immich</strong> (255 endpoints, NestJS), <strong>Ghost</strong> (303, Express), and a 423-endpoint private production NestJS app. Early release <code>v0.3.0</code>, published with npm provenance.</p>
+    <p class="proof">Dogfooded against real public codebases each release — <strong>Immich</strong> (255 endpoints, NestJS), <strong>Ghost</strong> (303, Express), and a 423-endpoint private production NestJS app. Early release.</p>
   </div>
 </header>
 
@@ -298,7 +297,7 @@ footer .meta{color:var(--faint)}
     <dt>Will it flag my login endpoint as a failure?</dt>
     <dd>No. A deterministic, exact-match heuristic marks public-by-design paths (login / signup / refresh / health / OAuth callbacks) and excludes them from the gate. The list is fully overridable in <code>.apigate.config.json</code>.</dd>
     <dt>What does it cost?</dt>
-    <dd>Nothing. MIT licensed, published on npm with provenance. <code>npx @stelnyx/apigate .</code> and you're done.</dd>
+    <dd>Nothing. MIT licensed, published on npm. <code>npx @stelnyx/apigate .</code> and you're done.</dd>
   </dl>
 </section>
 
