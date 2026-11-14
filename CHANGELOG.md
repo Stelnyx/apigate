@@ -6,7 +6,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
-## [0.3.4] - 2026-11-13
+## [0.3.4] - 2026-11-14
 
 ### Performance
 - Shared candidate file index across parsers, so each file is no longer
@@ -17,6 +17,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
   from that tag), checks the tag against `package.json` and `main`, and
   publishes with `npm publish --provenance`. It no longer depends on a
   GitHub Release event.
+- The `Publish` job installs dependencies with `npm ci --ignore-scripts`, so
+  no dependency install script runs in the job that can publish to npm.
 - `CHANGELOG.md` is now included in the npm package.
 - Removed the npm provenance badge and claims from the README, SECURITY.md
   and the docs page. Provenance is documented from this version on.
@@ -54,6 +56,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
   `express`, `fastify` or `@nestjs/*` and 0 endpoints were found.
 - Opt-in `--fail-on empty` / `failOn.emptyInventory`: exit 1 with gate reason
   `no-endpoints` when no endpoints are found. Default stays exit 0.
+
 ## [0.3.3] - 2026-07-10
 
 ### Changed
