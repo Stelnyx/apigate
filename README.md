@@ -60,6 +60,8 @@ Headline:  86 / 100   █████████████████░░�
 
 Bands: `STRONG ≥ 85`, `GOOD ≥ 70`, `MIXED ≥ 50`, `WEAK < 50`. Same bands as SecGate / LuxFaber / LuxScope.
 
+**No endpoints, no score.** When a scan finds no code endpoints (even if an OpenAPI spec exists), nothing was measured: `headlineScore` and every entry in `rubrics` are `null` in the JSON report, and the console and HTML show `n/a` with no band. The formulas for scans that find endpoints are unchanged (`rubric v1`). If `package.json` declares `express`, `fastify` or `@nestjs/*` and 0 endpoints were found, ApiGate prints a `WARNING:` line naming the framework and adds `{ "file": "package.json", "reason": "framework-detected-no-endpoints", "framework": "express | fastify | nest" }` to `warnings`. The exit code stays 0 unless you opt in with `--fail-on empty`.
+
 The binary gate (exit 1 on open write methods, configurable) is independent of the score. `headlineScore` + `rubrics` are written to `apigate-report.json` for CI dashboards and trend tracking.
 
 ---
@@ -93,7 +95,7 @@ The bounded scan builds one sorted candidate-file index and shares it across all
 | Framework  | Detection                                                                                                                |
 |------------|--------------------------------------------------------------------------------------------------------------------------|
 | **Express**  | acorn AST for `.js/.mjs/.cjs`; regex fallback for `.ts/.tsx`. Resolves `app.use('/prefix', router)` mounts in same file. AST files also track any variable assigned from `express()` / `express.Router()` / `Router()` whatever its name, and parse `app.route('/x').get(...).post(...)` chains. Path-less `router.use(requireAuth)` guards routes registered on that router after it only when `router` is a `const/let/var` declared once from a router factory, never reassigned, and the `use()` is a plain statement in the same block as the declaration. These `use()` calls are ignored (routes stay OPEN): `this.router.use(...)`, a router received as a parameter, a `use()` inside `if` or a helper function, `X.use(someCall(), auth)`, and wrappers like `jwt(...).unless(...)`. Not resolved: routers imported from another file, path-less `app.use(auth)` flowing into routers mounted on `app`, `route('/x').all(auth)` guarding the other verbs of the chain, and all of the above in `.ts/.tsx` files. Routers created in factory functions or received as parameters are parsed (routes and mounts), with the `use()` limits above. |
-| **Fastify**  | acorn AST. Handles `fastify.<method>(...)` and `fastify.route({ method, url, preHandler })`.                             |
+| **Fastify**  | acorn AST for `.js/.mjs/.cjs`; regex extractor for `.ts/.mts/.cts` (no TypeScript dependency, `fastify.delete<{ Params: ... }>(...)` generics are skipped). Handles `fastify.<method>(...)` and `fastify.route({ method, url, preHandler })`. |
 | **NestJS**   | Decorator extraction over `.ts/.js`. Pairs `@Controller(...)` with method decorators `@Get / @Post / @Put / @Patch / @Delete / @Options / @Head / @All`. Captures class- and method-level guards (`@UseGuards`, `@Auth`, `@Roles`, `@ApiBearerAuth`). |
 | **OpenAPI**  | Parses `*.yaml`/`*.yml`/`*.json` with `swagger:` (2.0) or `openapi:` (3.x) root. Honors operation-level `security` and root inheritance. |
 
@@ -234,6 +236,7 @@ apigate --help
 | `intentional-public` | `failOn.intentionalPublic = true`        |
 | `new-open-write`     | `failOn.newOpenWrite     = true` (needs `--diff`) |
 | `missing-spec`       | `requireSpec             = true`         |
+| `empty`              | `failOn.emptyInventory   = true` (exit 1 when no code or spec endpoints are found) |
 
 Unknown tokens throw — CI typos can never silently relax policy.
 
@@ -258,8 +261,8 @@ Keys: `risk` (HIGH|MED|LOW), `posture` (GUARDED|OPEN|UNKNOWN), `framework`
 | `2`  | Invalid target or CLI error                                      |
 
 The `gate.reasons[]` array in the JSON report holds the locked enum set
-(`drift`, `intentional-public`, `missing-spec`, `open-read`, `open-write`,
-`unknown-endpoint`) sorted lexicographically and deduplicated, so CI can
+(`drift`, `intentional-public`, `missing-spec`, `new-open-write`, `no-endpoints`,
+`open-read`, `open-write`, `unknown-endpoint`) sorted lexicographically and deduplicated, so CI can
 grep failure causes without scraping stdout.
 
 ---
@@ -434,9 +437,9 @@ Each run writes:
   "status": "PASS | FAIL",
   "gate": {
     "status": "PASS | FAIL",
-    "reasons": ["drift", "intentional-public", "missing-spec", "new-open-write", "open-read", "open-write", "unknown-endpoint"]
+    "reasons": ["drift", "intentional-public", "missing-spec", "new-open-write", "no-endpoints", "open-read", "open-write", "unknown-endpoint"]
   },
-  "headlineScore": 86,
+  "headlineScore": 86,   // null when no code endpoints were found (rubrics too)
   "rubrics": {
     "inventoryResolved": 86,
     "authCoverage": 67,
