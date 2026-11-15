@@ -47,7 +47,7 @@ t.test("parseFilter: case-normalizes risk/posture/method", () => {
 
 t.test("parseFilter: unknown key throws", () => {
   try { parseFilter("bogus=1"); } catch (e) {
-    if (!e.message.includes("bogus")) throw new Error("expected error to mention key");
+    if (!e.message.includes("bogus")) throw new Error("expected error to mention key", { cause: e });
     return;
   }
   throw new Error("expected parseFilter to throw on unknown key");
@@ -55,7 +55,7 @@ t.test("parseFilter: unknown key throws", () => {
 
 t.test("parseFilter: unknown value throws", () => {
   try { parseFilter("risk=BOGUS"); } catch (e) {
-    if (!e.message.includes("BOGUS")) throw new Error("expected error to mention value");
+    if (!e.message.includes("BOGUS")) throw new Error("expected error to mention value", { cause: e });
     return;
   }
   throw new Error("expected parseFilter to throw on unknown value");
