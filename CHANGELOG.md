@@ -5,6 +5,21 @@ All notable changes to ApiGate are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Express routers defined in one file and mounted in another now get their
+  mount prefix and mount middleware: `app.use("/p", mw, importedRouter)`
+  with relative ESM or CommonJS imports (`./x.js`, `./x`, `./dir`), nested
+  across files, and one route per prefix when a router is mounted twice.
+  `parserCapabilities.express.crossFileMountPrefix` is now `true`.
+### Changed
+- An exported `Router()` that no resolved mount reaches (alias or package
+  imports, mounts in `.ts/.tsx` files, scans of a sub-directory, factory
+  exports, mount cycles) is now `UNRESOLVED` with the new reason
+  `mount-prefix-cross-file` instead of a resolved bare path. An `express()`
+  app stays a root.
+### Fixed
+- Endpoint sorting is a total order when unresolved endpoints (path `null`)
+  are mixed with resolved ones, so output no longer depends on input order.
 
 ## [0.3.4] - 2026-11-14
 

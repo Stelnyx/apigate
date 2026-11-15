@@ -12,5 +12,3 @@ function protect() {
 }
 router.post("/open", (req, res) => res.end());               // -> OPEN (registered before protect())
 protect();
-
-module.exports = { r2, router };
