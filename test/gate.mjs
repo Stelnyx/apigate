@@ -162,7 +162,7 @@ t.test("parseFailOnFlag: unknown token throws (no silent ignore)", () => {
   try {
     parseFailOnFlag("open-write,oops");
   } catch (e) {
-    if (!e.message.includes('"oops"')) throw new Error(`expected error to mention token, got: ${e.message}`);
+    if (!e.message.includes('"oops"')) throw new Error(`expected error to mention token, got: ${e.message}`, { cause: e });
     return;
   }
   throw new Error("expected parseFailOnFlag to throw on unknown token");

@@ -5,6 +5,7 @@ All notable changes to ApiGate are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 ### Added
 - NestJS global guards: `{ provide: APP_GUARD, useClass|useExisting: X }`
   providers and `useGlobalGuards(new X())` calls add the guard class name as
@@ -17,10 +18,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 - NestJS `setGlobalPrefix('literal')` is applied to every Nest endpoint path,
   and a literal `exclude` array is honored. A non-literal prefix leaves the
   endpoints unresolved with the new reason `global-prefix-not-static-string`.
+
 ### Changed
+- Dropped Node 18 (end of life). `engines.node` is now `>=20`, and the CI
+  matrix runs Node 20, 22, 24 and 26.
+- Bumped `acorn` to 8.19 and `yaml` to 2.9.1. Dev tooling moved to ESLint 10,
+  `@eslint/js` 10 and `globals` 17; `npm audit` is clean again.
 - `parserCapabilities.nest.globalGuardDetection` is now `true`, with new keys
   `globalGuardRules`, `globalPrefix` and `publicDecorators`. The report
   limitation about global guards describes what is and is not detected.
+
 ### Fixed
 - Nest: decorators on the same line before `@Get(...)` are now read, and a
   method declared on the anchor line (`@Get() list() {}`) no longer takes the
