@@ -6,6 +6,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-15
+
 ### Added
 - Express routers defined in one file and mounted in another now get their
   mount prefix and mount middleware: `app.use("/p", mw, importedRouter)`

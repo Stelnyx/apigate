@@ -446,7 +446,7 @@ Each run writes:
 
 ```json
 {
-  "version": "0.3.4",
+  "version": "0.4.0",
   "rubricVersion": "v1",
   "riskVersion": "v1",
   "timestamp": "ISO 8601",
