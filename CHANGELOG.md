@@ -6,6 +6,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+### Changed
+- Dropped Node 18 (end of life). `engines.node` is now `>=20`, and the CI
+  matrix runs Node 20, 22, 24 and 26.
+- Bumped `acorn` to 8.19 and `yaml` to 2.9.1. Dev tooling moved to ESLint 10,
+  `@eslint/js` 10 and `globals` 17; `npm audit` is clean again.
+
 ## [0.3.4] - 2026-11-14
 
 ### Performance
