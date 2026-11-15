@@ -12,6 +12,8 @@ import { computeScore } from "../lib/score.mjs";
 import { renderHtml } from "../lib/report.mjs";
 import { annotateRisk } from "../lib/risk.mjs";
 import { parseFilter, applyFilter } from "../lib/filter.mjs";
+import { parseExpress } from "../lib/parsers/express.mjs";
+import { walkFiles, sortEndpoints } from "../lib/utils.mjs";
 import { runner, assertEq } from "./_runner.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -127,4 +129,10 @@ t.test("applyFilter: filtered HTML byte-equal across two runs", () => {
   assertEq(a, b);
 });
 
+t.test("parseExpress: cross-file mounts give identical output for forward and reversed file lists", () => {
+  const multi = path.join(__dirname, "fixtures", "express-multifile");
+  const files = walkFiles(multi, [".js", ".mjs", ".cjs", ".ts", ".tsx"], [], {});
+  const run = (list) => JSON.stringify(sortEndpoints(parseExpress(multi, [], {}, list).endpoints));
+  assertEq(run(files), run([...files].reverse()));
+});
 t.finish();

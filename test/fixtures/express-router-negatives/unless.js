@@ -10,5 +10,3 @@ app.post("/webhook", (req, res) => res.end());               // -> OPEN
 const api = express.Router();
 api.use(jwt({ secret }));
 api.post("/guarded", (req, res) => res.end());               // -> GUARDED (control)
-
-module.exports = { app, api };

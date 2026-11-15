@@ -16,14 +16,14 @@ t.test("PARSER_CAPABILITIES.express child is frozen", () => {
 t.test("Express: declares regex TS fallback, no TS AST, dynamic mount UNRESOLVED", () => {
   const e = PARSER_CAPABILITIES.express;
   assertEq(e.sameFileMountPrefix, true);
-  assertEq(e.crossFileMountPrefix, false);
+  assertEq(e.crossFileMountPrefix, true);
   assertEq(e.dynamicMountPrefix, "UNRESOLVED");
   assertEq(e.typeScriptAst, false);
 });
 
 t.test("Express: router tracking, route() chains and router-level middleware are declared AST-only", () => {
   const e = PARSER_CAPABILITIES.express;
-  for (const k of ["routerVariableTracking", "routeChains", "routerLevelMiddleware"]) {
+  for (const k of ["routerVariableTracking", "routeChains", "routerLevelMiddleware", "crossFileMounts"]) {
     if (typeof e[k] !== "string" || !e[k].startsWith("AST files:")) throw new Error(`express.${k} missing or not AST-scoped`);
   }
 });

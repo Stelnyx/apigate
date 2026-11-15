@@ -133,4 +133,79 @@ t.test("use(): express.json(), imported router and error handler are not auth", 
   assertDeepEq(summarizeNeg("harmless-use.js"), ["POST /items OPEN"]);
 });
 
+// Issue #8: routers defined in one file and mounted in another.
+const multiFixture = path.join(__dirname, "fixtures", "express-multifile");
+const multiEndpoints = parseExpress(multiFixture, []).endpoints;
+const multi = classifyAll(multiEndpoints, CONFIG_DEFAULTS);
+const summarizeMulti = (prefix) => multi
+  .filter(e => e.file.startsWith(prefix))
+  .map(e => `${e.method} ${e.path} ${e.posture}${e.unresolvedReason ? " " + e.unresolvedReason : ""}`)
+  .sort();
+t.test("multifile: default-imported ESM router gets its mount prefix", () => {
+  assertDeepEq(summarizeMulti("routes/users.js"), ["GET /api/users OPEN", "POST /api/users OPEN"]);
+});
+t.test("multifile: mount middleware guards the routes of an extension-less CJS import", () => {
+  assertDeepEq(summarizeMulti("routes/admin.js"), ["DELETE /admin/wipe GUARDED"]);
+  const e = multi.find(x => x.file === "routes/admin.js");
+  assertEq(e.matchedAuthMarker, "requireAuth");
+});
+t.test("multifile: ./dir resolves index.js and nested mounts compose across files", () => {
+  assertDeepEq(summarizeMulti("routes/api/"), ["GET /v1/items/:id OPEN", "GET /v1/ping OPEN"]);
+});
+t.test("multifile: named, namespace, renamed and inline require forms; one router mounted twice", () => {
+  assertDeepEq(summarizeMulti("multi/"), [
+    "GET /a/ping OPEN", "GET /b/ping OPEN", "GET /inline/i OPEN", "GET /ns/n OPEN"
+  ]);
+});
+t.test("multifile: factory export is unresolved mount-prefix-cross-file, never a bare path", () => {
+  assertDeepEq(summarizeMulti("routes/legacy.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
+});
+t.test("multifile: dynamic prefix on a cross-file mount stays mount-prefix-not-static", () => {
+  assertDeepEq(summarizeMulti("routes/dyn.js"), ["GET null UNKNOWN mount-prefix-not-static"]);
+});
+t.test("multifile: exported router reached only through an alias import is unresolved", () => {
+  assertDeepEq(summarizeMulti("routes/ghost.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
+});
+t.test("multifile: mount cycle is unresolved, not a partial path", () => {
+  assertDeepEq(summarizeMulti("cycle/"), [
+    "GET null UNKNOWN mount-prefix-cross-file", "GET null UNKNOWN mount-prefix-cross-file"
+  ]);
+});
+t.test("multifile: no unresolved endpoint carries a path", () => {
+  for (const e of multiEndpoints) if (e.resolved === false && e.path !== null) throw new Error(`${e.file} has path ${e.path}`);
+});
+t.test("multifile: scanning a sub-directory never reports half a prefix as resolved", () => {
+  const sub = classifyAll(parseExpress(path.join(multiFixture, "routes", "api"), []).endpoints, CONFIG_DEFAULTS)
+    .map(e => `${e.file} ${e.method} ${e.path} ${e.unresolvedReason || ""}`).sort();
+  assertDeepEq(sub, [
+    "index.js GET null mount-prefix-cross-file",
+    "items.js GET null mount-prefix-cross-file"
+  ]);
+});
+t.test("multifile: nested local router inside an exported router nothing mounts is unresolved", () => {
+  assertDeepEq(summarizeMulti("unmounted/"), [
+    "GET null UNKNOWN mount-prefix-cross-file", "GET null UNKNOWN mount-prefix-cross-file"
+  ]);
+});
+t.test("multifile: exported router mounted on an app in its own file keeps its resolved path", () => {
+  assertDeepEq(summarizeMulti("samefile/"), ["GET /api/u OPEN"]);
+});
+t.test("multifile: router mounted in its own file and from another file is unresolved, not stacked", () => {
+  assertDeepEq(summarizeMulti("samefile2/server.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
+});
+t.test("multifile: dual-mounted middle router does not stack prefixes onto its child", () => {
+  assertDeepEq(summarizeMulti("samefile3/leaf.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
+});
+t.test("multifile: child of a router nested on another local Router() stays unresolved", () => {
+  assertDeepEq(summarizeMulti("samefile4/leaf.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
+});
+t.test("multifile: child of an exported router mounted straight on an app resolves with the full prefix", () => {
+  assertDeepEq(summarizeMulti("samefile5/leaf.js"), ["GET /api/x/z OPEN"]);
+});
+t.test("multifile: router on an express() app that is mounted in the same file is unresolved", () => {
+  assertDeepEq(summarizeMulti("samefile6/leaf.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
+});
+t.test("multifile: router on an express() app that is mounted from another file is unresolved", () => {
+  assertDeepEq(summarizeMulti("samefile7/leaf.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
+});
 t.finish();
