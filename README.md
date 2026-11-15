@@ -12,7 +12,7 @@ One command. One report. One exit code.
 <p>
   <a href="https://www.npmjs.com/package/@stelnyx/apigate"><img alt="npm" src="https://img.shields.io/npm/v/@stelnyx/apigate.svg?style=flat-square&labelColor=0a0a0a&color=00cc66"></a>
   <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-00cc66.svg?style=flat-square&labelColor=0a0a0a"></a>
-  <img alt="node" src="https://img.shields.io/badge/node-%E2%89%A518-00cc66.svg?style=flat-square&labelColor=0a0a0a">
+  <img alt="node" src="https://img.shields.io/badge/node-%E2%89%A520-00cc66.svg?style=flat-square&labelColor=0a0a0a">
   <a href="SECURITY.md"><img alt="security" src="https://img.shields.io/badge/security-policy-00cc66.svg?style=flat-square&labelColor=0a0a0a"></a>
   <a href="https://github.com/Stelnyx/ApiGate/actions/workflows/ci.yml"><img alt="self-scan" src="https://github.com/Stelnyx/ApiGate/actions/workflows/ci.yml/badge.svg?branch=main"></a>
 </p>
@@ -21,7 +21,7 @@ One command. One report. One exit code.
 
 ---
 
-**ApiGate** is part of the Stelnyx developer-tool family alongside [LuxScope](https://github.com/Stelnyx/LuxScope), [LuxFaber](https://github.com/Stelnyx/LuxFaber), and [SecGate](https://github.com/Stelnyx/SecGate). It reads source code and OpenAPI specs on disk and produces one report: every endpoint it can detect, its declared auth posture, code/spec drift, and five transparent 0–100 rubrics. **100% static** — no HTTP requests, credentials, or running server. Zero network calls. With a fixed report timestamp, the same input and configuration produce byte-identical output.
+**ApiGate** is part of the Stelnyx developer-tool family alongside [LuxScope](https://stelnyx.com/), [LuxFaber](https://stelnyx.com/), and [SecGate](https://github.com/Stelnyx/SecGate). It reads source code and OpenAPI specs on disk and produces one report: every endpoint it can detect, its declared auth posture, code/spec drift, and five transparent 0–100 rubrics. **100% static** — no HTTP requests, credentials, or running server. Zero network calls. With a fixed report timestamp, the same input and configuration produce byte-identical output.
 
 **Honest positioning.** ApiGate is a **surface auditor**, not a runtime scanner and not a DAST tool. The report explicitly states what a static analysis CAN and CANNOT prove — it's a printed trust feature, not a footnote. ApiGate cannot verify runtime authorization (BOLA / object-level access). It can prove that an endpoint declares a guard. It cannot prove the guard is correct. See [What this does NOT prove](#what-this-does-not-prove).
 
