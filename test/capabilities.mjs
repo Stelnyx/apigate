@@ -42,6 +42,14 @@ t.test("NestJS: controller object/array arg handling is documented", () => {
   assertEq(n.classLevelGuards, true);
   assertEq(n.dynamicDecoratorArg, "UNRESOLVED");
 });
+t.test("NestJS: global guard detection is true and its rules are documented", () => {
+  const n = PARSER_CAPABILITIES.nest;
+  assertEq(n.globalGuardDetection, true);
+  for (const k of ["globalGuardRules", "globalPrefix", "publicDecorators"]) {
+    if (typeof n[k] !== "string" || n[k] === "") throw new Error(`nest.${k} missing`);
+  }
+  if (!KNOWN_UNRESOLVED_REASONS.includes("global-prefix-not-static-string")) throw new Error("reason missing");
+});
 
 t.test("OpenAPI: missing security is conservative UNKNOWN", () => {
   const o = PARSER_CAPABILITIES.openapi;

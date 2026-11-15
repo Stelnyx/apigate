@@ -12,6 +12,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
   with relative ESM or CommonJS imports (`./x.js`, `./x`, `./dir`), nested
   across files, and one route per prefix when a router is mounted twice.
   `parserCapabilities.express.crossFileMountPrefix` is now `true`.
+- NestJS global guards: `{ provide: APP_GUARD, useClass|useExisting: X }`
+  providers and `useGlobalGuards(new X())` calls add the guard class name as
+  an auth marker to every Nest endpoint in the scan. An endpoint is GUARDED
+  only when the name is in `auth.nest`; a global guard with another name is
+  still reported OPEN.
+- `publicDecorators` config key (default `Public`, `SkipAuth`,
+  `AllowAnonymous`): a Nest controller or method with one of these
+  decorators does not receive the global guard markers.
+- NestJS `setGlobalPrefix('literal')` is applied to every Nest endpoint path,
+  and a literal `exclude` array is honored. A non-literal prefix leaves the
+  endpoints unresolved with the new reason `global-prefix-not-static-string`.
 
 ### Changed
 - Dropped Node 18 (end of life). `engines.node` is now `>=20`, and the CI
@@ -23,10 +34,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
   exports, mount cycles) is now `UNRESOLVED` with the new reason
   `mount-prefix-cross-file` instead of a resolved bare path. An `express()`
   app stays a root.
+- `parserCapabilities.nest.globalGuardDetection` is now `true`, with new keys
+  `globalGuardRules`, `globalPrefix` and `publicDecorators`. The report
+  limitation about global guards describes what is and is not detected.
 
 ### Fixed
 - Endpoint sorting is a total order when unresolved endpoints (path `null`)
   are mixed with resolved ones, so output no longer depends on input order.
+- Nest: decorators on the same line before `@Get(...)` are now read, and a
+  method declared on the anchor line (`@Get() list() {}`) no longer takes the
+  decorators of the next method.
 
 ## [0.3.4] - 2026-11-14
 
