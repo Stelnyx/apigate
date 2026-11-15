@@ -196,4 +196,16 @@ t.test("multifile: router mounted in its own file and from another file is unres
 t.test("multifile: dual-mounted middle router does not stack prefixes onto its child", () => {
   assertDeepEq(summarizeMulti("samefile3/leaf.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
 });
+t.test("multifile: child of a router nested on another local Router() stays unresolved", () => {
+  assertDeepEq(summarizeMulti("samefile4/leaf.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
+});
+t.test("multifile: child of an exported router mounted straight on an app resolves with the full prefix", () => {
+  assertDeepEq(summarizeMulti("samefile5/leaf.js"), ["GET /api/x/z OPEN"]);
+});
+t.test("multifile: router on an express() app that is mounted in the same file is unresolved", () => {
+  assertDeepEq(summarizeMulti("samefile6/leaf.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
+});
+t.test("multifile: router on an express() app that is mounted from another file is unresolved", () => {
+  assertDeepEq(summarizeMulti("samefile7/leaf.js"), ["GET null UNKNOWN mount-prefix-cross-file"]);
+});
 t.finish();
