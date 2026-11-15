@@ -95,7 +95,7 @@ The bounded scan builds one sorted candidate-file index and shares it across all
 |------------|--------------------------------------------------------------------------------------------------------------------------|
 | **Express**  | acorn AST for `.js/.mjs/.cjs`; regex fallback for `.ts/.tsx`. Resolves `app.use('/prefix', router)` mounts in same file. AST files also track any variable assigned from `express()` / `express.Router()` / `Router()` whatever its name, and parse `app.route('/x').get(...).post(...)` chains. Path-less `router.use(requireAuth)` guards routes registered on that router after it only when `router` is a `const/let/var` declared once from a router factory, never reassigned, and the `use()` is a plain statement in the same block as the declaration. These `use()` calls are ignored (routes stay OPEN): `this.router.use(...)`, a router received as a parameter, a `use()` inside `if` or a helper function, `X.use(someCall(), auth)`, and wrappers like `jwt(...).unless(...)`. Not resolved: routers imported from another file, path-less `app.use(auth)` flowing into routers mounted on `app`, `route('/x').all(auth)` guarding the other verbs of the chain, and all of the above in `.ts/.tsx` files. Routers created in factory functions or received as parameters are parsed (routes and mounts), with the `use()` limits above. |
 | **Fastify**  | acorn AST for `.js/.mjs/.cjs`; regex extractor for `.ts/.mts/.cts` (no TypeScript dependency, `fastify.delete<{ Params: ... }>(...)` generics are skipped). Handles `fastify.<method>(...)` and `fastify.route({ method, url, preHandler })`. |
-| **NestJS**   | Decorator extraction over `.ts/.js`. Pairs `@Controller(...)` with method decorators `@Get / @Post / @Put / @Patch / @Delete / @Options / @Head / @All`. Captures class- and method-level guards (`@UseGuards`, `@Auth`, `@Roles`, `@ApiBearerAuth`). |
+| **NestJS**   | Decorator extraction over `.ts/.js`. Pairs `@Controller(...)` with method decorators `@Get / @Post / @Put / @Patch / @Delete / @Options / @Head / @All`. Captures class- and method-level guards (`@UseGuards`, `@Auth`, `@Roles`, `@ApiBearerAuth`), global guards (`APP_GUARD` providers, `useGlobalGuards`) and a literal `setGlobalPrefix()`; see [NestJS global guards and prefix](#nestjs-global-guards-and-prefix). |
 | **OpenAPI**  | Parses `*.yaml`/`*.yml`/`*.json` with `swagger:` (2.0) or `openapi:` (3.x) root. Honors operation-level `security` and root inheritance. |
 
 Routes that can't be statically resolved (dynamic mount prefixes, computed method names, unparseable files) are emitted as `UNRESOLVED` — never guessed. They count against the **Inventory Resolved** rubric so the report tells you what ApiGate could and couldn't see.
@@ -287,6 +287,7 @@ Create `.apigate.config.json` in your scan target directory. All fields optional
     "drift":             false,
     "intentionalPublic": false
   },
+  "publicDecorators": ["Public", "SkipAuth", "AllowAnonymous"],
   "requireSpec": false,
   "strictPublic": false,
   "excludePaths": ["node_modules/**", "**/node_modules/**", "dist/**", "**/dist/**", "**/*.test.*"],
@@ -308,6 +309,7 @@ A fully-commented example config lives at [`.apigate.config.example.json`](.apig
 | `frameworks`  | object  | all `true`                             | Toggle individual parsers                                                  |
 | `auth`        | object  | per-framework defaults                 | Identifier names that classify an endpoint as `GUARDED` when present       |
 | `failOn`      | object  | `{ openWriteMethods: true, unknown: false, drift: false }` | Exit-code policy                                  |
+| `publicDecorators` | array | `["Public", "SkipAuth", "AllowAnonymous"]` | NestJS decorator names (no `@`) that cancel the global guard for the controller or method carrying them. `[]` disables it |
 | `requireSpec` | boolean | `false`                                | Fail when no OpenAPI 2/3 spec is detected                                |
 | `strictPublic`| boolean | `false`                                | Disable built-in public-auth patterns unless `publicAuthPatterns` is set  |
 | `excludePaths`| array   | vendor/build/test dirs                 | Globs of files to skip during the walk                                    |
@@ -331,6 +333,22 @@ ApiGate's classifier reports `GUARDED` when one of the declared auth identifiers
 
 ApiGate does **not** inspect what these identifiers do at runtime. Their declared presence is the signal — that's the static-analysis honesty contract.
 
+### NestJS global guards and prefix
+
+ApiGate reads these forms in any scanned file (comments are ignored):
+
+- `{ provide: APP_GUARD, useClass: X }` or `{ provide: APP_GUARD, useExisting: X }`, in any key order, with no nested braces inside the literal.
+- `app.useGlobalGuards(new A(), new B())`.
+- `app.setGlobalPrefix('literal')`, optionally with `{ exclude: [...] }`.
+
+The rule: the guard class names (`X`, `A`, `B`) are added as markers to **every** Nest endpoint found in the scan, and an endpoint becomes `GUARDED` only if one of those names is in `auth.nest`. `JwtAuthGuard` and `AuthGuard` are in the defaults. A global guard with any other name (say `OrgGuard`) changes nothing: its endpoints stay `OPEN` until you add the name, for example `{ "auth": { "nest": ["UseGuards", "OrgGuard"] } }`. ApiGate does not judge what a guard does.
+
+A controller or method decorated with a `publicDecorators` name (default `Public`, `SkipAuth`, `AllowAnonymous`) does not receive the global guard markers, so it stays `OPEN`. Decorators are matched by name only. An explicit marker on the same endpoint, such as `@UseGuards(JwtAuthGuard)` next to `@Public()`, is kept and the endpoint is `GUARDED`.
+
+The prefix applies to every Nest endpoint in the scan. A non-literal argument (`setGlobalPrefix(process.env.PREFIX)`) or two calls with different prefixes leave all Nest endpoints unresolved (`global-prefix-not-static-string`). In `exclude`, string entries and `{ path, method }` entries are matched against the un-prefixed controller plus method path by exact text; the `method` is not checked. A non-literal `exclude`, or a pattern with route parameters, is ignored and the prefix still applies.
+
+Limits: the scope is the whole scan, not a module or app, so a monorepo with several Nest apps in one scan shares guards and prefix. Not detected: `useFactory` and `useValue` providers, guards passed to `useGlobalGuards` as a variable, `RouterModule` path trees, versioning.
+
 ---
 
 ## Dogfood
@@ -347,7 +365,7 @@ ApiGate is scanned against four targets each release. The first is the **determi
 **What the numbers say.**
 
 - `nest-realworld` 100/100 doesn't mean ApiGate "passed Nest" — it means we lock byte-equality against that fixture.
-- `immich` 64/100 and `ghost` 66/100 are honest scans of real codebases against ApiGate's default policy + lightweight per-repo config. Both have real OPEN findings worth triage; both also exhibit the known parser limits documented in `parserCapabilities` (global-guard pattern, project-specific middleware names).
+- `immich` 64/100 and `ghost` 66/100 are honest scans of real codebases against ApiGate's default policy + lightweight per-repo config. Both have real OPEN findings worth triage; both also exhibit the known parser limits documented in `parserCapabilities` (for example project-specific middleware names).
 - `slstudio` 70/100 internal — surfaced ~39 false-GUARDED endpoints whose only declared marker was `@ApiBearerAuth` (Swagger doc decorator) on first run. Reviewable in 30 seconds via `matchedAuthMarker`.
 
 **Reproducing the public scans:**
@@ -515,6 +533,7 @@ Each run writes:
 | 0.3.0 | `parserCapabilities.nest.methodDecoratorsBelowAnchor` | Now `true` — bidirectional decorator scan captures markers above AND below `@Get`/`@Post`. |
 | 0.3.0 | `parserCapabilities.nest.globalGuardDetection` | Documented as `NOT DETECTED` — NestJS `APP_GUARD` / `useGlobalGuards` providers are invisible. Use `auth.nest` overrides or `severityOverrides`. |
 | 0.3.0 | LIMITATIONS entry #7 | Global-guard blind spot disclosed in every printed report. |
+| Unreleased | `parserCapabilities.nest.globalGuardDetection` | Now `true`. New keys `globalGuardRules`, `globalPrefix`, `publicDecorators`; new unresolved reason `global-prefix-not-static-string`. The LIMITATIONS global-guard entry is rewritten. |
 | Unreleased | `parserCapabilities.express.routerVariableTracking` / `routeChains` / `routerLevelMiddleware` | Any-name routers, `route()` chains and path-less `X.use(mw)` markers (AST files only). |
 
 ### Posture tiers
@@ -538,7 +557,7 @@ matchedAuthMarker distribution (GUARDED endpoints):
     2  Roles
 ```
 
-`@ApiBearerAuth()` is a Swagger documentation decorator, **not** a runtime guard. 313 of the 327 GUARDED endpoints matched on it. Most are still protected by a global `APP_GUARD` registered in `app.module.ts` (invisible to static analysis — see `parserCapabilities.nest`), but 39 had no other guard identifier in their decorator chain at all. Without `matchedAuthMarker` those would have been silent in the report. With it, the reviewer has a 30-second triage path.
+`@ApiBearerAuth()` is a Swagger documentation decorator, **not** a runtime guard. 313 of the 327 GUARDED endpoints matched on it. Most are still protected by a global `APP_GUARD` registered in `app.module.ts` (that scan predates global guard detection, see `parserCapabilities.nest`), but 39 had no other guard identifier in their decorator chain at all. Without `matchedAuthMarker` those would have been silent in the report. With it, the reviewer has a 30-second triage path.
 
 If your codebase wants to drop the false signal entirely, remove `ApiBearerAuth` from `auth.nest` in `.apigate.config.json`. ApiGate's defaults are intentionally permissive (the cost of missing a real guard outweighs the cost of a false GUARDED that `matchedAuthMarker` makes visible).
 
