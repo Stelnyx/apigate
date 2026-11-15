@@ -29,6 +29,8 @@
   "publicAuthPatterns": null,
   "_publicAuthPatterns": "Override the built-in public-auth heuristic. null (default) uses DEFAULT_PUBLIC_AUTH_PATTERNS from lib/heuristics.mjs — common login/signup/refresh/health paths. Provide an array of { method, path } pairs to replace entirely, or an empty array [] to disable the heuristic. The exact-match list is deterministic: paths are normalized (`/users/:id` ↔ `/users/{id}` ↔ `/users/<id>`) before comparison.",
 
+  "publicDecorators": ["Public", "SkipAuth", "AllowAnonymous"],
+  "_publicDecorators": "NestJS only. Decorator names (no @) that cancel a detected global guard (APP_GUARD provider or useGlobalGuards) for the controller or method carrying them, so the endpoint stays OPEN unless it has its own marker such as @UseGuards. A global guard counts as auth only when its class name is in auth.nest. [] disables this.",
   "requireSpec": false,
   "_requireSpec": "When true, exit 1 if no OpenAPI 2/3 spec is detected. Useful when spec drift is part of the contract and a green no-spec run would be misleading.",
 

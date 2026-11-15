@@ -53,6 +53,20 @@ t.test("defaultConfig() returns plain object suitable for mutation", () => {
   assertEq(cfg2.frameworks.express, true);
 });
 
+t.test("publicDecorators: default, custom list with @ stripped, [] and invalid value", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "apigate-cfg-"));
+  const cfgFile = path.join(dir, ".apigate.config.json");
+  const def = ["Public", "SkipAuth", "AllowAnonymous"];
+  assertEq(JSON.stringify(defaultConfig().publicDecorators), JSON.stringify(def));
+  fs.writeFileSync(cfgFile, "{}");
+  assertEq(JSON.stringify(loadConfig(dir).publicDecorators), JSON.stringify(def));
+  fs.writeFileSync(cfgFile, JSON.stringify({ publicDecorators: ["@Open", " NoAuth ", 3, ""] }));
+  assertEq(JSON.stringify(loadConfig(dir).publicDecorators), JSON.stringify(["Open", "NoAuth"]));
+  fs.writeFileSync(cfgFile, JSON.stringify({ publicDecorators: [] }));
+  assertEq(loadConfig(dir).publicDecorators.length, 0);
+  fs.writeFileSync(cfgFile, JSON.stringify({ publicDecorators: "Public" }));
+  assertEq(JSON.stringify(loadConfig(dir).publicDecorators), JSON.stringify(def));
+});
 t.test(".apigate.config.example.json is valid JSON", () => {
   const root = path.resolve(__dirname, "..");
   const raw = fs.readFileSync(path.join(root, ".apigate.config.example.json"), "utf-8");
