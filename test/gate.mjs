@@ -170,7 +170,8 @@ t.test("parseFailOnFlag: unknown token throws (no silent ignore)", () => {
 
 t.test("no-endpoints fires only with failOn.emptyInventory, empty code and no spec", () => {
   const base = { code: [], drift: {} };
-  assertEq(resolveGate({ ...base, config: cfg(), specPresent: false }).status, "PASS");
+  // Without the opt-in, an empty scan is NOTHING_ANALYSED, never PASS.
+  assertEq(resolveGate({ ...base, config: cfg(), specPresent: false }).status, "NOTHING_ANALYSED");
   const on = resolveGate({ ...base, config: cfg({ failOn: { emptyInventory: true } }), specPresent: false });
   assertEq(JSON.stringify(on.reasons), JSON.stringify(["no-endpoints"]));
   const withSpec = resolveGate({ ...base, config: cfg({ failOn: { emptyInventory: true } }), specPresent: true });

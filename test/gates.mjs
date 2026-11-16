@@ -100,6 +100,32 @@ t.test("empty directory: null scores, n/a in stdout, exit 0", () => {
     throw new Error("stdout must not claim a score for an empty scan");
   }
 });
+t.test("empty directory: NOTHING_ANALYSED, not PASS, and stdout names the supported frameworks", () => {
+  const dir = makeDir();
+  const run = runCli(dir);
+  assertEq(run.status, 0);
+  assertEq(readReport(dir).status, "NOTHING_ANALYSED");
+  if (/STATUS:\s+PASS/.test(run.stdout)) throw new Error("stdout must not print PASS for an empty scan");
+  for (const name of ["Express", "Fastify", "NestJS", "OpenAPI"]) {
+    if (!run.stdout.includes(name)) throw new Error(`stdout should name ${name}`);
+  }
+});
+t.test("only an unsupported framework (FastAPI): NOTHING_ANALYSED, not PASS", () => {
+  const dir = makeDir();
+  fs.writeFileSync(path.join(dir, "main.py"), [
+    "from fastapi import FastAPI",
+    "app = FastAPI()",
+    "",
+    "@app.get(\"/items/{item_id}\")",
+    "def read_item(item_id: int):",
+    "    return {\"item_id\": item_id}",
+    ""
+  ].join("\n"));
+  const run = runCli(dir);
+  assertEq(run.status, 0);
+  assertEq(readReport(dir).status, "NOTHING_ANALYSED");
+  if (/STATUS:\s+PASS/.test(run.stdout)) throw new Error("stdout must not print PASS");
+});
 t.test("empty directory: --fail-on empty exits 1 with no-endpoints", () => {
   const dir = makeDir();
   const run = runCli(dir, ["--fail-on", "empty"]);

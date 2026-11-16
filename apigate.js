@@ -11,7 +11,7 @@ import { diff as specDiff } from "./lib/drift.mjs";
 import { computeScore, SCORE_VERSION, bandFromScore } from "./lib/score.mjs";
 import { renderHtml, LIMITATIONS } from "./lib/report.mjs";
 import { annotateIntentionalPublic, DEFAULT_PUBLIC_AUTH_PATTERNS } from "./lib/heuristics.mjs";
-import { resolveGate, parseFailOnFlag } from "./lib/gate.mjs";
+import { resolveGate, parseFailOnFlag, NOTHING_ANALYSED_NOTICE } from "./lib/gate.mjs";
 import { PARSER_CAPABILITIES, KNOWN_UNRESOLVED_REASONS, RISK_TIER_INFO } from "./lib/capabilities.mjs";
 import { annotateRisk } from "./lib/risk.mjs";
 import { buildRefDiff } from "./lib/diff.mjs";
@@ -366,7 +366,7 @@ if (gate.reasons.length) {
 }
 console.log("ENDPOINTS: ", summary.endpoints, ` (${summary.guarded} guarded, ${summary.open} open, ${summary.unknown} unknown, ${summary.intentionalPublic} intentional-public)`);
 if (summary.endpoints === 0 && summary.specEndpoints === 0) {
-  console.log("NOTICE:    ", "No API routes or OpenAPI specs were detected in this target.");
+  console.log("NOTICE:    ", NOTHING_ANALYSED_NOTICE);
 }
 for (const w of inventory.warnings) {
   if (w.reason === "framework-detected-no-endpoints") {
@@ -397,7 +397,8 @@ console.log("");
 console.log("Note: static analysis cannot verify runtime authorization (BOLA / object-level access).");
 console.log("      See the 'Limitations' section of the report.");
 
-process.exit(status === "PASS" ? 0 : 1);
+// NOTHING_ANALYSED exits 0 like an empty scan always did; only FAIL exits 1.
+process.exit(status === "FAIL" ? 1 : 0);
 
 function summarize(code, spec, drift) {
   const counts = {

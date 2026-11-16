@@ -21,6 +21,24 @@ t.test("Express endpoint with no markers → OPEN", () => {
   assertEq(e.posture, "OPEN");
 });
 
+t.test("NestJS endpoint whose only auth-looking decorator is from @nestjs/swagger → OPEN", () => {
+  // @ApiBearerAuth() and its siblings only describe the OpenAPI document.
+  for (const marker of ["ApiBearerAuth", "ApiCookieAuth", "ApiSecurity", "ApiOAuth2", "ApiBasicAuth"]) {
+    const e = classifyEndpoint(
+      { framework: "nest", method: "GET", path: "/profiles/:username", resolved: true, authMarkers: [marker, "Controller", "Get"] },
+      cfg
+    );
+    assertEq(e.posture, "OPEN", marker);
+  }
+});
+t.test("NestJS endpoint with @UseGuards next to @ApiBearerAuth → GUARDED by UseGuards", () => {
+  const e = classifyEndpoint(
+    { framework: "nest", method: "GET", path: "/me", resolved: true, authMarkers: ["ApiBearerAuth", "Controller", "Get", "UseGuards"] },
+    cfg
+  );
+  assertEq(e.posture, "GUARDED");
+  assertEq(e.matchedAuthMarker, "UseGuards");
+});
 t.test("Unresolved endpoint → UNKNOWN", () => {
   const e = classifyEndpoint(
     { framework: "express", method: "GET", path: null, resolved: false, authMarkers: [] },
