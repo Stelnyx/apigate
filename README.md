@@ -59,7 +59,7 @@ Headline:  86 / 100   █████████████████░░�
 
 Bands: `STRONG ≥ 85`, `GOOD ≥ 70`, `MIXED ≥ 50`, `WEAK < 50`. Same bands as SecGate / LuxFaber / LuxScope.
 
-**No endpoints, no score.** When a scan finds no code endpoints (even if an OpenAPI spec exists), nothing was measured: `headlineScore` and every entry in `rubrics` are `null` in the JSON report, and the console and HTML show `n/a` with no band. The formulas for scans that find endpoints are unchanged (`rubric v1`). If `package.json` declares `express`, `fastify` or `@nestjs/*` and 0 endpoints were found, ApiGate prints a `WARNING:` line naming the framework and adds `{ "file": "package.json", "reason": "framework-detected-no-endpoints", "framework": "express | fastify | nest" }` to `warnings`. The exit code stays 0 unless you opt in with `--fail-on empty`.
+**No endpoints, no score.** When a scan finds no code endpoints (even if an OpenAPI spec exists), nothing was measured: `headlineScore` and every entry in `rubrics` are `null` in the JSON report, and the console and HTML show `n/a` with no band. The formulas for scans that find endpoints are unchanged (`rubric v1`). If `package.json` declares `express`, `fastify` or `@nestjs/*` and 0 endpoints were found, ApiGate prints a `WARNING:` line naming the framework and adds `{ "file": "package.json", "reason": "framework-detected-no-endpoints", "framework": "express | fastify | nest" }` to `warnings`. When there are no code endpoints and no OpenAPI spec, the status is `NOTHING_ANALYSED`, not `PASS`, and a `NOTICE:` line (also in the HTML report) says that ApiGate reads only Express, Fastify and NestJS routes and OpenAPI 2/3 specs. The exit code stays 0 unless you opt in with `--fail-on empty`.
 
 The binary gate (exit 1 on open write methods, configurable) is independent of the score. `headlineScore` + `rubrics` are written to `apigate-report.json` for CI dashboards and trend tracking.
 
@@ -95,8 +95,10 @@ The bounded scan builds one sorted candidate-file index and shares it across all
 |------------|--------------------------------------------------------------------------------------------------------------------------|
 | **Express**  | acorn AST for `.js/.mjs/.cjs`; regex fallback for `.ts/.tsx`. Resolves `app.use('/prefix', router)` mounts in the same file and across files: `app.use('/p', mw, importedRouter)` (the last argument is the router) follows relative imports (`./x.js`, `./x`, `./dir` to `dir/index.js`; ESM default, named and namespace imports; CommonJS `require`) to a router the file exports (`export default r`, `export { r }`, `export const r`, `module.exports = r`, `module.exports = { r }`, `exports.x = r`), including routers that mount other routers in other files. Mount middleware is added to the route's auth markers, and a router mounted twice yields one route per prefix. An exported `Router()` that no resolved mount reaches (alias or package imports such as `@/routes/x`, mounts in `.ts/.tsx` files, scans of a sub-directory, factory exports like `module.exports = function build() {...}`, cycles, more than 64 prefixes, routers nested inside a mounted file, a router mounted both in its own file and from another file, a router whose mount owner is nested on another local Router(), a router whose same-file owner sits on an `express()` app that is itself mounted) is `UNRESOLVED` with reason `mount-prefix-cross-file`; an `express()` app stays a root. A path-less mount middleware must be a function defined in the mounting file, otherwise the prefix counts as dynamic. `.ts/.tsx` files are never rewritten across files, so their routers keep their own path. AST files also track any variable assigned from `express()` / `express.Router()` / `Router()` whatever its name, and parse `app.route('/x').get(...).post(...)` chains. Path-less `router.use(requireAuth)` guards routes registered on that router after it only when `router` is a `const/let/var` declared once from a router factory, never reassigned, and the `use()` is a plain statement in the same block as the declaration. These `use()` calls are ignored (routes stay OPEN): `this.router.use(...)`, a router received as a parameter, a `use()` inside `if` or a helper function, `X.use(someCall(), auth)`, and wrappers like `jwt(...).unless(...)`. Not resolved: re-export barrels, aliases and package imports (see above), path-less `app.use(auth)` flowing into routers mounted on `app`, `route('/x').all(auth)` guarding the other verbs of the chain, and all of the above in `.ts/.tsx` files. Routers created in factory functions or received as parameters are parsed (routes and mounts), with the `use()` limits above. |
 | **Fastify**  | acorn AST for `.js/.mjs/.cjs`; regex extractor for `.ts/.mts/.cts` (no TypeScript dependency, `fastify.delete<{ Params: ... }>(...)` generics are skipped). Handles `fastify.<method>(...)` and `fastify.route({ method, url, preHandler })`. |
-| **NestJS**   | Decorator extraction over `.ts/.js`. Pairs `@Controller(...)` with method decorators `@Get / @Post / @Put / @Patch / @Delete / @Options / @Head / @All`. Captures class- and method-level guards (`@UseGuards`, `@Auth`, `@Roles`, `@ApiBearerAuth`), global guards (`APP_GUARD` providers, `useGlobalGuards`) and a literal `setGlobalPrefix()`; see [NestJS global guards and prefix](#nestjs-global-guards-and-prefix). |
+| **NestJS**   | Decorator extraction over `.ts/.js`. Pairs `@Controller(...)` with method decorators `@Get / @Post / @Put / @Patch / @Delete / @Options / @Head / @All`. Captures class- and method-level guards (`@UseGuards`, `@Auth`, `@Roles`), global guards (`APP_GUARD` providers, `useGlobalGuards`) and a literal `setGlobalPrefix()`; see [NestJS global guards and prefix](#nestjs-global-guards-and-prefix). The `@nestjs/swagger` decorators (`@ApiBearerAuth`, `@ApiCookieAuth`, `@ApiSecurity`, `@ApiOAuth2`, `@ApiBasicAuth`) only describe the OpenAPI document, so they do not count as auth. |
 | **OpenAPI**  | Parses `*.yaml`/`*.yml`/`*.json` with `swagger:` (2.0) or `openapi:` (3.x) root. Honors operation-level `security` and root inheritance. |
+
+Nothing else is parsed. For example, ApiGate does not read FastAPI, Django or Flask (Python), Hono, tRPC, Koa, or Next.js and Remix route handlers. On a repository built only on those it finds 0 endpoints and reports `NOTHING_ANALYSED`.
 
 Routes that can't be statically resolved (dynamic mount prefixes, computed method names, unparseable files) are emitted as `UNRESOLVED` — never guessed. They count against the **Inventory Resolved** rubric so the report tells you what ApiGate could and couldn't see.
 
@@ -255,7 +257,7 @@ Keys: `risk` (HIGH|MED|LOW), `posture` (GUARDED|OPEN|UNKNOWN), `framework`
 
 | Code | Meaning                                                          |
 |:----:|------------------------------------------------------------------|
-| `0`  | PASS — `gate.reasons` is empty                                   |
+| `0`  | PASS — `gate.reasons` is empty; or NOTHING_ANALYSED — no code endpoints and no OpenAPI spec were found |
 | `1`  | FAIL — `gate.reasons[]` lists the exact gate(s) that fired       |
 | `2`  | Invalid target or CLI error                                      |
 
@@ -325,7 +327,15 @@ Missing config: silent, defaults apply. Invalid JSON: error logged, defaults app
 
 ### Auth identifier configuration
 
-ApiGate's classifier reports `GUARDED` when one of the declared auth identifiers appears in the endpoint's middleware/decorator chain. The defaults cover the common framework idioms (`passport.authenticate`, `@UseGuards`, Fastify `preHandler`). For project-specific helpers (e.g., a custom `requireOrg` middleware), extend the list:
+ApiGate's classifier reports `GUARDED` when one of the declared auth identifiers appears in the endpoint's middleware/decorator chain. The defaults:
+
+- **Express**: `requireAuth`, `authenticate`, `passport.authenticate`, `ensureAuthenticated`, `isAuthenticated`, `verifyToken`, `requireRole`, `requireScope`, `jwt`, `checkJwt`
+- **Fastify**: `onRequest`, `preHandler`, `fastify.authenticate`, `verifyJWT`, `requireAuth`
+- **NestJS**: `UseGuards`, `Auth`, `Authenticated`, `RequireAuth`, `Roles`, `JwtAuthGuard`, `AuthGuard`
+
+A helper counts only where ApiGate sees it in the route's own chain. In Express that means a route argument (`app.get('/x', security.isAuthorized(), handler)` is matched as `isAuthorized`), a path-less `app.use(helper)` before the route, or the middleware of an `app.use('/p', mw, router)` mount. A middleware mounted on a path alone, such as `app.use('/api/basket', security.isAuthorized())`, is not attached to the routes declared elsewhere, so they stay `OPEN` even when the name is listed.
+
+For project-specific helpers (e.g., a custom `requireOrg` middleware), set the list in `.apigate.config.json`. A list replaces that framework's defaults, so repeat the defaults you still use:
 
 ```json
 { "auth": { "express": ["requireAuth", "requireOrg", "requireBilling"] } }
@@ -366,7 +376,7 @@ ApiGate is scanned against four targets each release. The first is the **determi
 
 - `nest-realworld` 100/100 doesn't mean ApiGate "passed Nest" — it means we lock byte-equality against that fixture.
 - `immich` 64/100 and `ghost` 66/100 are honest scans of real codebases against ApiGate's default policy + lightweight per-repo config. Both have real OPEN findings worth triage; both also exhibit the known parser limits documented in `parserCapabilities` (for example project-specific middleware names).
-- `slstudio` 70/100 internal — surfaced ~39 false-GUARDED endpoints whose only declared marker was `@ApiBearerAuth` (Swagger doc decorator) on first run. Reviewable in 30 seconds via `matchedAuthMarker`.
+- `slstudio` 70/100 internal — surfaced ~39 false-GUARDED endpoints whose only declared marker was `@ApiBearerAuth` (Swagger doc decorator) on first run. Reviewable in 30 seconds via `matchedAuthMarker`. Since 0.4.1 the `@nestjs/swagger` decorators are no longer auth markers.
 
 **Reproducing the public scans:**
 
@@ -446,7 +456,7 @@ Each run writes:
 
 ```json
 {
-  "version": "0.4.0",
+  "version": "0.4.1",
   "rubricVersion": "v1",
   "riskVersion": "v1",
   "timestamp": "ISO 8601",
