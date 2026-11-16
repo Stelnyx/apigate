@@ -20,6 +20,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
   JSON report and the HTML report, with a notice that ApiGate reads only
   Express, Fastify and NestJS routes and OpenAPI 2/3 specs. The exit code
   stays 0; `--fail-on empty` still turns it into FAIL (`no-endpoints`).
+- `app.get('/x', ...)` and `router.get('/x', ...)` calls were read as Express
+  routes in any JavaScript or TypeScript file, so a Hono app got "express"
+  endpoints and `STATUS: PASS`. They now count only when a scanned file
+  imports or requires `express` or the target's `package.json` declares it;
+  otherwise they are ignored, so a scan of a Hono-only app is
+  `NOTHING_ANALYSED`.
 
 ### Changed
 - README: the frameworks ApiGate does not parse (for example FastAPI, Hono,

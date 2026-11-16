@@ -126,6 +126,55 @@ t.test("only an unsupported framework (FastAPI): NOTHING_ANALYSED, not PASS", ()
   assertEq(readReport(dir).status, "NOTHING_ANALYSED");
   if (/STATUS:\s+PASS/.test(run.stdout)) throw new Error("stdout must not print PASS");
 });
+// documenso (Hono) gave two "express" endpoints and PASS: `app.get(...)` is
+// also Hono syntax, and nothing in that repository uses Express.
+t.test("only an unsupported JS framework (Hono app.get in .ts and .js): NOTHING_ANALYSED, not PASS", () => {
+  const dir = makeDir();
+  fs.writeFileSync(path.join(dir, "router.ts"), [
+    "import { Hono } from 'hono';",
+    "const app = new Hono();",
+    "app.get(`/api/v2/openapi.json`, (c) => c.json(openApiDocument));",
+    "app.route(`/api/v2`, downloadRoute);",
+    "export default app;",
+    ""
+  ].join("\n"));
+  fs.writeFileSync(path.join(dir, "health.js"), [
+    "import { Hono } from 'hono';",
+    "export const router = new Hono();",
+    "router.get('/health', (c) => c.text('ok'));",
+    ""
+  ].join("\n"));
+  writeJson(path.join(dir, "package.json"), { name: "hono-app", dependencies: { hono: "4.6.0" } });
+  const run = runCli(dir);
+  assertEq(run.status, 0);
+  const rep = readReport(dir);
+  assertEq(rep.status, "NOTHING_ANALYSED");
+  assertEq(rep.endpoints.length, 0);
+  assertEq(JSON.stringify(rep.frameworksDetected), "[]");
+  if (/STATUS:\s+PASS/.test(run.stdout)) throw new Error("stdout must not print PASS");
+});
+t.test("express declared only in package.json: a router received as a parameter still counts", () => {
+  const dir = makeDir();
+  fs.writeFileSync(path.join(dir, "routes.js"), "module.exports = (app) => {\n  app.get('/items', requireAuth, listItems);\n};\n");
+  writeJson(path.join(dir, "package.json"), { name: "express-app", dependencies: { express: "4.21.2" } });
+  const run = runCli(dir);
+  assertEq(run.status, 0);
+  const rep = readReport(dir);
+  assertEq(rep.status, "PASS");
+  assertEq(rep.endpoints.length, 1);
+  assertEq(JSON.stringify(rep.frameworksDetected), JSON.stringify(["express"]));
+});
+t.test("express imported in another scanned file: a router received as a parameter still counts", () => {
+  const dir = makeDir();
+  fs.writeFileSync(path.join(dir, "server.ts"), "import express from 'express';\nexport const server = express();\n");
+  fs.writeFileSync(path.join(dir, "items.ts"), "export default (router) => {\n  router.get('/items', requireAuth, listItems);\n};\n");
+  const run = runCli(dir);
+  assertEq(run.status, 0);
+  const rep = readReport(dir);
+  assertEq(rep.status, "PASS");
+  assertEq(rep.endpoints.length, 1);
+  assertEq(JSON.stringify(rep.frameworksDetected), JSON.stringify(["express"]));
+});
 t.test("empty directory: --fail-on empty exits 1 with no-endpoints", () => {
   const dir = makeDir();
   const run = runCli(dir, ["--fail-on", "empty"]);
