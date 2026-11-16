@@ -6,7 +6,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
-## [0.4.1] - 2026-11-15
+## [0.4.1] - 2026-11-16
 
 ### Fixed
 - The `@nestjs/swagger` decorators `@ApiBearerAuth`, `@ApiCookieAuth` and
