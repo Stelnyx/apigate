@@ -25,7 +25,7 @@ One command. One report. One exit code.
 
 **Honest positioning.** ApiGate is a **surface auditor**, not a runtime scanner and not a DAST tool. The report explicitly states what a static analysis CAN and CANNOT prove — it's a printed trust feature, not a footnote. ApiGate cannot verify runtime authorization (BOLA / object-level access). It can prove that an endpoint declares a guard. It cannot prove the guard is correct. See [What this does NOT prove](#what-this-does-not-prove).
 
-**Status.** Early release; the latest published version is shown by the npm badge above. Releases are built by a tag-triggered GitHub Actions workflow that publishes with npm trusted publishing. npm provenance starts with 0.3.4, once that release is out. Report vulnerabilities via [SECURITY.md](SECURITY.md).
+**Status.** Early release; the latest published version is shown by the npm badge above. Releases are built by a tag-triggered GitHub Actions workflow that publishes with npm trusted publishing. npm provenance starts with 0.3.4. Report vulnerabilities via [SECURITY.md](SECURITY.md).
 
 **Accuracy contract.** ApiGate's parsing + scoring pipeline is deterministic. With the same files, configuration, tool version, and report timestamp, it produces JSON- and HTML-byte-identical reports. Three test suites lock the contract:
 
