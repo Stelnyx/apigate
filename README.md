@@ -37,7 +37,7 @@ One command. One report. One exit code.
 
 ## Headline Score
 
-Every run produces a **Headline Score (0–100)** alongside the binary PASS/FAIL gate. The score is the arithmetic mean of five 0–100 rubrics:
+Every run produces a **Headline Score (0–100)** alongside the binary PASS/FAIL gate (`NOTHING_ANALYSED` when there was nothing to analyse). The score is the arithmetic mean of five 0–100 rubrics:
 
 ```
 Headline:  86 / 100   █████████████████░░░   STRONG  rubric v1
@@ -59,7 +59,7 @@ Headline:  86 / 100   █████████████████░░�
 
 Bands: `STRONG ≥ 85`, `GOOD ≥ 70`, `MIXED ≥ 50`, `WEAK < 50`. Same bands as SecGate / LuxFaber / LuxScope.
 
-**No endpoints, no score.** When a scan finds no code endpoints (even if an OpenAPI spec exists), nothing was measured: `headlineScore` and every entry in `rubrics` are `null` in the JSON report, and the console and HTML show `n/a` with no band. The formulas for scans that find endpoints are unchanged (`rubric v1`). If `package.json` declares `express`, `fastify` or `@nestjs/*` and 0 endpoints were found, ApiGate prints a `WARNING:` line naming the framework and adds `{ "file": "package.json", "reason": "framework-detected-no-endpoints", "framework": "express | fastify | nest" }` to `warnings`. When there are no code endpoints and no OpenAPI spec, the status is `NOTHING_ANALYSED`, not `PASS`, and a `NOTICE:` line (also in the HTML report) says that ApiGate reads only Express, Fastify and NestJS routes and OpenAPI 2/3 specs. The exit code stays 0 unless you opt in with `--fail-on empty`.
+**No endpoints, no score.** When a scan finds no code endpoints (even if an OpenAPI spec exists), nothing was measured: `headlineScore` and every entry in `rubrics` are `null` in the JSON report, and the console and HTML show `n/a` with no band. The formulas for scans that find endpoints are unchanged (`rubric v1`). If `package.json` declares `express`, `fastify` or `@nestjs/*` and 0 endpoints were found, ApiGate prints a `WARNING:` line naming the framework and adds `{ "file": "package.json", "reason": "framework-detected-no-endpoints", "framework": "express | fastify | nest" }` to `warnings`. When there are no code endpoints and no OpenAPI spec, the status is `NOTHING_ANALYSED`, not `PASS`, and a `NOTICE:` line (also in the HTML report) says that ApiGate reads only Express, Fastify and NestJS routes and OpenAPI 2/3 specs. The exit code stays 0 unless a gate turns the scan into `FAIL`: `--fail-on empty` (`no-endpoints`), or `requireSpec` when no spec is found (`missing-spec`).
 
 The binary gate (exit 1 on open write methods, configurable) is independent of the score. `headlineScore` + `rubrics` are written to `apigate-report.json` for CI dashboards and trend tracking.
 
@@ -462,9 +462,9 @@ Each run writes:
   "timestamp": "ISO 8601",
   "target": "/absolute/path or repo basename",
   "mode": "static",
-  "status": "PASS | FAIL",
+  "status": "PASS | FAIL | NOTHING_ANALYSED",
   "gate": {
-    "status": "PASS | FAIL",
+    "status": "PASS | FAIL | NOTHING_ANALYSED",
     "reasons": ["drift", "intentional-public", "missing-spec", "new-open-write", "no-endpoints", "open-read", "open-write", "unknown-endpoint"]
   },
   "headlineScore": 86,   // null when no code endpoints were found (rubrics too)
@@ -569,7 +569,7 @@ matchedAuthMarker distribution (GUARDED endpoints):
 
 `@ApiBearerAuth()` is a Swagger documentation decorator, **not** a runtime guard. 313 of the 327 GUARDED endpoints matched on it. Most are still protected by a global `APP_GUARD` registered in `app.module.ts` (that scan predates global guard detection, see `parserCapabilities.nest`), but 39 had no other guard identifier in their decorator chain at all. Without `matchedAuthMarker` those would have been silent in the report. With it, the reviewer has a 30-second triage path.
 
-If your codebase wants to drop the false signal entirely, remove `ApiBearerAuth` from `auth.nest` in `.apigate.config.json`. ApiGate's defaults are intentionally permissive (the cost of missing a real guard outweighs the cost of a false GUARDED that `matchedAuthMarker` makes visible).
+That scan ran with the defaults of the time, which listed `ApiBearerAuth` as an auth marker. Since 0.4.1 the `@nestjs/swagger` decorators are not in the defaults, so those endpoints are `OPEN` unless a real guard is found; only a custom `auth.nest` list in `.apigate.config.json` that names them counts them again.
 
 ---
 

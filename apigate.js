@@ -97,7 +97,8 @@ Config file (.apigate.config.json in target):
   See .apigate.config.example.json for a fully-commented template.
 
 Exit codes:
-  0  PASS — gate.reasons is empty
+  0  PASS — gate.reasons is empty; or NOTHING_ANALYSED — no code
+     endpoints and no OpenAPI spec were found
   1  FAIL — gate.reasons[] lists the exact gate(s) that fired
   2  Invalid target or CLI error
 

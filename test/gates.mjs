@@ -153,6 +153,38 @@ t.test("only an unsupported JS framework (Hono app.get in .ts and .js): NOTHING_
   assertEq(JSON.stringify(rep.frameworksDetected), "[]");
   if (/STATUS:\s+PASS/.test(run.stdout)) throw new Error("stdout must not print PASS");
 });
+t.test("an express import inside a comment does not make a Hono app Express", () => {
+  const dir = makeDir();
+  fs.writeFileSync(path.join(dir, "router.ts"), [
+    "import { Hono } from 'hono';",
+    "// was: import express from 'express';",
+    "/* const express = require(\"express\"); */",
+    "const app = new Hono();",
+    "app.get('/health', (c) => c.text('ok'));",
+    ""
+  ].join("\n"));
+  fs.writeFileSync(path.join(dir, "jobs.js"), [
+    "import { Hono } from 'hono';",
+    "// import 'express'",
+    "export const router = new Hono();",
+    "router.get('/jobs', (c) => c.json([]));",
+    ""
+  ].join("\n"));
+  const run = runCli(dir);
+  assertEq(run.status, 0);
+  const rep = readReport(dir);
+  assertEq(rep.status, "NOTHING_ANALYSED");
+  assertEq(rep.endpoints.length, 0);
+});
+t.test("require(`express`) with a template literal counts as Express", () => {
+  const dir = makeDir();
+  fs.writeFileSync(path.join(dir, "app.js"), "const express = require(`express`);\nconst app = express();\napp.get('/items', requireAuth, listItems);\n");
+  const run = runCli(dir);
+  assertEq(run.status, 0);
+  const rep = readReport(dir);
+  assertEq(rep.status, "PASS");
+  assertEq(rep.endpoints.length, 1);
+});
 t.test("express declared only in package.json: a router received as a parameter still counts", () => {
   const dir = makeDir();
   fs.writeFileSync(path.join(dir, "routes.js"), "module.exports = (app) => {\n  app.get('/items', requireAuth, listItems);\n};\n");
