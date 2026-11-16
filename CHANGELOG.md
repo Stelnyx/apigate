@@ -6,6 +6,34 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-11-16
+
+### Fixed
+- The `@nestjs/swagger` decorators `@ApiBearerAuth`, `@ApiCookieAuth` and
+  `@ApiSecurity` were default NestJS auth markers, so an endpoint whose only
+  "auth" was one of them was reported GUARDED although those decorators only
+  describe the OpenAPI document and enforce nothing. They are no longer in
+  the defaults (`@ApiOAuth2` and `@ApiBasicAuth` never were); such endpoints
+  are now OPEN. A config that lists them in `auth.nest` still counts them.
+- A scan that finds no code endpoints and no OpenAPI spec printed
+  `STATUS: PASS`. Its status is now `NOTHING_ANALYSED` in the console, the
+  JSON report and the HTML report, with a notice that ApiGate reads only
+  Express, Fastify and NestJS routes and OpenAPI 2/3 specs. The exit code
+  stays 0; `--fail-on empty` (`no-endpoints`) and `requireSpec`
+  (`missing-spec`) still turn it into FAIL.
+- `app.get('/x', ...)` and `router.get('/x', ...)` calls were read as Express
+  routes in any JavaScript or TypeScript file, so a Hono app got "express"
+  endpoints and `STATUS: PASS`. They now count only when a scanned file
+  imports or requires `express` or the target's `package.json` declares it;
+  otherwise they are ignored, so a scan of a Hono-only app is
+  `NOTHING_ANALYSED`.
+
+### Changed
+- README: the frameworks ApiGate does not parse (for example FastAPI, Hono,
+  tRPC), the default auth identifiers per framework, where a custom helper
+  must appear to count, and that an `auth.<framework>` list replaces the
+  defaults.
+
 ## [0.4.0] - 2026-11-15
 
 ### Added
