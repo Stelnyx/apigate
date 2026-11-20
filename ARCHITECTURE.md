@@ -127,7 +127,7 @@ flowchart TD
 Notes on the steps:
 
 1. **Inventory.** `buildInventory` walks the target once for
-   `.js .mjs .cjs .ts .tsx .yaml .yml .json` and hands the sorted list to each
+   `.js .mjs .cjs .ts .mts .cts .tsx .yaml .yml .json` and hands the sorted list to each
    parser enabled in `config.frameworks`. Express endpoints are kept only if a
    scanned file imports or requires `express` or the root `package.json`
    declares it. If no code endpoint is found, each framework declared in
@@ -221,7 +221,7 @@ flag value, a scan limit hit, a failed `--diff`, and a report write error.
 | Framework | Files read by the CLI scan | Method |
 |---|---|---|
 | Express | `.js .mjs .cjs` (AST), `.ts .tsx` (regex) | acorn + acorn-walk |
-| Fastify | `.js .mjs .cjs` (AST), `.ts` (text scanner) | acorn + bounded scanner |
+| Fastify | `.js .mjs .cjs` (AST), `.ts .mts .cts` (text scanner) | acorn + bounded scanner |
 | NestJS | `.ts .tsx .js .mjs` | decorator regex extraction |
 | OpenAPI | `.yaml .yml .json` with a `swagger:` or `openapi:` root | `yaml` / `JSON.parse` |
 
@@ -285,12 +285,12 @@ index.
 `https`, `net` or `fetch`. The only subprocess is `git` in `lib/diff.mjs`
 (`rev-parse`, `worktree prune|add|remove`), run with `--diff` against a
 worktree in the OS temp directory. The HTML report inlines its CSS and script
-and has no external `<script src>`, checked by [`test/report-theme-contract.mjs`](test/report-theme-contract.mjs).
-It does link the Inter font from Google Fonts through the theme shell
-(`lib/report.mjs` does not pass `skipInterFont`), so a browser opening the
-report makes those requests. No test
-blocks network access at runtime; the guarantee rests on the import surface
-and the four-package dependency list ([SECURITY.md](SECURITY.md)).
+and makes no external requests: `lib/report.mjs` passes `skipInterFont: true`
+to the theme shell, and [`test/report-theme-contract.mjs`](test/report-theme-contract.mjs)
+fails on Google Fonts hosts or any external `http(s)` URL in `<link>`,
+`<script>`, `@import` or `url()`. No test blocks network access at runtime;
+the guarantee rests on the import surface and the four-package dependency
+list ([SECURITY.md](SECURITY.md)).
 
 ## Testing layout
 

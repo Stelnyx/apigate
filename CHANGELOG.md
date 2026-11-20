@@ -6,6 +6,21 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+### Fixed
+- The HTML report no longer loads Google Fonts. `lib/report.mjs` now passes
+  `skipInterFont: true` to the `@stelnyx/report-theme` shell, so opening the
+  report makes no external requests and the page uses the system font stack.
+  README, ARCHITECTURE, DESIGN_PARITY, OPEN-CORE and the docs site no longer
+  describe a Google Fonts request.
+- Fastify routes in `.mts` and `.cts` files were never found by the CLI scan,
+  although the Fastify parser reads them (see 0.3.4). The shared file walk now
+  collects both extensions. Express, NestJS and OpenAPI still ignore them.
+- `--diff`: a new intentional-public open write (for example `POST /login`)
+  tripped the `new-open-write` gate reason, because `refDiff.added` items did
+  not carry `intentionalPublic`. Added items now include
+  `intentionalPublic`, and such an endpoint no longer fails the gate. With
+  `--fail-on intentional-public` it reports `intentional-public` only.
+
 ## [0.4.1] - 2026-11-16
 
 ### Fixed
