@@ -24,6 +24,8 @@ npm test
 npm run lint
 ```
 
+How the code is organized: [ARCHITECTURE.md](ARCHITECTURE.md).
+
 ## Pull request checklist
 
 - [ ] Branch name describes the change (`feat/<slug>`, `fix/<slug>`, `docs/<slug>`)
@@ -99,6 +101,8 @@ If a proposed flag doesn't pass all six, the PR will be asked to drop it
 or convert to a config field.
 
 ## Adding a new framework parser
+
+[ARCHITECTURE.md](ARCHITECTURE.md#adding-a-parser) lists every file a new parser touches.
 
 1. Add `lib/parsers/<name>.mjs` exporting `parse<Name>(targetDir, excludePaths) → { endpoints, warnings, specsDetected? }`.
 2. Wire it into `lib/inventory.mjs` behind a `frameworks.<name>` toggle.

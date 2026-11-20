@@ -23,28 +23,42 @@ One command. One report. One exit code.
 
 **ApiGate** is part of the Stelnyx developer-tool family alongside [LuxScope](https://stelnyx.com/), [LuxFaber](https://stelnyx.com/), and [SecGate](https://github.com/Stelnyx/SecGate). It reads source code and OpenAPI specs on disk and produces one report: every endpoint it can detect, its declared auth posture, code/spec drift, and five transparent 0–100 rubrics. **100% static** — no HTTP requests, credentials, or running server. Zero network calls. With a fixed report timestamp, the same input and configuration produce byte-identical output.
 
+```mermaid
+flowchart LR
+  src["Source files<br/>Express, Fastify, NestJS"] --> ag
+  spec["OpenAPI 2.0 / 3.x specs"] --> ag
+  cfg[".apigate.config.json<br/>and CLI flags"] --> ag
+  ref["git ref<br/>(optional --diff)"] --> ag
+  ag["ApiGate<br/>static, no network"] --> json["apigate-report.json"]
+  ag --> html["repo-name.html"]
+  ag --> con["Console summary"]
+  ag --> exit["Exit code 0 / 1 / 2"]
+```
+
+Module map, pipeline and gate logic: [ARCHITECTURE.md](ARCHITECTURE.md).
+
 **Honest positioning.** ApiGate is a **surface auditor**, not a runtime scanner and not a DAST tool. The report explicitly states what a static analysis CAN and CANNOT prove — it's a printed trust feature, not a footnote. ApiGate cannot verify runtime authorization (BOLA / object-level access). It can prove that an endpoint declares a guard. It cannot prove the guard is correct. See [What this does NOT prove](#what-this-does-not-prove).
 
 **Status.** Early release; the latest published version is shown by the npm badge above. Releases are built by a tag-triggered GitHub Actions workflow that publishes with npm trusted publishing. npm provenance starts with 0.3.4. Report vulnerabilities via [SECURITY.md](SECURITY.md).
 
 **Accuracy contract.** ApiGate's parsing + scoring pipeline is deterministic. With the same files, configuration, tool version, and report timestamp, it produces JSON- and HTML-byte-identical reports. Three test suites lock the contract:
 
-- `test/determinism.mjs` — byte-equality of JSON and HTML across reruns of every parser, classifier, diff, score, and renderer call.
-- `test/golden-apigate.mjs` — hand-crafted multi-framework fixture; expected endpoint count, posture distribution, drift buckets, and headline score are inline so any change surfaces in code review.
+- `test/determinism.mjs` — byte-equality of JSON and HTML across reruns of the inventory, classifier, drift, score, risk, filter, and renderer calls on the Express + OpenAPI fixture `test/fixtures/sample-app`.
+- `test/golden-apigate.mjs` — hand-crafted Express + OpenAPI fixture; expected endpoint count, posture distribution, drift buckets, and headline score are inline so any change surfaces in code review.
 - `test/report-theme-contract.mjs` — asserts the HTML report is rendered through `@stelnyx/report-theme`, not by a parallel local renderer.
 
 ---
 
 ## Headline Score
 
-Every run produces a **Headline Score (0–100)** alongside the binary PASS/FAIL gate (`NOTHING_ANALYSED` when there was nothing to analyse). The score is the arithmetic mean of five 0–100 rubrics:
+Every run produces a **Headline Score (0–100)** alongside the binary PASS/FAIL gate (`NOTHING_ANALYSED` when there was nothing to analyse). The score is the arithmetic mean of five 0–100 rubrics (console output for `test/fixtures/sample-app`):
 
 ```
-Headline:  86 / 100   █████████████████░░░   STRONG  rubric v1
+Headline:  85 / 100   █████████████████░░░   STRONG  rubric v1
 
   Inventory         86 / 100   █████████████████░░░
-  Auth Coverage     67 / 100   █████████████░░░░░░░
-  Open Risk         85 / 100   █████████████████░░░
+  Auth Coverage     60 / 100   ████████████░░░░░░░░
+  Open Risk         88 / 100   ██████████████████░░
   Spec Drift        90 / 100   ██████████████████░░
   Determinism      100 / 100   ████████████████████
 ```
@@ -53,8 +67,8 @@ Headline:  86 / 100   █████████████████░░�
 |---------------------|--------------------------------------------------------------------------------------------------------|
 | **Inventory Resolved** | `100 × resolved / total`. Routes mounted via dynamic prefixes drag this down — never silently dropped. |
 | **Auth Coverage**      | `100 × guarded / (guarded + open + unknown)`. UNKNOWN counts against — a route we couldn't classify is not a confirmed guard. Intentional-public endpoints (login/signup/refresh/health/...) are excluded — they're declared public-by-design, not a coverage gap. |
-| **Open Endpoint Risk** | Starts at 100. Open write methods (POST/PUT/PATCH/DELETE) `-12` each; open GETs `-3` each. Floor 0.    |
-| **Spec Drift**         | Starts at 100. Shadow `-5`, stale `-5`, auth-drift `-10` each. `null` (excluded from mean) when no spec found. |
+| **Open Endpoint Risk** | Starts at 100. Open write methods (POST/PUT/PATCH/DELETE) `-12` each; other open methods `-3` each. Intentional-public endpoints are skipped. Floor 0. |
+| **Spec Drift**         | Starts at 100. Shadow `-5`, stale `-5`, auth-drift `-10` each. Floor 0. `null` (excluded from mean) when no spec found. |
 | **Determinism**        | Locked at 100 in v0.1. The byte-equality test is what actually enforces it.                            |
 
 Bands: `STRONG ≥ 85`, `GOOD ≥ 70`, `MIXED ≥ 50`, `WEAK < 50`. Same bands as SecGate / LuxFaber / LuxScope.
@@ -94,8 +108,8 @@ The bounded scan builds one sorted candidate-file index and shares it across all
 | Framework  | Detection                                                                                                                |
 |------------|--------------------------------------------------------------------------------------------------------------------------|
 | **Express**  | acorn AST for `.js/.mjs/.cjs`; regex fallback for `.ts/.tsx`. Resolves `app.use('/prefix', router)` mounts in the same file and across files: `app.use('/p', mw, importedRouter)` (the last argument is the router) follows relative imports (`./x.js`, `./x`, `./dir` to `dir/index.js`; ESM default, named and namespace imports; CommonJS `require`) to a router the file exports (`export default r`, `export { r }`, `export const r`, `module.exports = r`, `module.exports = { r }`, `exports.x = r`), including routers that mount other routers in other files. Mount middleware is added to the route's auth markers, and a router mounted twice yields one route per prefix. An exported `Router()` that no resolved mount reaches (alias or package imports such as `@/routes/x`, mounts in `.ts/.tsx` files, scans of a sub-directory, factory exports like `module.exports = function build() {...}`, cycles, more than 64 prefixes, routers nested inside a mounted file, a router mounted both in its own file and from another file, a router whose mount owner is nested on another local Router(), a router whose same-file owner sits on an `express()` app that is itself mounted) is `UNRESOLVED` with reason `mount-prefix-cross-file`; an `express()` app stays a root. A path-less mount middleware must be a function defined in the mounting file, otherwise the prefix counts as dynamic. `.ts/.tsx` files are never rewritten across files, so their routers keep their own path. AST files also track any variable assigned from `express()` / `express.Router()` / `Router()` whatever its name, and parse `app.route('/x').get(...).post(...)` chains. Path-less `router.use(requireAuth)` guards routes registered on that router after it only when `router` is a `const/let/var` declared once from a router factory, never reassigned, and the `use()` is a plain statement in the same block as the declaration. These `use()` calls are ignored (routes stay OPEN): `this.router.use(...)`, a router received as a parameter, a `use()` inside `if` or a helper function, `X.use(someCall(), auth)`, and wrappers like `jwt(...).unless(...)`. Not resolved: re-export barrels, aliases and package imports (see above), path-less `app.use(auth)` flowing into routers mounted on `app`, `route('/x').all(auth)` guarding the other verbs of the chain, and all of the above in `.ts/.tsx` files. Routers created in factory functions or received as parameters are parsed (routes and mounts), with the `use()` limits above. These routes count only in a repository that uses Express: a scanned file imports or requires `express`, or the target's `package.json` declares it. Otherwise `app.get(...)` and `router.get(...)` calls, which Hono and Koa also use, are not counted. |
-| **Fastify**  | acorn AST for `.js/.mjs/.cjs`; regex extractor for `.ts/.mts/.cts` (no TypeScript dependency, `fastify.delete<{ Params: ... }>(...)` generics are skipped). Handles `fastify.<method>(...)` and `fastify.route({ method, url, preHandler })`. |
-| **NestJS**   | Decorator extraction over `.ts/.js`. Pairs `@Controller(...)` with method decorators `@Get / @Post / @Put / @Patch / @Delete / @Options / @Head / @All`. Captures class- and method-level guards (`@UseGuards`, `@Auth`, `@Roles`), global guards (`APP_GUARD` providers, `useGlobalGuards`) and a literal `setGlobalPrefix()`; see [NestJS global guards and prefix](#nestjs-global-guards-and-prefix). The `@nestjs/swagger` decorators (`@ApiBearerAuth`, `@ApiCookieAuth`, `@ApiSecurity`, `@ApiOAuth2`, `@ApiBasicAuth`) only describe the OpenAPI document, so they do not count as auth. |
+| **Fastify**  | acorn AST for `.js/.mjs/.cjs`; regex extractor for `.ts` (no TypeScript dependency, `fastify.delete<{ Params: ... }>(...)` generics are skipped). The extractor also handles `.mts/.cts`, but the CLI scan does not collect those extensions yet. Handles `fastify.<method>(...)` and `fastify.route({ method, url, preHandler })`. `register(plugin, { prefix })` prefixes are not applied. |
+| **NestJS**   | Decorator extraction over `.ts/.tsx/.js/.mjs`. Pairs `@Controller(...)` with method decorators `@Get / @Post / @Put / @Patch / @Delete / @Options / @Head / @All`. Captures class- and method-level guards (`@UseGuards`, `@Auth`, `@Roles`), global guards (`APP_GUARD` providers, `useGlobalGuards`) and a literal `setGlobalPrefix()`; see [NestJS global guards and prefix](#nestjs-global-guards-and-prefix). The `@nestjs/swagger` decorators (`@ApiBearerAuth`, `@ApiCookieAuth`, `@ApiSecurity`, `@ApiOAuth2`, `@ApiBasicAuth`) only describe the OpenAPI document, so they do not count as auth. |
 | **OpenAPI**  | Parses `*.yaml`/`*.yml`/`*.json` with `swagger:` (2.0) or `openapi:` (3.x) root. Honors operation-level `security` and root inheritance. |
 
 Nothing else is parsed. For example, ApiGate does not read FastAPI, Django or Flask (Python), Hono, tRPC, Koa, or Next.js and Remix route handlers. On a repository built only on those it finds 0 endpoints and reports `NOTHING_ANALYSED`. In a repository that also uses Express, their `app.get(...)`-style calls can still be read as Express routes.
@@ -310,7 +324,9 @@ A fully-commented example config lives at [`.apigate.config.example.json`](.apig
 |---------------|---------|----------------------------------------|-----------------------------------------------------------------------------|
 | `frameworks`  | object  | all `true`                             | Toggle individual parsers                                                  |
 | `auth`        | object  | per-framework defaults                 | Identifier names that classify an endpoint as `GUARDED` when present       |
-| `failOn`      | object  | `{ openWriteMethods: true, unknown: false, drift: false }` | Exit-code policy                                  |
+| `failOn`      | object  | `openWriteMethods` and `newOpenWrite` `true`, the rest `false` | Exit-code policy: `openWriteMethods`, `openReadMethods`, `unknown`, `drift`, `intentionalPublic`, `newOpenWrite`, `emptyInventory` |
+| `publicAuthPatterns` | array | `null` (built-in list)          | `{ method, path }` pairs marked intentional-public. `[]` disables the heuristic |
+| `severityOverrides` | array | `[]`                             | `{ method, path, risk, reason }` entries that pin an endpoint's risk tier (exact method and path) |
 | `publicDecorators` | array | `["Public", "SkipAuth", "AllowAnonymous"]` | NestJS decorator names (no `@`) that cancel the global guard for the controller or method carrying them. `[]` disables it |
 | `requireSpec` | boolean | `false`                                | Fail when no OpenAPI 2/3 spec is detected                                |
 | `strictPublic`| boolean | `false`                                | Disable built-in public-auth patterns unless `publicAuthPatterns` is set  |
@@ -363,18 +379,18 @@ Limits: the scope is the whole scan, not a module or app, so a monorepo with sev
 
 ## Dogfood
 
-ApiGate is scanned against four targets each release. The first is the **deterministic test fixture** (locked at 100/100 — that's how byte-equality is proven). The rest are real public / production codebases — their numbers move with each scan because the codebases move.
+ApiGate has been scanned against four targets. The committed sample reports in `samples/` were produced with ApiGate 0.2.0 and 0.2.1 (the `version` field of each `apigate-report.json`). The first is a **vendored test fixture** (100/100). The rest are real public / production codebases — their numbers move with each scan because the codebases move.
 
 | Target | Framework | Endpoints | Headline | Role |
 |---|---|---:|---:|---|
-| [`samples/realworld-express`](samples/realworld-express/) (vendored, SHA-pinned) | Express | 20 | **100** | Determinism baseline — locked at 100/100, used by `test/determinism.mjs` for byte-equality assertions. **Not a marketing showcase.** |
+| [`samples/realworld-express`](samples/realworld-express/) (report for [`test/fixtures/realworld-express`](test/fixtures/realworld-express/), SHA in its SOURCE.md) | Express | 20 | **100** | Baseline fixture, also used by `test/scan-safeguards.mjs`. **Not a marketing showcase.** |
 | [`samples/immich-nest`](samples/immich-nest/) (cloned, SHA in SOURCE) | NestJS | 255 | **64** | Real public NestJS reference — [Immich](https://github.com/immich-app/immich), ~50K★. 183 guarded · 35 open · 14 HIGH risk. |
 | [`samples/ghost-express`](samples/ghost-express/) (cloned, SHA in SOURCE) | Express | 303 | **66** | Real public Express reference — [Ghost](https://github.com/TryGhost/Ghost), ~50K★. Demonstrates `auth.express` customization. |
 | slstudio (private) | NestJS | 423 | **70** | Private production reference. 330 guarded · 96 open · 52 HIGH risk. |
 
 **What the numbers say.**
 
-- `nest-realworld` 100/100 doesn't mean ApiGate "passed Nest" — it means we lock byte-equality against that fixture.
+- `realworld-express` 100/100 doesn't mean ApiGate "passed Express" — it is a small vendored fixture.
 - `immich` 64/100 and `ghost` 66/100 are honest scans of real codebases against ApiGate's default policy + lightweight per-repo config. Both have real OPEN findings worth triage; both also exhibit the known parser limits documented in `parserCapabilities` (for example project-specific middleware names).
 - `slstudio` 70/100 internal — surfaced ~39 false-GUARDED endpoints whose only declared marker was `@ApiBearerAuth` (Swagger doc decorator) on first run. Reviewable in 30 seconds via `matchedAuthMarker`. Since 0.4.1 the `@nestjs/swagger` decorators are no longer auth markers.
 
@@ -467,18 +483,18 @@ Each run writes:
     "status": "PASS | FAIL | NOTHING_ANALYSED",
     "reasons": ["drift", "intentional-public", "missing-spec", "new-open-write", "no-endpoints", "open-read", "open-write", "unknown-endpoint"]
   },
-  "headlineScore": 86,   // null when no code endpoints were found (rubrics too)
+  "headlineScore": 85,   // null when no code endpoints were found (rubrics too)
   "rubrics": {
     "inventoryResolved": 86,
-    "authCoverage": 67,
-    "openEndpointRisk": 85,
+    "authCoverage": 60,
+    "openEndpointRisk": 88,
     "specDrift": 90,
     "determinism": 100
   },
   "summary": {
     "endpoints": 7, "resolved": 6, "unresolved": 1,
-    "guarded": 4, "open": 2, "unknown": 1, "intentionalPublic": 0,
-    "risk": { "HIGH": 1, "MED": 2, "LOW": 4 },
+    "guarded": 4, "open": 2, "unknown": 1, "intentionalPublic": 2,
+    "risk": { "HIGH": 1, "MED": 1, "LOW": 5 },
     "specEndpoints": 6, "shadow": 1, "stale": 1, "authDrift": 0,
     "unknownReasons": { "mount-prefix-not-static": 1 }
   },
@@ -543,8 +559,8 @@ Each run writes:
 | 0.3.0 | `parserCapabilities.nest.methodDecoratorsBelowAnchor` | Now `true` — bidirectional decorator scan captures markers above AND below `@Get`/`@Post`. |
 | 0.3.0 | `parserCapabilities.nest.globalGuardDetection` | Documented as `NOT DETECTED` — NestJS `APP_GUARD` / `useGlobalGuards` providers are invisible. Use `auth.nest` overrides or `severityOverrides`. |
 | 0.3.0 | LIMITATIONS entry #7 | Global-guard blind spot disclosed in every printed report. |
-| Unreleased | `parserCapabilities.nest.globalGuardDetection` | Now `true`. New keys `globalGuardRules`, `globalPrefix`, `publicDecorators`; new unresolved reason `global-prefix-not-static-string`. The LIMITATIONS global-guard entry is rewritten. |
-| Unreleased | `parserCapabilities.express.routerVariableTracking` / `routeChains` / `routerLevelMiddleware` | Any-name routers, `route()` chains and path-less `X.use(mw)` markers (AST files only). |
+| 0.4.0 | `parserCapabilities.nest.globalGuardDetection` | Now `true`. New keys `globalGuardRules`, `globalPrefix`, `publicDecorators`; new unresolved reason `global-prefix-not-static-string`. The LIMITATIONS global-guard entry is rewritten. |
+| 0.3.4 | `parserCapabilities.express.routerVariableTracking` / `routeChains` / `routerLevelMiddleware` | Any-name routers, `route()` chains and path-less `X.use(mw)` markers (AST files only). |
 
 ### Posture tiers
 
@@ -586,6 +602,7 @@ If a missing theme component blocks ApiGate, the resolution is an upstream PR to
 | Doc                                                    | What's in it                                                                   |
 |--------------------------------------------------------|--------------------------------------------------------------------------------|
 | [`CHANGELOG.md`](CHANGELOG.md)                         | Version history — Added / Changed / Fixed per release                          |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md)                   | Module map, pipeline, scoring and gate logic, determinism, test layout         |
 | [`OPEN-CORE.md`](OPEN-CORE.md)                         | OSS core boundary and paid extension roadmap                                   |
 | [`DESIGN_PARITY.md`](DESIGN_PARITY.md)                 | The report-theme consumption contract                                          |
 | [`SECURITY.md`](SECURITY.md)                           | Vulnerability reporting, SLA, coordinated disclosure                           |
