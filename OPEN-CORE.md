@@ -18,7 +18,7 @@ These capabilities are shipped today and will not move behind a paywall. **Every
 - **Intentional-public heuristic** — deterministic pattern list flagging common public-auth endpoints, fully overridable. Marked endpoints are still listed; the heuristic is advisory, never hides a finding.
 - **Rubric scoring** — five 0–100 rubrics + headline mean, rule version pinned.
 - **JSON report** — full schema, machine-readable, no proprietary fields, no scrubbed sections.
-- **Self-contained HTML report** — rendered through `@stelnyx/report-theme`, zero external assets, dark/light theme, no telemetry.
+- **Single-file HTML report** — rendered through `@stelnyx/report-theme`, inlined CSS and script, dark theme, no telemetry. It links the Inter web font from Google Fonts, which the browser fetches when the report is opened.
 - **"What this does NOT prove" disclosure** — printed in every report and will never be removed, hidden, or shortened. The honest-limitation statement is the product contract.
 - **Exit-code gating** — the CI fail signal (`exit 1` on open writes) is core behavior, not a feature.
 - **CLI** — `apigate`, `npx @stelnyx/apigate`.

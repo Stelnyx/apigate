@@ -41,9 +41,9 @@
     "url": "git+https://github.com/Stelnyx/apigate.git"
   },
   "bugs": {
-    "url": "https://github.com/Stelnyx/ApiGate/issues"
+    "url": "https://github.com/Stelnyx/apigate/issues"
   },
-  "homepage": "https://stelnyx.github.io/ApiGate/",
+  "homepage": "https://stelnyx.github.io/apigate/",
   "publishConfig": {
     "access": "public"
   },

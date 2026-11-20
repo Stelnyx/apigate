@@ -38,7 +38,7 @@ This Code of Conduct applies within all community spaces and when an individual 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the maintainers by opening a [private security advisory](https://github.com/Stelnyx/ApiGate/security/advisories/new). All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the maintainers by opening a [private security advisory](https://github.com/Stelnyx/apigate/security/advisories/new). All complaints will be reviewed and investigated promptly and fairly.
 
 ## Attribution
 

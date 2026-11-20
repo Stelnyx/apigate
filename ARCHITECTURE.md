@@ -14,7 +14,7 @@ directory, never runs them, and makes no network calls.
 - **Input:** source files (Express, Fastify, NestJS), OpenAPI 2.0 / 3.x specs,
   an optional `.apigate.config.json` in the target, CLI flags, and an
   optional git ref for `--diff`.
-- **Output:** `apigate-report.json`, a self-contained `<repo-name>.html`
+- **Output:** `apigate-report.json`, a single-file `<repo-name>.html`
   rendered by `@stelnyx/report-theme`, a console summary, and an exit code
   (`0` pass or nothing analysed, `1` gate failed, `2` CLI or scan error).
 - **Runtime dependencies:** `acorn` and `acorn-walk` (JavaScript AST),
@@ -284,8 +284,11 @@ index.
 **Zero network.** No file in `apigate.js` or `lib/` imports `http`,
 `https`, `net` or `fetch`. The only subprocess is `git` in `lib/diff.mjs`
 (`rev-parse`, `worktree prune|add|remove`), run with `--diff` against a
-worktree in the OS temp directory. The HTML report inlines its script and
-has no external `src`, checked by [`test/report-theme-contract.mjs`](test/report-theme-contract.mjs). No test
+worktree in the OS temp directory. The HTML report inlines its CSS and script
+and has no external `<script src>`, checked by [`test/report-theme-contract.mjs`](test/report-theme-contract.mjs).
+It does link the Inter font from Google Fonts through the theme shell
+(`lib/report.mjs` does not pass `skipInterFont`), so a browser opening the
+report makes those requests. No test
 blocks network access at runtime; the guarantee rests on the import surface
 and the four-package dependency list ([SECURITY.md](SECURITY.md)).
 

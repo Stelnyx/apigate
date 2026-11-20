@@ -12,8 +12,8 @@ Thanks for your interest. ApiGate is a static API surface auditor — contributi
 ## Development setup
 
 ```bash
-git clone https://github.com/Stelnyx/ApiGate.git
-cd ApiGate
+git clone https://github.com/Stelnyx/apigate.git
+cd apigate
 npm install
 node apigate.js --help
 
@@ -102,14 +102,8 @@ or convert to a config field.
 
 ## Adding a new framework parser
 
-[ARCHITECTURE.md](ARCHITECTURE.md#adding-a-parser) lists every file a new parser touches.
-
-1. Add `lib/parsers/<name>.mjs` exporting `parse<Name>(targetDir, excludePaths) → { endpoints, warnings, specsDetected? }`.
-2. Wire it into `lib/inventory.mjs` behind a `frameworks.<name>` toggle.
-3. Add a fixture under `test/fixtures/<name>-app/` and a `test/parser-<name>.mjs` suite.
-4. Add a row to the Frameworks table in `README.md`.
-5. Add the framework's idiomatic auth identifiers to `CONFIG_DEFAULTS.auth.<name>` in `lib/config.mjs`.
+Follow the steps in [ARCHITECTURE.md](ARCHITECTURE.md#adding-a-parser). They cover the parser signature, inventory and config wiring, capabilities, fixtures, tests and docs.
 
 ## Questions
 
-Open a [discussion](https://github.com/Stelnyx/ApiGate/discussions) or a regular issue. Security matters go through private advisory only.
+Open a [regular issue](https://github.com/Stelnyx/apigate/issues). Security matters go through private advisory only.
