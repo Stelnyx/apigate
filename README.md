@@ -14,7 +14,7 @@ One command. One report. One exit code.
   <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-00cc66.svg?style=flat-square&labelColor=0a0a0a"></a>
   <img alt="node" src="https://img.shields.io/badge/node-%E2%89%A520-00cc66.svg?style=flat-square&labelColor=0a0a0a">
   <a href="SECURITY.md"><img alt="security" src="https://img.shields.io/badge/security-policy-00cc66.svg?style=flat-square&labelColor=0a0a0a"></a>
-  <a href="https://github.com/Stelnyx/ApiGate/actions/workflows/ci.yml"><img alt="self-scan" src="https://github.com/Stelnyx/ApiGate/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/Stelnyx/apigate/actions/workflows/ci.yml"><img alt="self-scan" src="https://github.com/Stelnyx/apigate/actions/workflows/ci.yml/badge.svg?branch=main"></a>
 </p>
 
 </div>
@@ -85,7 +85,7 @@ The binary gate (exit 1 on open write methods, configurable) is independent of t
 npx @stelnyx/apigate .
 ```
 
-Inventories every HTTP endpoint, classifies auth posture, diffs against any OpenAPI spec, writes a JSON report + a self-contained HTML report. Exit `0` on clean, `1` on open-write endpoints (default policy). That's the whole product.
+Inventories every HTTP endpoint, classifies auth posture, diffs against any OpenAPI spec, writes a JSON report + a single-file HTML report. Exit `0` on clean, `1` on open-write endpoints (default policy). That's the whole product.
 
 ---
 
@@ -94,7 +94,7 @@ Inventories every HTTP endpoint, classifies auth posture, diffs against any Open
 ApiGate walks source files in a directory and produces:
 
 - **One normalized JSON report** — every endpoint, posture, drift bucket, rubric, headline
-- **One self-contained HTML report** — rendered through `@stelnyx/report-theme`; visually + structurally identical to SecGate / LuxScope / LuxFaber reports
+- **One single-file HTML report** — rendered through `@stelnyx/report-theme`; visually + structurally identical to SecGate / LuxScope / LuxFaber reports. It loads the Inter font from Google Fonts when opened (see [Network access](#network-access)).
 - **One exit code** — `1` on open-write endpoints (configurable); blocks CI
 
 ApiGate does not run code. It does not send HTTP requests. It does not require credentials or a running server. Everything happens at parse-time against source files.
@@ -123,6 +123,8 @@ Routes that can't be statically resolved (dynamic mount prefixes, computed metho
 ApiGate makes **zero** network calls. No telemetry, no account, no phone-home, no advisory database, no spec fetching from URLs. Reports are written to local files only. Code never leaves your machine.
 
 This is unconditional, not a flag. Air-gapped CI works as well as a developer laptop.
+
+The HTML report is one file with inlined CSS and script, but it links the Inter font from Google Fonts (`fonts.googleapis.com`, `fonts.gstatic.com`). Opening the report in a browser requests those URLs. The scan does not. Offline, the report uses system fonts.
 
 ---
 
@@ -183,8 +185,8 @@ npx @stelnyx/apigate .
 ### From source
 
 ```bash
-git clone https://github.com/Stelnyx/ApiGate.git
-cd ApiGate
+git clone https://github.com/Stelnyx/apigate.git
+cd apigate
 npm install
 chmod +x apigate.js
 sudo ln -sf "$(pwd)/apigate.js" /usr/local/bin/apigate
@@ -466,7 +468,7 @@ Trusted Publisher settings.
 Each run writes:
 
 - **`apigate-report.json`** — machine-readable, schema below
-- **`<repo-name>.html`** — self-contained HTML report (rendered through `@stelnyx/report-theme`)
+- **`<repo-name>.html`** — single-file HTML report (rendered through `@stelnyx/report-theme`)
 
 ### JSON schema
 

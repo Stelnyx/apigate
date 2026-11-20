@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If you find a security issue in ApiGate, please **do not open a public GitHub issue**. Instead, file a private [security advisory](https://github.com/Stelnyx/ApiGate/security/advisories/new) on the repository. Maintainers will respond within 5 business days with an acknowledgement and an initial assessment.
+If you find a security issue in ApiGate, please **do not open a public GitHub issue**. Instead, file a private [security advisory](https://github.com/Stelnyx/apigate/security/advisories/new) on the repository. Maintainers will respond within 5 business days with an acknowledgement and an initial assessment.
 
 ### What to include
 
