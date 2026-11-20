@@ -133,6 +133,19 @@ t.test("Vanilla JS injected as <script>, no external src", () => {
   }
 });
 
+t.test("HTML makes no external requests (no Google Fonts, no http(s) in link/script/@import)", () => {
+  for (const host of ["fonts.googleapis.com", "fonts.gstatic.com"]) {
+    if (html.includes(host)) throw new Error(`report HTML must not reference ${host}`);
+  }
+  const external = [];
+  for (const m of html.matchAll(/<(?:link|script)\b[^>]*>/gi)) {
+    if (/\b(?:href|src)\s*=\s*["']?\s*(?:https?:)?\/\//i.test(m[0])) external.push(m[0]);
+  }
+  for (const m of html.matchAll(/@import\s+(?:url\(\s*)?["']?\s*(?:https?:)?\/\/[^\s"')]+/gi)) external.push(m[0]);
+  for (const m of html.matchAll(/url\(\s*["']?\s*(?:https?:)?\/\/[^\s"')]+/gi)) external.push(m[0]);
+  if (external.length) throw new Error(`report HTML must not load external resources: ${external.join(" | ")}`);
+});
+
 t.test("Injected JS contains no non-deterministic primitives", () => {
   if (/Math\.random|Date\.now|setInterval|fetch\(/.test(html)) {
     throw new Error("report HTML must not contain non-deterministic JS primitives");

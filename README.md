@@ -94,7 +94,7 @@ Inventories every HTTP endpoint, classifies auth posture, diffs against any Open
 ApiGate walks source files in a directory and produces:
 
 - **One normalized JSON report** — every endpoint, posture, drift bucket, rubric, headline
-- **One single-file HTML report** — rendered through `@stelnyx/report-theme`; visually + structurally identical to SecGate / LuxScope / LuxFaber reports. It loads the Inter font from Google Fonts when opened (see [Network access](#network-access)).
+- **One single-file HTML report** — rendered through `@stelnyx/report-theme`; visually + structurally identical to SecGate / LuxScope / LuxFaber reports. It makes no external requests when opened (see [Network access](#network-access)).
 - **One exit code** — `1` on open-write endpoints (configurable); blocks CI
 
 ApiGate does not run code. It does not send HTTP requests. It does not require credentials or a running server. Everything happens at parse-time against source files.
@@ -108,7 +108,7 @@ The bounded scan builds one sorted candidate-file index and shares it across all
 | Framework  | Detection                                                                                                                |
 |------------|--------------------------------------------------------------------------------------------------------------------------|
 | **Express**  | acorn AST for `.js/.mjs/.cjs`; regex fallback for `.ts/.tsx`. Resolves `app.use('/prefix', router)` mounts in the same file and across files: `app.use('/p', mw, importedRouter)` (the last argument is the router) follows relative imports (`./x.js`, `./x`, `./dir` to `dir/index.js`; ESM default, named and namespace imports; CommonJS `require`) to a router the file exports (`export default r`, `export { r }`, `export const r`, `module.exports = r`, `module.exports = { r }`, `exports.x = r`), including routers that mount other routers in other files. Mount middleware is added to the route's auth markers, and a router mounted twice yields one route per prefix. An exported `Router()` that no resolved mount reaches (alias or package imports such as `@/routes/x`, mounts in `.ts/.tsx` files, scans of a sub-directory, factory exports like `module.exports = function build() {...}`, cycles, more than 64 prefixes, routers nested inside a mounted file, a router mounted both in its own file and from another file, a router whose mount owner is nested on another local Router(), a router whose same-file owner sits on an `express()` app that is itself mounted) is `UNRESOLVED` with reason `mount-prefix-cross-file`; an `express()` app stays a root. A path-less mount middleware must be a function defined in the mounting file, otherwise the prefix counts as dynamic. `.ts/.tsx` files are never rewritten across files, so their routers keep their own path. AST files also track any variable assigned from `express()` / `express.Router()` / `Router()` whatever its name, and parse `app.route('/x').get(...).post(...)` chains. Path-less `router.use(requireAuth)` guards routes registered on that router after it only when `router` is a `const/let/var` declared once from a router factory, never reassigned, and the `use()` is a plain statement in the same block as the declaration. These `use()` calls are ignored (routes stay OPEN): `this.router.use(...)`, a router received as a parameter, a `use()` inside `if` or a helper function, `X.use(someCall(), auth)`, and wrappers like `jwt(...).unless(...)`. Not resolved: re-export barrels, aliases and package imports (see above), path-less `app.use(auth)` flowing into routers mounted on `app`, `route('/x').all(auth)` guarding the other verbs of the chain, and all of the above in `.ts/.tsx` files. Routers created in factory functions or received as parameters are parsed (routes and mounts), with the `use()` limits above. These routes count only in a repository that uses Express: a scanned file imports or requires `express`, or the target's `package.json` declares it. Otherwise `app.get(...)` and `router.get(...)` calls, which Hono and Koa also use, are not counted. |
-| **Fastify**  | acorn AST for `.js/.mjs/.cjs`; regex extractor for `.ts` (no TypeScript dependency, `fastify.delete<{ Params: ... }>(...)` generics are skipped). The extractor also handles `.mts/.cts`, but the CLI scan does not collect those extensions yet. Handles `fastify.<method>(...)` and `fastify.route({ method, url, preHandler })`. `register(plugin, { prefix })` prefixes are not applied. |
+| **Fastify**  | acorn AST for `.js/.mjs/.cjs`; regex extractor for `.ts` (no TypeScript dependency, `fastify.delete<{ Params: ... }>(...)` generics are skipped). The extractor also handles `.mts/.cts`, and the CLI scan collects them. Handles `fastify.<method>(...)` and `fastify.route({ method, url, preHandler })`. `register(plugin, { prefix })` prefixes are not applied. |
 | **NestJS**   | Decorator extraction over `.ts/.tsx/.js/.mjs`. Pairs `@Controller(...)` with method decorators `@Get / @Post / @Put / @Patch / @Delete / @Options / @Head / @All`. Captures class- and method-level guards (`@UseGuards`, `@Auth`, `@Roles`), global guards (`APP_GUARD` providers, `useGlobalGuards`) and a literal `setGlobalPrefix()`; see [NestJS global guards and prefix](#nestjs-global-guards-and-prefix). The `@nestjs/swagger` decorators (`@ApiBearerAuth`, `@ApiCookieAuth`, `@ApiSecurity`, `@ApiOAuth2`, `@ApiBasicAuth`) only describe the OpenAPI document, so they do not count as auth. |
 | **OpenAPI**  | Parses `*.yaml`/`*.yml`/`*.json` with `swagger:` (2.0) or `openapi:` (3.x) root. Honors operation-level `security` and root inheritance. |
 
@@ -124,7 +124,7 @@ ApiGate makes **zero** network calls. No telemetry, no account, no phone-home, n
 
 This is unconditional, not a flag. Air-gapped CI works as well as a developer laptop.
 
-The HTML report is one file with inlined CSS and script, but it links the Inter font from Google Fonts (`fonts.googleapis.com`, `fonts.gstatic.com`). Opening the report in a browser requests those URLs. The scan does not. Offline, the report uses system fonts.
+The HTML report is one file with inlined CSS and script. It loads no web fonts, scripts or stylesheets from other hosts, so opening it in a browser makes no external requests. The report uses the system font stack.
 
 ---
 
@@ -525,7 +525,7 @@ Each run writes:
   "refDiff": {
     "baseRef": "main",
     "baseSha": "abc12345...",
-    "added":           [{ "method": "POST", "path": "/admin/purge", "posture": "OPEN", "risk": "HIGH" }],
+    "added":           [{ "method": "POST", "path": "/admin/purge", "posture": "OPEN", "risk": "HIGH", "intentionalPublic": false }],
     "removed":         [],
     "changedPosture":  [{ "method": "PUT", "path": "/x", "from": "GUARDED", "to": "OPEN" }],
     "changedRisk":     [{ "method": "POST", "path": "/y", "from": "MED", "to": "HIGH" }]

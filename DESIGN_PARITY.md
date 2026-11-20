@@ -40,7 +40,7 @@ The `themeShell` call passes brand, target, meta, favicon, score, report labels,
 
 ## External requests from the HTML report
 
-The scan itself makes no network calls. The HTML report is a single file with inlined CSS and script, but it is not free of external requests: the theme shell adds `<link>` tags for the Inter font from Google Fonts (`fonts.googleapis.com` and `fonts.gstatic.com`), so a browser that opens the report requests those URLs. `lib/report.mjs` does not pass the theme's `skipInterFont` option. Offline, the browser falls back to the system fonts in `--font`.
+Neither the scan nor the HTML report makes network calls. The report is a single file with inlined CSS and script. `lib/report.mjs` passes the theme's `skipInterFont: true` option, so the shell adds no Google Fonts `<link>` tags, and the browser uses the system fonts in `--font`. `test/report-theme-contract.mjs` fails if the HTML references `fonts.googleapis.com`, `fonts.gstatic.com` or any external `http(s)` URL in `<link>`, `<script>`, `@import` or `url()`.
 
 ## Shared design tokens
 

@@ -3,6 +3,8 @@ import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";
 import { parseFastify } from "../lib/parsers/fastify.mjs";
+import { buildInventory } from "../lib/inventory.mjs";
+import { loadConfig } from "../lib/config.mjs";
 import { runner, assertEq } from "./_runner.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -68,6 +70,16 @@ t.test("TS: .mts and .cts are parsed", () => {
   });
   const got = parseFastify(dir, []).endpoints.map(e => e.path).sort();
   assertEq(JSON.stringify(got), JSON.stringify(["/c", "/m"]));
+});
+t.test("TS: .mts and .cts are found by the CLI inventory path (buildInventory)", () => {
+  const dir = tsDir({
+    "server.mts": `import Fastify from "fastify";\nconst app = Fastify();\napp.get("/m", async () => 1);\n`,
+    "routes.cts": `import Fastify from "fastify";\nconst app = Fastify();\napp.post("/c", async () => 1);\n`
+  });
+  const inv = buildInventory(dir, loadConfig(dir));
+  const got = inv.code.map(e => `${e.method} ${e.path} ${e.file}`).sort();
+  assertEq(JSON.stringify(got), JSON.stringify(["GET /m server.mts", "POST /c routes.cts"]));
+  assertEq(JSON.stringify(inv.frameworksDetected), JSON.stringify(["fastify"]));
 });
 t.test("TS: file without a fastify signal is ignored", () => {
   const dir = tsDir({ "a.ts": `const app = makeThing();\napp.get("/nope", () => 1);\n` });
