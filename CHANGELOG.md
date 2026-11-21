@@ -6,6 +6,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + [Semantic Ver
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-11-20
+
 ### Fixed
 - The HTML report no longer loads Google Fonts. `lib/report.mjs` now passes
   `skipInterFont: true` to the `@stelnyx/report-theme` shell, so opening the
